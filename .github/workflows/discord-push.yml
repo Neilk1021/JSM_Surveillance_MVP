@@ -32,16 +32,16 @@ jobs:
             --arg commits "$COMMITS_URL" \
             '{
               embeds: [{
-                title: ($repo + " pushed to " + $branch),
+                title: "\($repo) pushed to \($branch)",
                 url: $commits,
                 description: $msg,
                 color: 5793266,
                 fields: [
-                  {name:"Commit",  value:"["+$sha+"]("+$curl+")", inline:true},
-                  {name:"Author",  value:$author,               inline:true},
-                  {name:"Pusher",  value:$pusher,               inline:true}
+                  { name: "Commit", value: "[\($sha)](\($curl))", inline: true },
+                  { name: "Author", value: $author, inline: true },
+                  { name: "Pusher", value: $pusher, inline: true }
                 ],
-                timestamp: (now | todate)
+                timestamp: (now | todateiso8601)
               }]
             }')
 
