@@ -24,6 +24,8 @@ public class HEEditorWindowUITK : EditorWindow
     HEToolbar toolbarLogic;
     HEToolbar.Mode mode;
 
+    private PopupWindowContent faceEditorWindow = null;
+
     Vector2 lastCanvasSize;
 
     void CreateGUI()
@@ -62,13 +64,15 @@ public class HEEditorWindowUITK : EditorWindow
         canvas.RegisterCallback<PointerDownEvent>(e =>
         {
             interaction.HandlePointerDown(e, mode, shift: e.shiftKey);
-            
             UpdateTransform();
+            
+            faceEditorWindow?.editorWindow.Close();
             if (interaction.selectedFace != -1)
             {
                 // Convert UITK panel position to screen pixels
                 Rect anchorRect = new Rect(e.position, Vector2.zero);
-                UnityEditor.PopupWindow.Show(anchorRect, new HEFaceEditor());
+                faceEditorWindow = new HEFaceEditor(data.faces[interaction.selectedFace].data);
+                UnityEditor.PopupWindow.Show(anchorRect,faceEditorWindow);
 
             }
         });
@@ -213,8 +217,18 @@ public class GraphDrawElement : VisualElement
         foreach (var f in Faces)
         {
             if (f.isExterior) continue;
-            var col = new Color(f.color.r, f.color.g, f.color.b, 0.75f); 
-            p.fillColor = SelectedFace >= 0 && Faces[SelectedFace] == f ? col:  f.color;
+            if (!f.data.isStreet)
+            {
+                var col = new Color(0.2f,0.2f,0.2f,0.4f) ; 
+                p.fillColor = SelectedFace >= 0 && Faces[SelectedFace] == f ? new Color(0.2f,0.2f,0.2f,0.8f) : col;
+            }
+            else
+            {
+                var col = new Color(f.color.r, f.color.g, f.color.b, 0.75f); 
+                p.fillColor = SelectedFace >= 0 && Faces[SelectedFace] == f ? col:  f.color;
+            }
+            
+            
             p.BeginPath();
             var v0 = ScreenFromWorld(VertPositions[f.loop[0]]);
             p.MoveTo(v0);

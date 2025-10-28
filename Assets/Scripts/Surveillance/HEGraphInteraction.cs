@@ -130,7 +130,6 @@ namespace JSM.Surveillance.Surveillance
             {
                 float zoom = draw.Zoom;
                 data.MoveVertexBy(selectedV,   (e.deltaPosition / draw.GridSpacing)/zoom);
-                data.RebuildFaces();
                 ReloadGraph?.Invoke();
             }
         }
