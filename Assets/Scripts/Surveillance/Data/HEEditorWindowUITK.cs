@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using JSM.Surveillance.Surveillance;
 using UnityEditor;
 using UnityEngine;
@@ -22,6 +23,10 @@ public class HEEditorWindowUITK : EditorWindow
     private PopupWindowContent faceEditorWindow = null;
 
     Vector2 lastCanvasSize;
+    
+    bool _panning;
+    Vector2 _last;
+    
 
     void Save()
     {
@@ -56,6 +61,11 @@ public class HEEditorWindowUITK : EditorWindow
         UpdateTransform();
     }
 
+    void OnModeSwitched(HEToolbar.Mode newMode)
+    {
+        mode = newMode;
+        UpdateTransform();
+    }
     
     void CreateGUI()
     {
@@ -65,10 +75,12 @@ public class HEEditorWindowUITK : EditorWindow
         // Toolbar
         toolbarLogic = new HEToolbar();
         var toolbar = toolbarLogic.Build();
-        toolbarLogic.OnModeChanged += m => mode = m;
+        toolbarLogic.OnModeChanged += OnModeSwitched; 
         toolbarLogic.OnClear += () => { data.Clear(); draw.MarkDirtyRepaint(); };
+        
         toolbarLogic.OnSave += Save;
         toolbarLogic.OnLoad += Load;
+        
         root.Add(toolbar);
 
         canvas = new VisualElement { style = { flexGrow = 1, backgroundColor = new Color(0.13f,0.13f,0.13f) } };
@@ -85,7 +97,7 @@ public class HEEditorWindowUITK : EditorWindow
         canvas.RegisterCallback<WheelEvent>(OnWheel);
         canvas.RegisterCallback<PointerMoveEvent>(OnPointerMove);
         canvas.RegisterCallback<PointerMoveEvent>(interaction.HandlePointerMove);
-        canvas.RegisterCallback<PointerUpEvent>(_ => panning = false);
+        canvas.RegisterCallback<PointerUpEvent>(_ => _panning = false);
         canvas.RegisterCallback<GeometryChangedEvent>(OnCanvasResized);
         canvas.RegisterCallback<PointerDownEvent>(OnPointerDown);
         canvas.RegisterCallback<PointerUpEvent>(OnPointerUp);
@@ -113,10 +125,6 @@ public class HEEditorWindowUITK : EditorWindow
         UpdateTransform();
     }
 
-    bool panning;
-    Vector2 last;
-    
-    
     void SubdivideSelectedQuad()
     {
         var sel = interaction.selectedVertices;
@@ -135,20 +143,20 @@ public class HEEditorWindowUITK : EditorWindow
     
     void OnPointerDown(PointerDownEvent e)
     {
-        if (e.button == 2 || e.altKey) { panning = true; last = e.localPosition; e.StopPropagation(); return; }
+        if (e.button == 2 || e.altKey) { _panning = true; _last = e.localPosition; e.StopPropagation(); return; }
         UpdateTransform();
     }
     
     void OnPointerMove(PointerMoveEvent e)
     {
-        if (!panning) return;
-        var d = (Vector2)e.localPosition - last;
+        if (!_panning) return;
+        var d = (Vector2)e.localPosition - _last;
         interaction.pan += d;
-        last = e.localPosition;
+        _last = e.localPosition;
         UpdateTransform();
     }
     
-    void OnPointerUp(PointerUpEvent e) { panning = false; Vector2 mouseCanvas = draw.ChangeCoordinatesTo(canvas, e.localPosition); }
+    void OnPointerUp(PointerUpEvent e) { _panning = false; Vector2 mouseCanvas = draw.ChangeCoordinatesTo(canvas, e.localPosition); }
     
     void OnWheel(WheelEvent e)
     {
@@ -187,6 +195,7 @@ public class HEEditorWindowUITK : EditorWindow
         draw.SelectedVerticesSet = new HashSet<int>(interaction.selectedVertices);
         draw.SelectedFace = interaction.selectedFace;
         draw.Faces = data.faces;
+        draw.mode = mode;
         draw.MarkDirtyRepaint();
     }
 }
@@ -201,7 +210,8 @@ public class GraphDrawElement : VisualElement
     public int GridCols = 50;        
     public int GridRows = 50;      
     public float GridSpacing = 15f;   
-    public bool CenterGrid = true;   
+    public bool CenterGrid = true;
+    public HEToolbar.Mode mode;
    
     public List<Vector2> VertPositions;
     public List<(int a,int b)> EdgePairs;
@@ -210,6 +220,8 @@ public class GraphDrawElement : VisualElement
     public int SelectedVertex = -1;
     public int SelectedEdge   = -1;
     public int SelectedFace = -1;
+
+    private (int min, int max) _populationDelta;
     
     public GraphDrawElement()
     {
@@ -242,25 +254,15 @@ public class GraphDrawElement : VisualElement
     {
         if (Faces == null) return;
 
+        _populationDelta = CalculatePopulationMinMax();
         foreach (var f in Faces)
         {
-            if (f.data == null)
-            {
+            if (f.data == null) {
                 f.data = ScriptableObject.CreateInstance<HEFaceGameData>();
             }
             
             if (f.isExterior) continue;
-            if (!f.data.isStreet)
-            {
-                var col = new Color(0.2f,0.2f,0.2f,0.4f) ; 
-                p.fillColor = SelectedFace >= 0 && Faces[SelectedFace] == f ? new Color(0.2f,0.2f,0.2f,0.8f) : col;
-            }
-            else
-            {
-                var col = new Color(f.color.r, f.color.g, f.color.b, 0.75f); 
-                p.fillColor = SelectedFace >= 0 && Faces[SelectedFace] == f ? col:  f.color;
-            }
-            
+            SetPenColor(p, f);
             
             p.BeginPath();
             var v0 = ScreenFromWorld(VertPositions[f.loop[0]]);
@@ -273,6 +275,44 @@ public class GraphDrawElement : VisualElement
 
             p.ClosePath();
             p.Fill();
+        }
+    }
+
+    private void EnsureFacesContainData()
+    {
+        if(Faces.All(x => x.data != null))
+            return;
+
+        foreach (var t in Faces)
+        {
+            t.EnsureSOFromJson();
+        }
+    }
+    
+    private (int min, int max) CalculatePopulationMinMax() {
+        EnsureFacesContainData();
+        return (Faces.Min(x => x.data.dailyPopulation), Faces.Max(x => x.data.dailyPopulation));
+    }
+
+    private void SetPenColor(Painter2D p, HEFace f)
+    {
+        if (mode == HEToolbar.Mode.Paint) {
+            if (!f.data.isStreet) {
+                p.fillColor = Color.black;
+                return;
+            }
+            
+            p.fillColor = Color.Lerp( Color.grey, Color.green, Mathf.InverseLerp(_populationDelta.min, _populationDelta.max, f.data.dailyPopulation)); 
+            return;
+        }
+        
+        if (!f.data.isStreet) {
+            var col = new Color(0.2f,0.2f,0.2f,0.4f) ; 
+            p.fillColor = SelectedFace >= 0 && Faces[SelectedFace] == f ? new Color(0.2f,0.2f,0.2f,0.8f) : col;
+        }
+        else {
+            var col = new Color(f.color.r, f.color.g, f.color.b, 0.75f); 
+            p.fillColor = SelectedFace >= 0 && Faces[SelectedFace] == f ? col:  f.color;
         }
     }
 
@@ -365,7 +405,10 @@ public class GraphDrawElement : VisualElement
                 ctx.painter2D.Stroke();
             }
 
-          
+            if (mode == HEToolbar.Mode.Paint) {
+                return;
+            }
+            
             float rNew = 6f * Mathf.Max(Zoom, 0.0001f); // constant pixel radius
             for (int i=0;i<VertPositions.Count;i++)
             {

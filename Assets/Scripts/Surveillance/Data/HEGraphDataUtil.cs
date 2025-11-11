@@ -31,7 +31,7 @@ namespace JSM.Surveillance.Surveillance
             return best;
         }
 
-        static bool PointInPolygon(HEGraphData data, Vector2 p, List<int> loop, bool includeBoundary = true)
+        public static bool PointInPolygon(HEGraphData data, Vector2 p, List<int> loop, bool includeBoundary = true)
         {
             bool inside = false;
 

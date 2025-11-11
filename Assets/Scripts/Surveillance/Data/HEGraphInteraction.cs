@@ -1,4 +1,5 @@
-﻿using UnityEngine.Events;
+﻿using JSM.Surveillance.Data;
+using UnityEngine.Events;
 
 namespace JSM.Surveillance.Surveillance
 {
@@ -20,7 +21,9 @@ namespace JSM.Surveillance.Surveillance
         public int selectedFace = -1;
         private bool _pointerDown;
         private HEToolbar.Mode _mode;
-
+        private float paintRadius = 1f;
+        
+        
         public void SetData(HEGraphData newData)
         {
             data = newData;
@@ -56,6 +59,9 @@ namespace JSM.Surveillance.Surveillance
 
             switch (mode)
             {
+                case HEToolbar.Mode.Paint:
+                    
+                    break;
                 case HEToolbar.Mode.AddVertex:
                     if (!draw.GridInBounds(ij)) return;
                     data.verts.Add(new HEGraphData.Vertex(ij.x, ij.y));
@@ -135,6 +141,16 @@ namespace JSM.Surveillance.Surveillance
             {
                 float zoom = draw.Zoom;
                 data.MoveVertexBy(selectedV,   (e.deltaPosition / draw.GridSpacing)/zoom);
+                ReloadGraph?.Invoke();
+            }
+
+            if (_mode == HEToolbar.Mode.Paint && _pointerDown)
+            {
+                Vector2 mouseCanvas = canvas.WorldToLocal(e.position);
+                Vector2 world = ScreenToWorld(mouseCanvas);
+                Vector2 ij = draw.WorldToGrid(world);
+                
+                PopulationPainter.PaintPopulation(data, ij, paintRadius, 1); 
                 ReloadGraph?.Invoke();
             }
         }

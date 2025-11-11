@@ -7,7 +7,7 @@
 
     public class HEToolbar
     {
-        public enum Mode { Select, AddVertex, AddEdge, Delete }
+        public enum Mode { Select, AddVertex, AddEdge, Delete, Paint }
         public Mode CurrentMode { get; private set; } = Mode.Select;
 
         public event Action<Mode> OnModeChanged;
@@ -20,6 +20,7 @@
         public event Action OnSave;
         public event Action OnLoad;
 
+        
         public Toolbar Build()
         {
             var toolbar = new Toolbar();
@@ -27,6 +28,7 @@
             AddToggle(toolbar, "Add Vertex", Mode.AddVertex);
             AddToggle(toolbar, "Add Edge",   Mode.AddEdge);
             AddToggle(toolbar, "Delete",     Mode.Delete);
+            AddToggle(toolbar, "Paint",  Mode.Paint);
 
             toolbar.Add(new ToolbarButton(() => OnSubdivide?.Invoke()) { text = "Subdivide 3×3" });
             toolbar.Add(new ToolbarSpacer());
