@@ -92,6 +92,7 @@ namespace Surveillance.Game
             cell.SetFace(face, material);
             
             go.AddComponent<MeshCollider>();
+            go.tag = "MapCell";
             return go;
         }
 

@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JSM.Surveillance.Game;
+using Surveillance.Game;
 using UnityEngine;
 
 namespace  JSM.Surveillance.UI
@@ -11,7 +13,16 @@ namespace  JSM.Surveillance.UI
         [SerializeField] private GameObject itemPreviewUIPrefab;
         [SerializeField] private Vector2 previewOffset = new Vector2(-300,0);
         private GameObject itemPreviewUI = null;
-
+        
+        public void Buy()
+        {
+            if (itemToBuy.GetType() == typeof(SourceData))
+            {
+                var obj = Instantiate(((SourceData)itemToBuy).Source.gameObject);
+                obj.GetComponent<Source>().Init(FindObjectOfType<MapCellManager>());
+            }
+        }
+        
         public void OnPointerEnter()
         {
             if (itemPreviewUI != null)
