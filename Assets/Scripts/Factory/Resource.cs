@@ -4,11 +4,20 @@ using UnityEngine;
 
 namespace JSM.Surveillance
 {
-    [CreateAssetMenu(fileName = "NewResource", menuName = "Factory/Resource")]
+    [CreateAssetMenu(fileName = "NewResource", menuName = "JSM/Surveillance/Resource")]
     public class Resource : ScriptableObject
     {
-        public string guid;
-        public string resourceName;
-        public Sprite sprite;
+        [SerializeField] private string guid = System.Guid.NewGuid().ToString();
+        [SerializeField] private string resourceName;
+        [SerializeField] private Sprite sprite;
+
+        public string Guid => guid;
+        public string ResourceName => resourceName;
+        public Sprite Sprite => sprite;
+        private void OnValidate()
+        {
+            if (string.IsNullOrEmpty(guid))
+                guid = System.Guid.NewGuid().ToString();
+        }
     }
 }

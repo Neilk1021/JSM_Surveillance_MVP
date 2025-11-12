@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace JSM.Surveillance
 {
-    public abstract class Maintainable : MonoBehaviour
+    public abstract class Maintainable : ScriptableObject
     {
         [SerializeField] protected int upfrontCost;
         [SerializeField] protected int dailyCost;

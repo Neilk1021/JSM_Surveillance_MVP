@@ -4,19 +4,24 @@ using UnityEngine;
 
 namespace JSM.Surveillance
 {
-    [CreateAssetMenu(fileName = "NewResourceBank", menuName = "Factory/ResourceBank")]
+    [CreateAssetMenu(fileName = "NewResourceBank", menuName = "JSM/Surveillance/ResourceBank")]
     public class ResourceBank : ScriptableObject
     {
         public Resource[] resources;
 
+        /// <summary>
+        /// Finds a resource by its unique ID
+        /// </summary>
         public Resource GetResourceById(string guid)
         {
-            return System.Array.Find(resources, r => r.guid == guid);
+            return System.Array.Find(resources, r => r.Guid == guid);
         }
 
+        /// <summary>Finds a resource by its name
+        /// </summary>
         public Resource GetResourceByName(string name)
         {
-            return System.Array.Find(resources, r => r.resourceName == name);
+            return System.Array.Find(resources, r => r.ResourceName == name);
         }
     }
 }
