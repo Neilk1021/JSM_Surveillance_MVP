@@ -1,4 +1,5 @@
 ﻿using System;
+using JSM.Surveillance.Data;
 
 namespace JSM.Surveillance.Surveillance
 {
@@ -44,7 +45,6 @@ namespace JSM.Surveillance.Surveillance
 
         public List<HEHalf> halfEdges = new List<HEHalf>();
         public List<HEFace> faces = new List<HEFace>();
-        
         
         public void Clear() { verts.Clear(); edges.Clear(); }
 

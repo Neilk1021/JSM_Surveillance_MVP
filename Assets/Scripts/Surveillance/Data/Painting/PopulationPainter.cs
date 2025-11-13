@@ -1,25 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JSM.Surveillance.Surveillance;
 
 namespace JSM.Surveillance.Data
 {
     using UnityEditor;
     using UnityEngine;
-
+    
     public static class PopulationPainter
     {
-        public static void PaintPopulation(HEGraphData data, Vector2 worldPoint, float radius, int delta)
+        public enum  PaintType
+        {
+            Population,
+            Risk
+        }
+
+        const int PopulationDelta = 1;
+        private const float RiskDelta = 0.01f;
+        
+        public static void PaintPopulation(HEGraphData data, Vector2 worldPoint, float radius, PaintType type, bool remove = false)
         {
             float radiusSqr = radius * radius;
-
-            //Undo.RecordObject(data, "Paint Population");   // so Ctrl+Z works
 
             foreach (var face in data.faces)
             {
                 if (face == null || face.loop == null || face.loop.Count < 3) 
                     continue;
                 
-                if(face.isExterior) continue;
+                if(!face.data.isStreet || face.isExterior) continue;
                 
                 float distSqr = DistancePointToPolygonSqr(data, worldPoint, face.loop);
                 if (distSqr <= radiusSqr)
@@ -31,8 +39,19 @@ namespace JSM.Surveillance.Data
                     if (face.data == null) {
                         return;
                     }
+
+                    switch (type)
+                    {
+                        case PaintType.Population:
+                            face.data.dailyPopulation += PopulationDelta * (remove ? -1 : 1);
+                            face.data.dailyPopulation = (int)Mathf.Clamp(face.data.dailyPopulation, 0, 100000000000000);
+                            break;
+                        case PaintType.Risk:
+                            face.data.riskFactor += RiskDelta * (remove ? -1 : 1);
+                            face.data.riskFactor = Mathf.Clamp01(face.data.riskFactor);
+                            break;
+                    }
                     
-                    face.data.dailyPopulation += delta;
                     face.SyncDataJsonFromSO();
                     EditorUtility.SetDirty(face.data);
                     
