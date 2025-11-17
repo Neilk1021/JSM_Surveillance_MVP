@@ -51,10 +51,12 @@ namespace JSM.Surveillance.Surveillance
         public void EnsureSOFromJson()
         {
             if (data == null)
+            {
                 data = ScriptableObject.CreateInstance<HEFaceGameData>();
 
-            if (!string.IsNullOrEmpty(_dataJson))
-                JsonUtility.FromJsonOverwrite(_dataJson, data);
+                if (!string.IsNullOrEmpty(_dataJson))
+                    JsonUtility.FromJsonOverwrite(_dataJson, data);
+            }
         }
     }
     

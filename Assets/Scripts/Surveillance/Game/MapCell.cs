@@ -9,6 +9,12 @@ using UnityEngine.Serialization;
 
 namespace Surveillance.Game
 {
+    public struct CellData
+    {
+        public int DailyPopulation;
+        public float RiskFactor;
+    }
+    
     public class MapCell : MonoBehaviour
     {
         private MapCellManager _manager;
@@ -17,7 +23,16 @@ namespace Surveillance.Game
         private HEFaceGameData data;
         private MeshFilter _filter; 
         [HideInInspector] [SerializeField] private Vector3 center = Vector3.negativeInfinity;
-        
+        public bool IsStreet
+        {
+            get
+            {
+                face.EnsureSOFromJson();
+                return data.isStreet;
+            }
+        }
+
+
         /// <summary>
         /// Initializes a map cell based on a given face.
         /// </summary>
@@ -27,6 +42,11 @@ namespace Surveillance.Game
             face.EnsureSOFromJson();
             data = face.data;
             center = GetMeshCenter(GetComponent<MeshFilter>());
+        }
+
+        public CellData GetData()
+        {
+            return new CellData() { DailyPopulation = face.data.dailyPopulation, RiskFactor = face.data.riskFactor };
         }
         
         private void Awake()

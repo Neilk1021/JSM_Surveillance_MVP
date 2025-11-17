@@ -16,6 +16,7 @@ namespace Surveillance.Game
         [SerializeField] [HideInInspector] private List<HEGraphData.Vertex> vertices;
         [SerializeField] [HideInInspector] private List<HEHalf> halfEdges;
 
+        private MapCell[] _cells;
         private List<MapEdgeVertex> _edgeVertices;
         
         private Camera _mainCamera;
@@ -26,6 +27,7 @@ namespace Surveillance.Game
         private void Awake()
         {
             _camera = Camera.main;
+            _cells = FindObjectsOfType<MapCell>();
             _edgeVertices = FindObjectsOfType<MapEdgeVertex>().ToList();
         }
         
