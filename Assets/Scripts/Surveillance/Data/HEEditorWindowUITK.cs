@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using JSM.Surveillance.Data;
 using JSM.Surveillance.Surveillance;
 using UnityEditor;
 using UnityEngine;
@@ -21,7 +22,8 @@ public class HEEditorWindowUITK : EditorWindow
     HEToolbar.Mode mode;
 
     private PopupWindowContent faceEditorWindow = null;
-
+    private VisualElement paintToolbar = null;
+    
     Vector2 lastCanvasSize;
     
     bool _panning;
@@ -63,6 +65,15 @@ public class HEEditorWindowUITK : EditorWindow
 
     void OnModeSwitched(HEToolbar.Mode newMode)
     {
+        if (mode == HEToolbar.Mode.Paint && newMode != HEToolbar.Mode.Paint) {
+            UnloadPaintingToolbar();
+        }
+
+        if (mode != HEToolbar.Mode.Paint && newMode == HEToolbar.Mode.Paint)
+        {
+            LoadPaintingToolbar();
+        }
+        
         mode = newMode;
         UpdateTransform();
     }
@@ -90,7 +101,7 @@ public class HEEditorWindowUITK : EditorWindow
 
         draw = new GraphDrawElement();
         content.Add(draw);
-
+        
         interaction = new HEGraphInteraction(data, draw, canvas);
         toolbarLogic.OnSubdivide += SubdivideSelectedQuad;
 
@@ -123,6 +134,26 @@ public class HEEditorWindowUITK : EditorWindow
         
         data.EnsureCornerVertices(draw.GridCols, draw.GridRows, pin: true);
         UpdateTransform();
+    }
+
+    public void LoadPaintingToolbar()
+    {
+        paintToolbar ??= PaintingToolbar.MakePaintingToolBar(interaction);
+
+        if (!content.Contains(paintToolbar))
+        {
+            content.Add(paintToolbar);
+        }
+    }
+
+    public void UnloadPaintingToolbar()
+    {
+        if(paintToolbar == null){return;}
+        
+        if (content.Contains(paintToolbar))
+        {
+            content.Remove(paintToolbar);
+        }
     }
 
     void SubdivideSelectedQuad()
@@ -197,6 +228,7 @@ public class HEEditorWindowUITK : EditorWindow
         draw.Faces = data.faces;
         draw.mode = mode;
         draw.MarkDirtyRepaint();
+        draw.type = interaction.GetPaintMode();
     }
 }
 
@@ -212,6 +244,7 @@ public class GraphDrawElement : VisualElement
     public float GridSpacing = 15f;   
     public bool CenterGrid = true;
     public HEToolbar.Mode mode;
+    public PopulationPainter.PaintType type;
    
     public List<Vector2> VertPositions;
     public List<(int a,int b)> EdgePairs;
@@ -297,12 +330,21 @@ public class GraphDrawElement : VisualElement
     private void SetPenColor(Painter2D p, HEFace f)
     {
         if (mode == HEToolbar.Mode.Paint) {
+            
             if (!f.data.isStreet) {
                 p.fillColor = Color.black;
                 return;
             }
             
-            p.fillColor = Color.Lerp( Color.grey, Color.green, Mathf.InverseLerp(_populationDelta.min, _populationDelta.max, f.data.dailyPopulation)); 
+            switch (type)
+            {
+                case PopulationPainter.PaintType.Risk:
+                    p.fillColor = Color.Lerp(Color.grey, Color.red, f.data.riskFactor);
+                    break;
+                case PopulationPainter.PaintType.Population:
+                    p.fillColor = Color.Lerp( Color.grey, Color.green, Mathf.InverseLerp(_populationDelta.min, _populationDelta.max, f.data.dailyPopulation)); 
+                    break;
+            }
             return;
         }
         

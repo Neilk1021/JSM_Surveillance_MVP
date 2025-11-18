@@ -3825,7 +3825,7 @@
                 63
             ],
             "area": 1368.85986328125,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 1,
@@ -3849,7 +3849,7 @@
                 16
             ],
             "area": 403.06854248046877,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Kansai Broadcast Network\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Kansai Broadcast Network\"}"
         },
         {
             "halfEdge": 2,
@@ -3867,7 +3867,7 @@
                 1
             ],
             "area": 35.20723342895508,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Kansai Power\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Kansai Power\"}"
         },
         {
             "halfEdge": 3,
@@ -3886,7 +3886,7 @@
                 12
             ],
             "area": 44.93903350830078,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 8,
@@ -3912,7 +3912,7 @@
                 54
             ],
             "area": 275.97589111328127,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Sakai Electronics\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Sakai Electronics\"}"
         },
         {
             "halfEdge": 19,
@@ -3942,7 +3942,7 @@
                 10
             ],
             "area": 109.5214614868164,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Tenma Food Industries\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Tenma Food Industries\"}"
         },
         {
             "halfEdge": 23,
@@ -3962,7 +3962,7 @@
                 29
             ],
             "area": 82.35308837890625,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Daito Automotive\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Daito Automotive\"}"
         },
         {
             "halfEdge": 25,
@@ -3982,7 +3982,7 @@
                 27
             ],
             "area": 77.44185638427735,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Kansai First Bank\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Kansai First Bank\"}"
         },
         {
             "halfEdge": 26,
@@ -4005,7 +4005,7 @@
                 25
             ],
             "area": 77.65008544921875,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Kansai Music\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Kansai Music\"}"
         },
         {
             "halfEdge": 27,
@@ -4024,7 +4024,7 @@
                 56
             ],
             "area": 4.303599834442139,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":34,\"riskFactor\":0.24000003933906556,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 35,
@@ -4043,7 +4043,7 @@
                 30
             ],
             "area": 20.8676815032959,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 37,
@@ -4063,7 +4063,7 @@
                 34
             ],
             "area": 20.78978729248047,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Miyazaki Tailors\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":false,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"Miyazaki Tailors\"}"
         },
         {
             "halfEdge": 39,
@@ -4082,7 +4082,7 @@
                 32
             ],
             "area": 20.272315979003908,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":0,\"riskFactor\":0.0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 41,
@@ -4101,7 +4101,7 @@
                 26
             ],
             "area": 20.169897079467775,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":10,\"riskFactor\":0.21000002324581147,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 54,
@@ -4120,7 +4120,7 @@
                 37
             ],
             "area": 3.3742120265960695,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":14,\"riskFactor\":0.5599997639656067,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 57,
@@ -4139,7 +4139,7 @@
                 35
             ],
             "area": 4.226178169250488,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":18,\"riskFactor\":0.23000003397464753,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 59,
@@ -4158,7 +4158,7 @@
                 36
             ],
             "area": 6.53261661529541,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":20,\"riskFactor\":0.29999998211860659,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 61,
@@ -4177,7 +4177,7 @@
                 37
             ],
             "area": 3.174377202987671,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":15,\"riskFactor\":0.3399999439716339,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 63,
@@ -4195,7 +4195,7 @@
                 37
             ],
             "area": 2.17741060256958,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":12,\"riskFactor\":0.3599999248981476,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 74,
@@ -4215,7 +4215,7 @@
                 92
             ],
             "area": 5.370156288146973,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":30,\"riskFactor\":0.8499994874000549,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 75,
@@ -4234,7 +4234,7 @@
                 41
             ],
             "area": 2.50038480758667,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":17,\"riskFactor\":0.5299997925758362,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 77,
@@ -4253,7 +4253,7 @@
                 42
             ],
             "area": 2.2050838470458986,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":32,\"riskFactor\":0.659999668598175,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 79,
@@ -4272,7 +4272,7 @@
                 43
             ],
             "area": 1.9456044435501099,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":20,\"riskFactor\":0.4699998199939728,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 81,
@@ -4291,7 +4291,7 @@
                 17
             ],
             "area": 1.6530613899230958,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":23,\"riskFactor\":0.5799997448921204,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 91,
@@ -4310,7 +4310,7 @@
                 45
             ],
             "area": 2.638929843902588,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":21,\"riskFactor\":0.5799997448921204,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 93,
@@ -4329,7 +4329,7 @@
                 46
             ],
             "area": 2.681504487991333,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":23,\"riskFactor\":0.6199997067451477,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 95,
@@ -4348,7 +4348,7 @@
                 60
             ],
             "area": 2.8529815673828127,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":28,\"riskFactor\":0.5199998021125794,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 97,
@@ -4367,7 +4367,7 @@
                 8
             ],
             "area": 2.997211456298828,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":14,\"riskFactor\":0.48999980092048647,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 108,
@@ -4386,7 +4386,7 @@
                 83
             ],
             "area": 1.558579444885254,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":31,\"riskFactor\":0.42999985814094546,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 112,
@@ -4405,7 +4405,7 @@
                 89
             ],
             "area": 2.7497613430023195,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":43,\"riskFactor\":0.4299998879432678,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 113,
@@ -4424,7 +4424,7 @@
                 50
             ],
             "area": 2.570080518722534,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":43,\"riskFactor\":0.4699998199939728,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 114,
@@ -4443,7 +4443,7 @@
                 84
             ],
             "area": 2.1966075897216799,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":38,\"riskFactor\":0.479999840259552,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 116,
@@ -4462,7 +4462,7 @@
                 51
             ],
             "area": 3.121711492538452,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":24,\"riskFactor\":0.31999996304512026,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 117,
@@ -4481,7 +4481,7 @@
                 84
             ],
             "area": 2.570133924484253,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":27,\"riskFactor\":0.29999998211860659,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 119,
@@ -4501,7 +4501,7 @@
                 91
             ],
             "area": 3.05088210105896,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":29,\"riskFactor\":0.28999999165534975,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 121,
@@ -4520,7 +4520,7 @@
                 53
             ],
             "area": 3.876934766769409,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":36,\"riskFactor\":0.3099999725818634,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 123,
@@ -4539,7 +4539,7 @@
                 54
             ],
             "area": 3.700042486190796,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":28,\"riskFactor\":0.31999996304512026,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 125,
@@ -4558,7 +4558,7 @@
                 55
             ],
             "area": 4.3049187660217289,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":20,\"riskFactor\":0.11999998241662979,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 127,
@@ -4577,7 +4577,7 @@
                 12
             ],
             "area": 3.3900346755981447,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":20,\"riskFactor\":0.13999998569488526,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 145,
@@ -4596,7 +4596,7 @@
                 74
             ],
             "area": 4.236215114593506,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":26,\"riskFactor\":0.45999982953071597,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 149,
@@ -4615,7 +4615,7 @@
                 8
             ],
             "area": 2.5329086780548097,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":23,\"riskFactor\":0.37999990582466128,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 153,
@@ -4634,7 +4634,7 @@
                 76
             ],
             "area": 3.5740208625793459,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":33,\"riskFactor\":0.3599999248981476,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 155,
@@ -4652,7 +4652,7 @@
                 78
             ],
             "area": 2.7815585136413576,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":9,\"riskFactor\":0.3999998867511749,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 157,
@@ -4671,7 +4671,7 @@
                 63
             ],
             "area": 3.279672145843506,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":9,\"riskFactor\":0.3899998962879181,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 158,
@@ -4690,7 +4690,7 @@
                 78
             ],
             "area": 3.3351857662200929,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":25,\"riskFactor\":0.4999997913837433,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 160,
@@ -4710,7 +4710,7 @@
                 62
             ],
             "area": 6.475147724151611,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":23,\"riskFactor\":0.3299999535083771,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 168,
@@ -4729,7 +4729,7 @@
                 56
             ],
             "area": 3.927604913711548,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":18,\"riskFactor\":0.28999999165534975,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 170,
@@ -4748,7 +4748,7 @@
                 66
             ],
             "area": 3.527127981185913,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":38,\"riskFactor\":0.6299996972084045,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 172,
@@ -4767,7 +4767,7 @@
                 74
             ],
             "area": 4.099582672119141,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":10,\"riskFactor\":0.3599999248981476,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 175,
@@ -4786,7 +4786,7 @@
                 72
             ],
             "area": 3.631701707839966,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":25,\"riskFactor\":0.34999993443489077,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 177,
@@ -4805,7 +4805,7 @@
                 73
             ],
             "area": 4.527778148651123,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":43,\"riskFactor\":0.4999997913837433,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 179,
@@ -4825,7 +4825,7 @@
                 69
             ],
             "area": 4.488520622253418,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":19,\"riskFactor\":0.3699999153614044,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 181,
@@ -4844,7 +4844,7 @@
                 57
             ],
             "area": 2.1156489849090578,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":33,\"riskFactor\":0.21000002324581147,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 183,
@@ -4863,7 +4863,7 @@
                 77
             ],
             "area": 2.4938859939575197,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":20,\"riskFactor\":0.2600000202655792,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 185,
@@ -4882,7 +4882,7 @@
                 76
             ],
             "area": 3.5715179443359377,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":19,\"riskFactor\":0.5299997925758362,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 193,
@@ -4901,7 +4901,7 @@
                 79
             ],
             "area": 3.6036272048950197,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":28,\"riskFactor\":0.45999982953071597,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 198,
@@ -4920,7 +4920,7 @@
                 79
             ],
             "area": 2.1886565685272219,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":39,\"riskFactor\":0.4799998104572296,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 200,
@@ -4940,7 +4940,7 @@
                 57
             ],
             "area": 3.9113779067993166,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":38,\"riskFactor\":0.7499995827674866,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 205,
@@ -4959,7 +4959,7 @@
                 61
             ],
             "area": 3.2820353507995607,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":13,\"riskFactor\":0.5899997353553772,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 207,
@@ -4977,7 +4977,7 @@
                 77
             ],
             "area": 1.752544641494751,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":9,\"riskFactor\":0.43999984860420229,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 227,
@@ -4996,7 +4996,7 @@
                 81
             ],
             "area": 4.063689708709717,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":11,\"riskFactor\":0.43999984860420229,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 231,
@@ -5015,7 +5015,7 @@
                 70
             ],
             "area": 4.015903472900391,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":38,\"riskFactor\":0.5099998116493225,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 241,
@@ -5033,7 +5033,7 @@
                 74
             ],
             "area": 2.0620598793029787,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":22,\"riskFactor\":0.40999987721443179,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 264,
@@ -5051,7 +5051,7 @@
                 86
             ],
             "area": 1.611517310142517,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":36,\"riskFactor\":0.43999984860420229,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 267,
@@ -5070,7 +5070,7 @@
                 86
             ],
             "area": 2.4376232624053957,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":36,\"riskFactor\":0.3199999928474426,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 269,
@@ -5088,7 +5088,7 @@
                 87
             ],
             "area": 1.9111244678497315,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":24,\"riskFactor\":0.37999990582466128,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 270,
@@ -5107,7 +5107,7 @@
                 88
             ],
             "area": 2.1582565307617189,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":34,\"riskFactor\":0.2600000202655792,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 280,
@@ -5126,7 +5126,7 @@
                 85
             ],
             "area": 2.8328146934509279,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":33,\"riskFactor\":0.3699999153614044,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         },
         {
             "halfEdge": 308,
@@ -5145,7 +5145,7 @@
                 36
             ],
             "area": 4.4509382247924809,
-            "_dataJson": "{\"dailyPopulation\":0,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
+            "_dataJson": "{\"dailyPopulation\":10,\"riskFactor\":0.5199998021125794,\"isStreet\":true,\"ratio\":{\"consumer\":0.0,\"government\":0.0,\"corporate\":0.0,\"crime\":0.0},\"companyId\":\"\"}"
         }
     ]
 }

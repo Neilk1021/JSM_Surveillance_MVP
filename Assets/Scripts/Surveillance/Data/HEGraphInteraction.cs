@@ -8,6 +8,13 @@ namespace JSM.Surveillance.Surveillance
 
     public class HEGraphInteraction
     {
+        private enum PointerState
+        {
+            Lmb,
+            Rmb,
+            Up
+        }
+        
         HEGraphData data;
         readonly GraphDrawElement draw;
         readonly VisualElement canvas;
@@ -19,9 +26,10 @@ namespace JSM.Surveillance.Surveillance
         int edgeStartV = -1;
         public int selectedV = -1, selectedE = -1;
         public int selectedFace = -1;
-        private bool _pointerDown;
+        private PointerState _pointerDown = PointerState.Lmb;
         private HEToolbar.Mode _mode;
         private float paintRadius = 1f;
+        private PopulationPainter.PaintType _paintType = PopulationPainter.PaintType.Population;
         
         
         public void SetData(HEGraphData newData)
@@ -42,17 +50,30 @@ namespace JSM.Surveillance.Surveillance
 
         public UnityEvent ReloadGraph = new UnityEvent();
         
-        public readonly System.Collections.Generic.List<int> selectedVertices = new(); 
+        public readonly System.Collections.Generic.List<int> selectedVertices = new();
+
+        public void SwitchPaintMode(PopulationPainter.PaintType paintType)
+        {
+            _paintType = paintType;
+        }
+
+        public PopulationPainter.PaintType GetPaintMode()
+        {
+            return _paintType;
+        }
         
         public void HandlePointerDown(PointerDownEvent e, HEToolbar.Mode mode, bool shift)
         {
             _mode = mode;
             if (e.button == 2 || e.altKey) return;
 
-            if (e.button == 0)
-            {
-                _pointerDown = true;
+            if (e.button == 0) {
+                _pointerDown = PointerState.Lmb;
             }
+            if (e.button == 1) {
+                _pointerDown = PointerState.Rmb;
+            }
+            
             Vector2 mouseCanvas = canvas.WorldToLocal(e.position);
             Vector2 world = ScreenToWorld(mouseCanvas);
             Vector2 ij = draw.WorldToGrid(world);
@@ -137,20 +158,20 @@ namespace JSM.Surveillance.Surveillance
 
         public void HandlePointerMove(PointerMoveEvent e)
         {
-            if (_mode == HEToolbar.Mode.Select && _pointerDown && selectedV != -1)
+            if (_mode == HEToolbar.Mode.Select && _pointerDown == PointerState.Lmb && selectedV != -1)
             {
                 float zoom = draw.Zoom;
                 data.MoveVertexBy(selectedV,   (e.deltaPosition / draw.GridSpacing)/zoom);
                 ReloadGraph?.Invoke();
             }
 
-            if (_mode == HEToolbar.Mode.Paint && _pointerDown)
+            if (_mode == HEToolbar.Mode.Paint && _pointerDown != PointerState.Up)
             {
                 Vector2 mouseCanvas = canvas.WorldToLocal(e.position);
                 Vector2 world = ScreenToWorld(mouseCanvas);
                 Vector2 ij = draw.WorldToGrid(world);
                 
-                PopulationPainter.PaintPopulation(data, ij, paintRadius, 1); 
+                PopulationPainter.PaintPopulation(data, ij, paintRadius, _paintType, _pointerDown != PointerState.Lmb); 
                 ReloadGraph?.Invoke();
             }
         }
@@ -158,8 +179,14 @@ namespace JSM.Surveillance.Surveillance
         public void HandlePointerUp(PointerUpEvent e)
         {
             if (e.button == 2 || e.altKey) return;
-            
-            _pointerDown = false;
+
+            if (e.button == 0 && _pointerDown == PointerState.Lmb) {
+                _pointerDown = PointerState.Up;
+            }
+
+            if (e.button == 1 && _pointerDown == PointerState.Rmb) {
+                 _pointerDown = PointerState.Up;
+            }
         }
 
         int PickVertex(Vector2 mouseCanvasPx)

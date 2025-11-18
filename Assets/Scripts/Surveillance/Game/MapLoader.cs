@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JSM.Surveillance.Game;
 using JSM.Surveillance.Surveillance;
 using JSM.Surveillance.UI;
 using UnityEngine;
@@ -163,15 +164,18 @@ namespace Surveillance.Game
                     parent = transform
                 }
             };
-            
+
+            List<MapCellRendering> renderers = new List<MapCellRendering>();
             for (int i = 1; i < data.faces.Count; i++)
             {
                var obj = GenerateAndPreparePolygonForShader(data.faces[i]);
                if (obj is null) continue;
                
+               renderers.Add(obj.GetComponent<MapCellRendering>());
                obj.transform.parent = cellParent.transform;
             }
             LoadVertices();
+            FindObjectOfType<MapRenderingManager>()?.Init(renderers.ToArray());
         }
         
         
