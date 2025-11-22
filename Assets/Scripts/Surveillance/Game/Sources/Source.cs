@@ -1,4 +1,5 @@
 ﻿using System;
+using JSM.Surveillance.UI;
 using Surveillance.Game;
 using UnityEngine;
 
@@ -9,6 +10,9 @@ namespace JSM.Surveillance.Game
         private protected MapCellManager _mapCellManager;
         private protected bool _placed = false;
 
+        [SerializeField] private SourceUI sourceUI;
+        private GameObject sourceUIObj;
+        
         
         public virtual void Init(MapCellManager manager)
         {
@@ -44,6 +48,33 @@ namespace JSM.Surveillance.Game
         {
             _placed = true;
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
+        }
+
+        private void SwitchUIPreview()
+        {
+            if (!_placed) {
+                return;
+            }
+
+            if (sourceUIObj == null)
+            {
+                sourceUIObj = Instantiate(
+                    sourceUI.gameObject, 
+                    transform.position,
+                    Quaternion.identity
+                    );
+                sourceUIObj.GetComponent<SourceUI>().Init();
+                return;
+            }
+            
+            Destroy(sourceUIObj);
+            sourceUIObj = null;
+
+        }
+        
+        private void OnMouseDown()
+        {
+            SwitchUIPreview();
         }
     }
 }
