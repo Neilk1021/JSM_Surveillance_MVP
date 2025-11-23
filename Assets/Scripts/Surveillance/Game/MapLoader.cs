@@ -155,7 +155,7 @@ namespace Surveillance.Game
             _vertices = data.verts;
             _halfEdges = data.halfEdges;
 
-            manager.Init(_vertices, _halfEdges);
+            manager.Init(_vertices, _halfEdges, data.faces);
 
             GameObject cellParent = new GameObject("Cells")
             {

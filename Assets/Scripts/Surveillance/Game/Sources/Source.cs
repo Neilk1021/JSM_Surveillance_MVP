@@ -1,5 +1,6 @@
 ﻿using System;
 using JSM.Surveillance.UI;
+using JSM.Surveillance.Util;
 using Surveillance.Game;
 using UnityEngine;
 
@@ -47,6 +48,7 @@ namespace JSM.Surveillance.Game
         public virtual void Place(Vector2 pos)
         {
             _placed = true;
+    
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
         }
 
@@ -71,6 +73,17 @@ namespace JSM.Surveillance.Game
             sourceUIObj = null;
 
         }
+
+        public virtual int GetPeopleInRange(float radius = 2)
+        {
+            int pop = 0;
+            var faces = _mapCellManager.GetFacesAroundPoint(transform.position);
+            foreach (var face in faces)
+            {
+                pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)) * _mapCellManager.GetPopulationInFace(face));
+            }
+            return pop;
+        } 
         
         private void OnMouseDown()
         {
