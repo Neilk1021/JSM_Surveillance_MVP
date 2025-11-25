@@ -21,6 +21,17 @@ namespace JSM.Surveillance
         public float Progress => progress;
         public Recipe Recipe => selectedRecipe;
         public ProcessorData Data => data;
+        public bool IsRunning => isRunning;
+
+        /// <summary>
+        /// called to set what recipe processor will run
+        /// </summary>
+        public void SetRecipe(Recipe recipe)
+        {
+            selectedRecipe = recipe;
+            progress = 0f;
+            isRunning = false;
+        }
 
         /// <summary>
         /// Runs a single production cycle of the processor
