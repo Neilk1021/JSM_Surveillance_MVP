@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace JSM.Surveillance.Surveillance
@@ -27,18 +29,45 @@ namespace JSM.Surveillance.Surveillance
     [System.Serializable]
     public class HEFace
     {
-        public int halfEdge;
+        [SerializeField] public int halfEdge;
         public bool isExterior;
         public string label = "";
         public Color color = new(0.25f, 0.45f, 0.9f, 0.15f);
         [NonSerialized] public readonly Dictionary<string, string> meta = new();
         public List<int> loop = new();
         public float area;
-
         [NonSerialized] public HEFaceGameData data; 
-
         [SerializeField, HideInInspector] public string _dataJson;
 
+        
+        //TODO FIND BETTER WAY TO CHECK IF TWO FACES ARE THE FACE FACE
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj.GetType() != typeof(HEFace))
+            {
+                return false;
+            }
+
+            return ((HEFace)obj).GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return GenerateListHashCode(loop);
+        }
+
+        public static int GenerateListHashCode(List<int> intList)
+        {
+            var hashCode = new HashCode(); 
+
+            foreach (var value in intList)
+            {
+                hashCode.Add(value); 
+            }
+
+            return hashCode.ToHashCode(); 
+        }
+        
         public void SyncDataJsonFromSO()
         {
             if (data != null)

@@ -1,4 +1,6 @@
 ﻿using System;
+using JSM.Surveillance.UI;
+using JSM.Surveillance.Util;
 using Surveillance.Game;
 using UnityEngine;
 
@@ -9,6 +11,9 @@ namespace JSM.Surveillance.Game
         private protected MapCellManager _mapCellManager;
         private protected bool _placed = false;
 
+        [SerializeField] private SourceUI sourceUI;
+        private GameObject sourceUIObj;
+        
         
         public virtual void Init(MapCellManager manager)
         {
@@ -43,7 +48,46 @@ namespace JSM.Surveillance.Game
         public virtual void Place(Vector2 pos)
         {
             _placed = true;
+    
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
+        }
+
+        private void SwitchUIPreview()
+        {
+            if (!_placed) {
+                return;
+            }
+
+            if (sourceUIObj == null)
+            {
+                sourceUIObj = Instantiate(
+                    sourceUI.gameObject, 
+                    transform.position,
+                    Quaternion.identity
+                    );
+                sourceUIObj.GetComponent<SourceUI>().Init();
+                return;
+            }
+            
+            Destroy(sourceUIObj);
+            sourceUIObj = null;
+
+        }
+
+        public virtual int GetPeopleInRange(float radius = 2)
+        {
+            int pop = 0;
+            var faces = _mapCellManager.GetFacesAroundPoint(transform.position);
+            foreach (var face in faces)
+            {
+                pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)) * _mapCellManager.GetPopulationInFace(face));
+            }
+            return pop;
+        } 
+        
+        private void OnMouseDown()
+        {
+            SwitchUIPreview();
         }
     }
 }

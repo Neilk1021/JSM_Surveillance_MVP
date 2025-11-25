@@ -20,6 +20,7 @@ namespace Surveillance.Game
         private MapCellManager _manager;
         [SerializeField] private HEFace face;
 
+        public HEFace Face => face;
         private HEFaceGameData data;
         private MeshFilter _filter; 
         [HideInInspector] [SerializeField] private Vector3 center = Vector3.negativeInfinity;
@@ -78,7 +79,10 @@ namespace Surveillance.Game
             nameUI.Resize(_filter.sharedMesh.bounds);
         }
 
-        
+        public Vector3 GetCenter()
+        {
+            return GetMeshCenter(_filter);
+        }
         public static Vector3 GetMeshCenter(MeshFilter meshFilter)
         {
             Mesh mesh = meshFilter.sharedMesh;

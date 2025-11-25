@@ -208,7 +208,7 @@ namespace JSM.Surveillance.Surveillance
                     color     = new Color(0.2f, 0.2f, 1, 0.4f),
                     area      = Mathf.Abs(area),
                     isExterior= !isExterior,
-                    loop      = loopVerts
+                    loop      = loopVerts,
                 });
 
                 foreach (int he in cycle)

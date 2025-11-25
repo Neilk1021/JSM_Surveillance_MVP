@@ -111,11 +111,15 @@ namespace JSM.Surveillance.UI
             _renderingMode = mode;
         }
         
-        private void Start()
+        private void Awake()
         {
             _meshRenderer = GetComponent<MeshRenderer>();
             _cell = GetComponent<MapCell>();
             _meshRenderer.material = lit;
+        }
+
+        private void Start()
+        {
             ReloadShaders();
             face.EnsureSOFromJson();
         }

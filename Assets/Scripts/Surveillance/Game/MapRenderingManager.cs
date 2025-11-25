@@ -23,7 +23,6 @@ namespace JSM.Surveillance.Game
         public void Init(MapCellRendering[] newCellRenderers)
         {
             cellRenderers = newCellRenderers;
-            maxPop = FindMaxPop();
         }
 
         private void Update()
@@ -44,9 +43,20 @@ namespace JSM.Surveillance.Game
             }
         }
 
+        private void Start()
+        {
+            if (cellRenderers != null)
+            {
+                maxPop = FindMaxPop();
+            }
+        }
+
         private int FindMaxPop()
         {
-            return cellRenderers.Max(x => x.Cell.GetData().DailyPopulation);
+            return cellRenderers.Max(x =>
+            {
+                return x.Cell.GetData().DailyPopulation;
+            });
         }
 
         public void ChangeRendering(MapMode mode) {
