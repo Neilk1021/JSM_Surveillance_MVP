@@ -13,13 +13,10 @@ namespace JSM.Surveillance.Game
         [SerializeField] private float fov = 90;
 
         private const float SegmentsPerDegree = 0.5f;
-        
-        
-        public List<MapCell> GetCellsInRage()
-        {
-            return null;
-        }
 
+        public float FOV => fov;
+        public float Range => range;
+        
         public Mesh GetFOVMesh()
         {
             Mesh mesh = new Mesh();
@@ -69,6 +66,12 @@ namespace JSM.Surveillance.Game
         {
             Gizmos.color = new Color(1, 1, 1, 0.1f);
             Gizmos.DrawMesh(GetFOVMesh(), transform.position, transform.rotation);
+        }
+
+        public Vector2 GetDirection()
+        {
+            float theta = (transform.rotation.eulerAngles.z+90) * Mathf.Deg2Rad;  
+            return new Vector2(Mathf.Cos(theta), Mathf.Sin(theta));
         }
     }
 }

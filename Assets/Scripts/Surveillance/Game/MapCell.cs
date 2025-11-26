@@ -47,6 +47,7 @@ namespace Surveillance.Game
 
         public CellData GetData()
         {
+            face.EnsureSOFromJson();
             return new CellData() { DailyPopulation = face.data.dailyPopulation, RiskFactor = face.data.riskFactor };
         }
         

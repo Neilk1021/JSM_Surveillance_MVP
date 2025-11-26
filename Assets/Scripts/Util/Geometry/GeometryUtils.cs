@@ -6,6 +6,119 @@ namespace JSM.Surveillance.Util
 {
     public static class GeometryUtils 
     {
+        private static Vector2[] _clipBufferA = new Vector2[64];
+        private static Vector2[] _clipBufferB = new Vector2[64];
+
+        /// <summary>
+        /// Calculates area % of a polygon overlapped by a Circular Sector (Pie Slice).
+        /// </summary>
+        /// <param name="center">Origin of the sector</param>
+        /// <param name="radius">Radius of the arc</param>
+        /// <param name="polyPoints">The polygon vertices</param>
+        /// <param name="facingDir">Normalized direction the sector is facing</param>
+        /// <param name="fovDegrees">Total field of view angle in degrees</param>
+        public static float CalculateSectorPolygonOverlapPct(
+            Vector2 center, 
+            float radius, 
+            IList<Vector2> polyPoints, 
+            Vector2 facingDir, 
+            float fovDegrees)
+        {
+            float polyArea = CalculatePolygonSignedArea(polyPoints);
+            if (Mathf.Approximately(polyArea, 0f)) return 0f;
+            polyArea = Mathf.Abs(polyArea); // Ensure positive for percentage calc
+
+            float halfAngle = fovDegrees * 0.5f * Mathf.Deg2Rad;
+            
+           
+            Vector2 leftNormal = RotateVector(facingDir, -halfAngle + (Mathf.PI / 2f));
+
+            Vector2 rightNormal = RotateVector(facingDir, halfAngle - (Mathf.PI / 2f));
+
+            int countA = ClipPolygonToPlane(polyPoints, polyPoints.Count, center, leftNormal, _clipBufferA);
+            if (countA == 0) return 0f;
+
+            int countB = ClipPolygonToPlane(_clipBufferA, countA, center, rightNormal, _clipBufferB);
+            if (countB == 0) return 0f;
+
+          
+            
+            float intersectionArea = CalculateCirclePolygonOverlapArea(center, radius, _clipBufferB, countB);
+
+            return intersectionArea / polyArea;
+        }
+
+
+        private static Vector2 RotateVector(Vector2 v, float radians)
+        {
+            float c = Mathf.Cos(radians);
+            float s = Mathf.Sin(radians);
+            return new Vector2(v.x * c - v.y * s, v.x * s + v.y * c);
+        }
+
+        private static int ClipPolygonToPlane(IList<Vector2> inputPoly, int inputCount, Vector2 planeOrigin, Vector2 planeNormal, Vector2[] outputPoly)
+        {
+            int outputCount = 0;
+            
+            if (inputCount == 0) return 0;
+
+            Vector2 prevPoint = inputPoly[inputCount - 1];
+            // Dot > 0 means "inside" (in front of normal)
+            bool prevInside = Vector2.Dot(prevPoint - planeOrigin, planeNormal) >= 0;
+
+            for (int i = 0; i < inputCount; i++)
+            {
+                Vector2 currPoint = inputPoly[i];
+                bool currInside = (Vector2.Dot(currPoint - planeOrigin, planeNormal) >= 0);
+
+                if (prevInside && currInside)
+                {
+                    outputPoly[outputCount++] = currPoint;
+                }
+                else if (prevInside && !currInside)
+                {
+                    outputPoly[outputCount++] = LinePlaneIntersection(prevPoint, currPoint, planeOrigin, planeNormal);
+                }
+                else if (!prevInside && currInside)
+                {
+                    outputPoly[outputCount++] = LinePlaneIntersection(prevPoint, currPoint, planeOrigin, planeNormal);
+                    outputPoly[outputCount++] = currPoint;
+                }
+
+                prevPoint = currPoint;
+                prevInside = currInside;
+            }
+
+            return outputCount;
+        }
+
+        private static Vector2 LinePlaneIntersection(Vector2 p1, Vector2 p2, Vector2 planeOrigin, Vector2 planeNormal)
+        {
+            Vector2 lineDir = p2 - p1;
+            float denom = Vector2.Dot(lineDir, planeNormal);
+            
+            if (Mathf.Abs(denom) < Mathf.Epsilon) return p1; 
+
+            Vector2 originToP1 = planeOrigin - p1;
+            float t = Vector2.Dot(originToP1, planeNormal) / denom;
+            
+            return p1 + lineDir * t;
+        }
+
+        public static float CalculateCirclePolygonOverlapArea(Vector2 circleCenter, float radius, IList<Vector2> polyPoints, int pointCount)
+        {
+            float intersectionArea = 0f;
+            
+            for (int i = 0; i < pointCount; i++)
+            {
+                Vector2 p1 = polyPoints[i];
+                Vector2 p2 = polyPoints[(i + 1) % pointCount]; // Wrap around using count
+                intersectionArea += GetSignedCircleTriangleIntersectionArea(circleCenter, radius, p1, p2);
+            }
+
+            return Mathf.Abs(intersectionArea); // Return Area, not Pct
+        }
+        
         public static float CalculateCirclePolygonOverlapPct(Vector2 circleCenter, float radius, IList<Vector2> polyPoints)
         {
             float polyArea = CalculatePolygonSignedArea(polyPoints);

@@ -65,7 +65,7 @@ namespace JSM.Surveillance.Game
                     transform.position,
                     Quaternion.identity
                     );
-                sourceUIObj.GetComponent<SourceUI>().Init();
+                sourceUIObj.GetComponent<SourceUI>().Init(this);
                 return;
             }
             
@@ -77,10 +77,10 @@ namespace JSM.Surveillance.Game
         public virtual int GetPeopleInRange(float radius = 2)
         {
             int pop = 0;
-            var faces = _mapCellManager.GetFacesAroundPoint(transform.position);
+            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,4);
             foreach (var face in faces)
             {
-                pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)) * _mapCellManager.GetPopulationInFace(face));
+                pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)) * (float)_mapCellManager.GetPopulationInFace(face));
             }
             return pop;
         } 

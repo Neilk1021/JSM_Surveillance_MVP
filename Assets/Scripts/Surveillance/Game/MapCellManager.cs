@@ -28,10 +28,9 @@ namespace Surveillance.Game
         private void Awake()
         {
             _camera = Camera.main;
-            _cells = FindObjectsOfType<MapCell>().ToDictionary(x=>
-            {
-                return x.Face;
-            });
+            _cells = FindObjectsOfType<MapCell>()
+                .GroupBy(cell => cell.Face)
+                .ToDictionary(g => g.Key, g => g.First());
             _edgeVertices = FindObjectsOfType<MapEdgeVertex>().ToList();
         }
         
@@ -63,6 +62,16 @@ namespace Surveillance.Game
         public void PrintFace(HEFace face)
         {
             Debug.Log(_cells[face].GetCenter());
+        }
+
+        public MapCell GetCell(HEFace face)
+        {
+            if (!_cells.TryGetValue(face, out var cell))
+            {
+                throw new ArgumentException("Face not in map.");
+            }
+            
+            return cell;
         }
         
         /// <summary>
@@ -115,7 +124,7 @@ namespace Surveillance.Game
             return faces[i];
         }
 
-        public HashSet<HEFace> GetFacesAroundPoint(Vector3 pos, int depth = 2)
+        public HashSet<HEFace> GetFacesAroundPoint(Vector3 pos, int depth = 3)
         {
             return GetFacesBFS(GetFaceAtPoint(pos), depth);
         }

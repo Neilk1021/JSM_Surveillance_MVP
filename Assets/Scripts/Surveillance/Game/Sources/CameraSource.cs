@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Threading.Tasks;
+using JSM.Surveillance.Util;
 using UnityEngine;
 
 namespace JSM.Surveillance.Game
 {
+    [RequireComponent(typeof(FovView))]
     public class CameraSource : Source
     {
         private MapEdgeVertex vert = null;
-        
+        private FovView _fovView;
+
+        private void Start()
+        {
+            _fovView = GetComponent<FovView>();
+        }
+
         protected override void MoveSource()
         {
             if(_placed) return;
@@ -61,6 +69,25 @@ namespace JSM.Surveillance.Game
                 yield return null;
             }
         }
+        
+        public override int GetPeopleInRange(float radius = 2)
+        {
+            int pop = 0;
+            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,5);
+            foreach (var face in faces)
+            {
+
+                int cellPop = (int)(GeometryUtils.CalculateSectorPolygonOverlapPct(
+                    transform.position, 
+                    _fovView.Range, 
+                    _mapCellManager.GetFacePoints(face),_fovView.GetDirection() , 
+                    _fovView.FOV) * (float)_mapCellManager.GetPopulationInFace(face));
+                
+                //Debug.Log($"Face at {_mapCellManager.GetCell(face).transform.position}, is {face.data.dailyPopulation} and has {cellPop} in view of Camera");
+                pop += cellPop;
+            }
+            return pop;
+        } 
         
         public override void Place(Vector2 pos)
         {
