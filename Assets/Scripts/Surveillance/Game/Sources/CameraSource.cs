@@ -99,5 +99,11 @@ namespace JSM.Surveillance.Game
             StartCoroutine(nameof(SetRotation));
             base.Place(pos);
         }
+
+        public override void Destroy()
+        {
+            vert?.RemoveSource();
+            base.Destroy();
+        }
     }
 }

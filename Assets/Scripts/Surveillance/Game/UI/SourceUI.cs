@@ -29,8 +29,8 @@ namespace JSM.Surveillance.UI
 
         public void SellSource()
         {
-            //TODO INCLUDE ACTUALLY SELLING
-            DestroySource();
+            _source.CloseUI();
+            SurveillanceGameManager.instance.SellSource(_source);
         }
 
         private void DestroySource()

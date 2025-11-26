@@ -25,21 +25,6 @@ namespace JSM.Surveillance.Game
             _mapCellDataManager = GetComponent<MapCellDataManager>();
         }
 
-        public async Task PlaceSource(Source source)
-        {
-            //check if ts placed.
-        }
-        
-        public async Task<bool> BuySource(Source source)
-        {
-            //do some shit
-
-            await PlaceSource(source);
-
-            return true;
-        }
-        
-        
         public int GetPopulationInFace(HEFace face)
         {
             if (!_cells.ContainsKey(face))

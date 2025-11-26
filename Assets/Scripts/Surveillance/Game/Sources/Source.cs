@@ -10,12 +10,15 @@ namespace JSM.Surveillance.Game
     {
         private protected MapCellManager _mapCellManager;
         private protected bool _placed = false;
+        private SourceData _data;
 
+        public SourceData Data => _data;
+        
         [SerializeField] private SourceUI sourceUI;
         
-        
-        public virtual void Init(MapCellManager manager)
+        public virtual void Init(MapCellManager manager, SourceData data)
         {
+            _data = data;
             _mapCellManager = manager;
             _placed = false;
         }
@@ -87,6 +90,11 @@ namespace JSM.Surveillance.Game
         public void CloseUI()
         {
             _mapCellManager.CloseUIPreview();
+        }
+
+        public virtual void Destroy()
+        {
+            Destroy(gameObject);
         }
     }
 }
