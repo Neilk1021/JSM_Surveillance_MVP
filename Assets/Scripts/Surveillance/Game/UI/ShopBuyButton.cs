@@ -18,8 +18,7 @@ namespace  JSM.Surveillance.UI
         {
             if (itemToBuy.GetType() == typeof(SourceData))
             {
-                var obj = Instantiate(((SourceData)itemToBuy).Source.gameObject);
-                obj.GetComponent<Source>().Init(FindObjectOfType<MapCellManager>());
+                SurveillanceGameManager.instance?.BuySource((SourceData)itemToBuy);
             }
         }
         
@@ -41,8 +40,8 @@ namespace  JSM.Surveillance.UI
             
             itemPreviewUI.GetComponent<ShopPreviewItem>().Init(
                 itemToBuy.ShopInfo.itemModelPrefab, 
-                itemToBuy.ShopInfo.name, 
-                itemToBuy.ShopInfo.desc
+                itemToBuy.ShopInfo,
+                itemToBuy.UpfrontCost
                 );
         }
 

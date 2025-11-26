@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using JSM.Surveillance.Data;
 using JSM.Surveillance.Surveillance;
+using JSM.Surveillance.UI;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace JSM.Surveillance.Game
+namespace JSM.Surveillance.Game 
 {
     public class MapCellManager : MonoBehaviour
     {
@@ -18,27 +18,13 @@ namespace JSM.Surveillance.Game
         private Dictionary<HEFace, MapCell> _cells;
 
         private MapCellDataManager _mapCellDataManager;
+        private SourceUI _currentSourceUI = null;
 
         private void Awake() {
             _cells = FindObjectsOfType<MapCell>().ToDictionary(x => x.Face);
             _mapCellDataManager = GetComponent<MapCellDataManager>();
         }
 
-        public async Task PlaceSource(Source source)
-        {
-            //check if ts placed.
-        }
-        
-        public async Task<bool> BuySource(Source source)
-        {
-            //do some shit
-
-            await PlaceSource(source);
-
-            return true;
-        }
-        
-        
         public int GetPopulationInFace(HEFace face)
         {
             if (!_cells.ContainsKey(face))
@@ -57,12 +43,32 @@ namespace JSM.Surveillance.Game
             return _mapCellDataManager.GetVertexClosetTo(mousePos, f);
         }
 
-        public IEnumerable<HEFace> GetFacesAroundPoint(Vector3 transformPosition) {
-            return _mapCellDataManager.GetFacesAroundPoint(transformPosition);
+        public IEnumerable<HEFace> GetFacesAroundPoint(Vector3 transformPosition, int depth = 4) {
+            return _mapCellDataManager.GetFacesAroundPoint(transformPosition, depth);
         }
 
         public IList<Vector2> GetFacePoints(HEFace face) {
             return _mapCellDataManager.GetFacePoints(face);
         }
+
+        
+        public void CloseUIPreview()
+        {
+            if (_currentSourceUI == null) return;
+            
+            Destroy(_currentSourceUI.gameObject);
+            _currentSourceUI = null;
+        } 
+        
+        public void SwitchUIPreview(Source source) {
+            if (_currentSourceUI != null && source == _currentSourceUI.GetSource()) {
+                CloseUIPreview();
+                return;
+            }
+            
+            CloseUIPreview();
+            _currentSourceUI = source.CreateUI();
+        }
+        
     }
 }

@@ -14,13 +14,12 @@ namespace JSM.Surveillance.Game
         [SerializeField] [HideInInspector] private List<HEFace> faces;
 
         private Camera _camera;
-        private List<MapEdgeVertex> _edgeVertices;
-        public IReadOnlyList<MapEdgeVertex> EdgeVertices => _edgeVertices;
+        private HashSet<MapEdgeVertex> _edgeVertices;
         
         private void Awake()
         {
             _camera = Camera.main;
-            _edgeVertices = FindObjectsOfType<MapEdgeVertex>().ToList();
+            _edgeVertices = FindObjectsOfType<MapEdgeVertex>().ToHashSet();
         }
         
         /// <summary>
@@ -63,7 +62,11 @@ namespace JSM.Surveillance.Game
             return faces[i];
         }
         
-
+        /// <summary>
+        /// Gets all the points in a face. 
+        /// </summary>
+        /// <param name="face">Face whose vertices you'd like to get.</param>
+        /// <returns>Face's vertices.</returns>
         public List<Vector2> GetFacePoints(HEFace face)
         {
             return face.loop.Select(x => new Vector2(vertices[x].ij.x, -vertices[x].ij.y)).ToList();
@@ -74,6 +77,12 @@ namespace JSM.Surveillance.Game
             return new Vector3(input.x, -input.y, input.z);
         }
         
+        /// <summary>
+        /// Get's all the faces around a given point using DFS.
+        /// </summary>
+        /// <param name="pos">The point for where to look.</param>
+        /// <param name="depth">How many faces to search from the starting face.</param>
+        /// <returns>All the faces around a given point.</returns>
         public HashSet<HEFace> GetFacesAroundPoint(Vector3 pos, int depth = 2)
         {
             return GetFacesBFS(GetFaceAtPoint(pos), depth);
@@ -103,45 +112,44 @@ namespace JSM.Surveillance.Game
             return visited;
         }
 
+        /// <summary>
+        /// Gets mouse's position on the current map. 
+        /// </summary>
+        /// <returns>Current mouse position.</returns>
         public Vector3 GetMouseCurrentPosition()
         {
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-            var hits = Physics.RaycastAll(ray, 100);
+            RaycastHit[] results = new RaycastHit[32];
+            var size = Physics.RaycastNonAlloc(ray, results, 100);
 
-            foreach (var hit in hits)
+            for (int i = 0; i < size && i < 32; ++i)
             {
-                if (hit.transform.CompareTag("MapCell"))
+                if (results[i].transform.CompareTag("MapCell"))
                 {
-                    return hit.point;
+                    return results[i].point;
                 }
             }
 
             return Vector3.negativeInfinity;
         }
 
+        /// <summary>
+        /// Returns the map edge closest to a given point.
+        /// </summary>
+        /// <param name="pos">Position of where to look.</param>
+        /// <param name="threshold">How far to check for the nearest vertex.</param>
+        /// <returns>MapVertex that the point is closest to.</returns>
+        /// <exception cref="ArgumentException">Thrown if the provided position is not valid.</exception>
         public MapEdgeVertex GetVertexClosetTo(Vector3 pos, float threshold = Mathf.Infinity)
         {
             if (_edgeVertices.Count <= 0) {
                 throw new ArgumentException("No vertices in the scene!");
             }
-            
-            int best = -1;
-            float distance = threshold; 
-            for (int i = 0; i < _edgeVertices.Count; i++)
-            {
-                var currentDistance = Vector2.Distance(pos, _edgeVertices[i].transform.position);
-                if (currentDistance < distance)
-                {
-                    distance = currentDistance;
-                    best = i;
-                }
-            }
 
-            if (best == -1) {
-                return null;
-            }
-
-            return _edgeVertices[best];
+            return _edgeVertices
+                .Where(x=> Vector2.Distance(pos,x.transform.position) < threshold)
+                .OrderBy(x=> Vector2.Distance(pos, x.transform.position))
+                .FirstOrDefault();
         }
     }
 }

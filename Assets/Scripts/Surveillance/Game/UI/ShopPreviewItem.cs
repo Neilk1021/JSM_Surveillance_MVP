@@ -7,13 +7,14 @@ namespace JSM.Surveillance.UI
     {
         [SerializeField] private TextMeshProUGUI itemName;
         [SerializeField] private TextMeshProUGUI itemDesc;
-
+        [SerializeField] private TextMeshProUGUI itemCost;
         
-        public void Init(GameObject newPreview, string newItemName, string newItemDesc)
+        public void Init(GameObject newPreview, ShopInfo shopInfo, int upfrontCost)
         {
             ItemPreviewer.LoadPreview(newPreview);
-            itemName.text = newItemName;
-            itemDesc.text = newItemDesc;
+            itemName.text = shopInfo.name;
+            itemDesc.text = shopInfo.desc;
+            itemCost.text = $"Cost: {upfrontCost}¥";
         }
     }
 }

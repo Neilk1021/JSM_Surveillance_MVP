@@ -53,20 +53,10 @@ namespace JSM.Surveillance.Surveillance
 
         public override int GetHashCode()
         {
-            return GenerateListHashCode(loop);
+            
+            return halfEdge;
         }
 
-        public static int GenerateListHashCode(List<int> intList)
-        {
-            var hashCode = new HashCode(); 
-
-            foreach (var value in intList)
-            {
-                hashCode.Add(value); 
-            }
-
-            return hashCode.ToHashCode(); 
-        }
         
         public void SyncDataJsonFromSO()
         {

@@ -10,13 +10,15 @@ namespace JSM.Surveillance.Game
     {
         private protected MapCellManager _mapCellManager;
         private protected bool _placed = false;
+        private SourceData _data;
 
+        public SourceData Data => _data;
+        
         [SerializeField] private SourceUI sourceUI;
-        private GameObject sourceUIObj;
         
-        
-        public virtual void Init(MapCellManager manager)
+        public virtual void Init(MapCellManager manager, SourceData data)
         {
+            _data = data;
             _mapCellManager = manager;
             _placed = false;
         }
@@ -52,42 +54,47 @@ namespace JSM.Surveillance.Game
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
         }
 
-        private void SwitchUIPreview()
+        public SourceUI CreateUI()
         {
             if (!_placed) {
-                return;
-            }
-
-            if (sourceUIObj == null)
-            {
-                sourceUIObj = Instantiate(
-                    sourceUI.gameObject, 
-                    transform.position,
-                    Quaternion.identity
-                    );
-                sourceUIObj.GetComponent<SourceUI>().Init();
-                return;
+                return null;
             }
             
-            Destroy(sourceUIObj);
-            sourceUIObj = null;
-
+            var sourceUIObj = Instantiate(
+                sourceUI.gameObject, 
+                transform.position,
+                Quaternion.identity
+            );
+            var sourceUIComponent = sourceUIObj.GetComponent<SourceUI>();
+            sourceUIComponent.Init(this, _mapCellManager); 
+            
+            return sourceUIComponent;
         }
 
         public virtual int GetPeopleInRange(float radius = 2)
         {
             int pop = 0;
-            var faces = _mapCellManager.GetFacesAroundPoint(transform.position);
+            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,4);
             foreach (var face in faces)
             {
-                pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)) * _mapCellManager.GetPopulationInFace(face));
+                pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)) * (float)_mapCellManager.GetPopulationInFace(face));
             }
             return pop;
         } 
         
         private void OnMouseDown()
         {
-            SwitchUIPreview();
+            _mapCellManager.SwitchUIPreview(this);
+        }
+
+        public void CloseUI()
+        {
+            _mapCellManager.CloseUIPreview();
+        }
+
+        public virtual void Destroy()
+        {
+            Destroy(gameObject);
         }
     }
 }

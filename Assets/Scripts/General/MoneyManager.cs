@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace JSM.Surveillance
 {
@@ -6,6 +7,8 @@ namespace JSM.Surveillance
     {
         [SerializeField] private int money;
 
+
+        public readonly UnityEvent<int> MoneyChanged = new UnityEvent<int>();
         public int Money => money;
         
         /// <summary>
@@ -15,11 +18,12 @@ namespace JSM.Surveillance
         /// <returns>True if success, false if failure.</returns>
         public bool ChangeMoneyBy(int amnt)
         {
-            if (money < amnt) {
+            if (money + amnt < 0) {
                 return false;
             }
 
-            money -= amnt;
+            money += amnt;
+            MoneyChanged?.Invoke(money);
             return true;
         }
         
@@ -36,6 +40,7 @@ namespace JSM.Surveillance
             }
             
             money = amnt;
+            MoneyChanged?.Invoke(money);
             return true;
         }
     }

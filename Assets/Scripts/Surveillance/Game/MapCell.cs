@@ -5,6 +5,7 @@ using JSM.Surveillance.Surveillance;
 using JSM.Surveillance.UI;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 namespace JSM.Surveillance.Game
@@ -47,6 +48,7 @@ namespace JSM.Surveillance.Game
 
         public CellData GetData()
         {
+            face.EnsureSOFromJson();
             return new CellData() { DailyPopulation = face.data.dailyPopulation, RiskFactor = face.data.riskFactor };
         }
         
@@ -57,7 +59,7 @@ namespace JSM.Surveillance.Game
             if (center == Vector3.negativeInfinity)
             {
                 _filter = GetComponent<MeshFilter>();
-                GetMeshCenter(_filter);
+                center = GetCenter();
             }
         }
 
@@ -79,11 +81,12 @@ namespace JSM.Surveillance.Game
             nameUI.Resize(_filter.sharedMesh.bounds);
         }
 
-        public Vector3 GetCenter()
+        private Vector3 GetCenter()
         {
             return GetMeshCenter(_filter);
         }
-        public static Vector3 GetMeshCenter(MeshFilter meshFilter)
+
+        private static Vector3 GetMeshCenter(MeshFilter meshFilter)
         {
             Mesh mesh = meshFilter.sharedMesh;
             if (mesh == null) return meshFilter.transform.position;
@@ -117,6 +120,15 @@ namespace JSM.Surveillance.Game
             Vector3 localCenter = accumulatedCenter / (float)totalArea;
 
             return meshFilter.transform.TransformPoint(localCenter);
+        }
+
+        private void OnMouseDown()
+        {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+            _manager.CloseUIPreview();
         }
     }
 }
