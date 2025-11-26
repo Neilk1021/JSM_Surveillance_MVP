@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Surveillance.Game
+namespace JSM.Surveillance.Game
 {
     public struct CellData
     {
