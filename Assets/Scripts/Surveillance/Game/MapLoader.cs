@@ -13,7 +13,7 @@ namespace Surveillance.Game
         [SerializeField] private GameObject vertexPrefab;
         [SerializeField] private TextAsset map;
 
-        [SerializeField] private MapCellManager manager;
+        [SerializeField] private MapCellDataManager manager;
         
         private List<HEGraphData.Vertex> _vertices;
         private List<HEHalf> _halfEdges;
@@ -146,7 +146,7 @@ namespace Surveillance.Game
             }
 
             if (manager == null) {
-                manager = GetComponent<MapCellManager>();
+                manager = GetComponent<MapCellDataManager>();
             }
             
             streetVertices.Clear();

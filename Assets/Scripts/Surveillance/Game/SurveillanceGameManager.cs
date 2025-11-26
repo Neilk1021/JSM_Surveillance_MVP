@@ -6,6 +6,9 @@ namespace JSM.Surveillance
 {
     public class SurveillanceGameManager : MonoBehaviour
     {
-        
+        public void BuySource()
+        {
+            //lmao
+        }
     }
 }

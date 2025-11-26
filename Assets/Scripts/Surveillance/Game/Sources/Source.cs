@@ -12,7 +12,6 @@ namespace JSM.Surveillance.Game
         private protected bool _placed = false;
 
         [SerializeField] private SourceUI sourceUI;
-        private GameObject sourceUIObj;
         
         
         public virtual void Init(MapCellManager manager)
@@ -52,26 +51,21 @@ namespace JSM.Surveillance.Game
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
         }
 
-        private void SwitchUIPreview()
+        public SourceUI CreateUI()
         {
             if (!_placed) {
-                return;
-            }
-
-            if (sourceUIObj == null)
-            {
-                sourceUIObj = Instantiate(
-                    sourceUI.gameObject, 
-                    transform.position,
-                    Quaternion.identity
-                    );
-                sourceUIObj.GetComponent<SourceUI>().Init(this);
-                return;
+                return null;
             }
             
-            Destroy(sourceUIObj);
-            sourceUIObj = null;
-
+            var sourceUIObj = Instantiate(
+                sourceUI.gameObject, 
+                transform.position,
+                Quaternion.identity
+            );
+            var sourceUIComponent = sourceUIObj.GetComponent<SourceUI>();
+            sourceUIComponent.Init(this, _mapCellManager); 
+            
+            return sourceUIComponent;
         }
 
         public virtual int GetPeopleInRange(float radius = 2)
@@ -87,7 +81,12 @@ namespace JSM.Surveillance.Game
         
         private void OnMouseDown()
         {
-            SwitchUIPreview();
+            _mapCellManager.SwitchUIPreview(this);
+        }
+
+        public void CloseUI()
+        {
+            _mapCellManager.CloseUIPreview();
         }
     }
 }

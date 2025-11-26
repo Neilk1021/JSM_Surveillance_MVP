@@ -11,12 +11,32 @@ namespace JSM.Surveillance.UI
         [SerializeField] private TextMeshProUGUI populationText;
         
         private Source _source;
+
+        private MapCellManager _manager;
         //TODO make it actually load the needed data.
-        public void Init(Source source)
+        public void Init(Source source, MapCellManager manager)
         {
+            _manager = manager;
             _source = source;
             if (Camera.main != null) transform.rotation = Camera.main.transform.rotation;
             populationText.text = $"Daily people watched: {source.GetPeopleInRange()}";
+        }
+
+        public Source GetSource()
+        {
+            return _source;
+        }
+
+        public void SellSource()
+        {
+            //TODO INCLUDE ACTUALLY SELLING
+            DestroySource();
+        }
+
+        private void DestroySource()
+        {
+            _source.CloseUI();
+            Destroy(_source.gameObject);
         }
     }
 }

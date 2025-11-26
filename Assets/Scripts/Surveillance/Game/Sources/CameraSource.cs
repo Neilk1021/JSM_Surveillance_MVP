@@ -40,7 +40,12 @@ namespace JSM.Surveillance.Game
         {
             if (!_placed && Input.GetMouseButtonDown(0) && vert is not null)
             {
+                if (vert.GetSource() != null) {
+                    return;
+                }
+                
                 Place(transform.position);
+                vert.SetSource(this);
             }
         }
 
