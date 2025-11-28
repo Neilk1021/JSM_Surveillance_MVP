@@ -99,17 +99,23 @@ namespace JSM.Surveillance.Game
             }
 
             visited.Add(startingFace);
-            for (int i = startingFace.halfEdge; halfEdges[i].next != startingFace.halfEdge ; i = halfEdges[i].next)
+            HashSet<HEFace> combined = new HashSet<HEFace>(visited);
+            
+            bool firstOver = false;
+            for (int i = startingFace.halfEdge; i != startingFace.halfEdge || !firstOver; i = halfEdges[i].next)
             {
+                firstOver = true;
                 var face = faces[halfEdges[halfEdges[i].twin].face];
                 if (visited.Contains(face)) {
                     continue;
                 }
-                
-                GetFacesBFS(face, depth - 1, visited);
+
+                var visitedClone = new HashSet<HEFace>(visited);
+                GetFacesBFS(face, depth - 1, visitedClone);
+                combined.UnionWith(visitedClone);
             }
 
-            return visited;
+            return combined;
         }
 
         /// <summary>
