@@ -88,34 +88,43 @@ namespace JSM.Surveillance.Game
             return GetFacesBFS(GetFaceAtPoint(pos), depth);
         }
         
-        private HashSet<HEFace> GetFacesBFS(HEFace startingFace, int depth, HashSet<HEFace> visited = null)
+        private HashSet<HEFace> GetFacesBFS(HEFace startingFace, int maxDepth)
         {
-            if (depth == 0) {
-                return null;
-            }
+            var visited = new HashSet<HEFace>();
+            var queue = new Queue<(HEFace face, int currentDepth)>();
 
-            if (visited == null) {
-                visited = new HashSet<HEFace>();
-            }
+            if (startingFace == null) return visited;
 
             visited.Add(startingFace);
-            HashSet<HEFace> combined = new HashSet<HEFace>(visited);
-            
-            bool firstOver = false;
-            for (int i = startingFace.halfEdge; i != startingFace.halfEdge || !firstOver; i = halfEdges[i].next)
-            {
-                firstOver = true;
-                var face = faces[halfEdges[halfEdges[i].twin].face];
-                if (visited.Contains(face)) {
-                    continue;
-                }
+            queue.Enqueue((startingFace, 0));
 
-                var visitedClone = new HashSet<HEFace>(visited);
-                GetFacesBFS(face, depth - 1, visitedClone);
-                combined.UnionWith(visitedClone);
+            while (queue.Count > 0)
+            {
+                var (currentFace, currentDepth) = queue.Dequeue();
+
+                if (currentDepth >= maxDepth) 
+                    continue;
+
+                bool firstOver = false;
+                int startHe = currentFace.halfEdge;
+                for (int i = startHe; i != startHe || !firstOver; i = halfEdges[i].next)
+                {
+                    firstOver = true;
+            
+                    int twinIndex = halfEdges[i].twin;
+                    int neighborFaceIndex = halfEdges[twinIndex].face;
+            
+                    HEFace neighborFace = faces[neighborFaceIndex]; 
+
+                    if (neighborFace != null && !visited.Contains(neighborFace))
+                    {
+                        visited.Add(neighborFace);
+                        queue.Enqueue((neighborFace, currentDepth + 1));
+                    }
+                }
             }
 
-            return combined;
+            return visited;
         }
 
         /// <summary>

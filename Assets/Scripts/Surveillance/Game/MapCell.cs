@@ -16,6 +16,7 @@ namespace JSM.Surveillance.Game
         public float RiskFactor;
     }
     
+    [RequireComponent(typeof(MapCellRendering))]
     public class MapCell : MonoBehaviour
     {
         private MapCellManager _manager;
@@ -23,7 +24,9 @@ namespace JSM.Surveillance.Game
 
         public HEFace Face => face;
         private HEFaceGameData data;
-        private MeshFilter _filter; 
+        private MeshFilter _filter;
+        public MapCellRendering Rendering { get; private set; }
+
         [HideInInspector] [SerializeField] private Vector3 center = Vector3.negativeInfinity;
         public bool IsStreet
         {
@@ -56,6 +59,7 @@ namespace JSM.Surveillance.Game
         {
             _manager = FindObjectOfType<MapCellManager>();
             _filter = GetComponent<MeshFilter>();
+            Rendering = GetComponent<MapCellRendering>();
             if (center == Vector3.negativeInfinity)
             {
                 _filter = GetComponent<MeshFilter>();

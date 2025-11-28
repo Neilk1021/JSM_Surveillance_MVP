@@ -108,6 +108,16 @@ namespace JSM.Surveillance.UI
 
         public void SetMode(MapMode mode)
         {
+            if (mode == MapMode.Placement)
+            {
+                _meshRenderer.material.SetColor(CenterColor, new Color(0, 0, 0, 1));
+            }
+
+            if (mode == MapMode.Normal)
+            {
+                _meshRenderer.material.SetColor(CenterColor,new Color(0, 0, 0.02f, 1)); 
+            }
+            
             _renderingMode = mode;
         }
         
@@ -142,6 +152,15 @@ namespace JSM.Surveillance.UI
             }
             
             _meshRenderer.material.SetColor(CenterColor,new Color(0, 0, 0.02f, 1));
+        }
+
+        public void SetAlpha(float faceValue)
+        {
+            if(!_cell.IsStreet)return;
+            
+            Color color = Color.Lerp(Color.black, Color.green, faceValue);
+            
+            _meshRenderer.material.SetColor(CenterColor, color);
         }
     }
 }

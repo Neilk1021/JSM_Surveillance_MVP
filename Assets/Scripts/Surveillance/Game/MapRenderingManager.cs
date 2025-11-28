@@ -9,7 +9,8 @@ namespace JSM.Surveillance.Game
     {
         Normal,
         Population,
-        Risk
+        Risk, 
+        Placement
     }
     
     public class MapRenderingManager : MonoBehaviour

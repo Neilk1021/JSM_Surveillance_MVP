@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using JSM.Surveillance.Surveillance;
 using JSM.Surveillance.UI;
 using JSM.Surveillance.Util;
 using Surveillance.Game;
@@ -80,6 +82,18 @@ namespace JSM.Surveillance.Game
                 pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)) * (float)_mapCellManager.GetPopulationInFace(face));
             }
             return pop;
+        }
+
+        public virtual Dictionary<HEFace, float> GetFacesInRange(float radius = 2)
+        {
+            int pop = 0;
+            Dictionary<HEFace, float> facesPct = new Dictionary<HEFace, float>();
+            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,3);
+            foreach (var face in faces)
+            {
+                facesPct[face] = (GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)));
+            }
+            return facesPct; 
         } 
         
         private void OnMouseDown()

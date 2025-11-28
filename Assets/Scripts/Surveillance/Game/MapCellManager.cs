@@ -69,6 +69,22 @@ namespace JSM.Surveillance.Game
             CloseUIPreview();
             _currentSourceUI = source.CreateUI();
         }
-        
+
+        public void SetMapMode(MapMode mode)
+        {
+            foreach (var cellPair in _cells)
+            {
+                cellPair.Value.Rendering.SetMode(mode);
+            }
+        }
+
+        public void SetFacePlacementPct(HEFace faceKey, float faceValue)
+        {
+            if (!_cells.ContainsKey(faceKey))
+            {
+                return;
+            }
+            _cells[faceKey].Rendering.SetAlpha(faceValue);
+        }
     }
 }

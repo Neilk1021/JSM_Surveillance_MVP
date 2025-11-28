@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using JSM.Surveillance.Surveillance;
 using JSM.Surveillance.Util;
 using UnityEngine;
 
@@ -54,17 +57,29 @@ namespace JSM.Surveillance.Game
         {
             Vector3 initialMousePosition = Input.mousePosition;
             float initialZRotation = transform.rotation.eulerAngles.z;
-            
+
+            _mapCellManager.SetMapMode(MapMode.Placement);
             yield return new WaitForFixedUpdate();
             
             while (true)
             {
                 
                 Vector2 delta = (Input.mousePosition - initialMousePosition);
-                transform.rotation = Quaternion.Euler(
+                
+                Quaternion newRot = Quaternion.Euler(
                     transform.rotation.eulerAngles.x,
                     transform.rotation.eulerAngles.y,
                     initialZRotation + (delta.y - delta.x)  / 2);
+
+                if (Quaternion.Angle(transform.rotation, newRot) > 0.1f)
+                {
+                    var faces = GetFacesInRange();
+                    foreach (var face in faces)
+                    {
+                        _mapCellManager.SetFacePlacementPct(face.Key,face.Value);
+                    }
+                    transform.rotation = newRot;
+                }
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -73,12 +88,14 @@ namespace JSM.Surveillance.Game
 
                 yield return null;
             }
+
+            _mapCellManager.SetMapMode(MapMode.Normal);
         }
         
         public override int GetPeopleInRange(float radius = 2)
         {
             int pop = 0;
-            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,5);
+            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,4);
             foreach (var face in faces)
             {
 
@@ -93,6 +110,24 @@ namespace JSM.Surveillance.Game
             }
             return pop;
         } 
+        
+        public override Dictionary<HEFace, float> GetFacesInRange(float radius = 2)
+        {
+            int pop = 0;
+            Dictionary<HEFace, float> facesPct = new Dictionary<HEFace, float>();
+            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,4).ToList();
+            foreach (var face in faces)
+            {
+                facesPct[face] = (GeometryUtils.CalculateSectorPolygonOverlapPct(
+                    transform.position, 
+                    _fovView.Range, 
+                    _mapCellManager.GetFacePoints(face),_fovView.GetDirection() , 
+                    _fovView.FOV));
+            }
+            return facesPct; 
+        } 
+
+        
         
         public override void Place(Vector2 pos)
         {
