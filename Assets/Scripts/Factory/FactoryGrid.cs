@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -11,11 +13,41 @@ namespace JSM.Surveillance
         [SerializeField] private float cellSize = 1f;
         [SerializeField] private float gridLineThickness = 0.02f;
 
-        private Vector2Int hoveredCell = new Vector2Int(-1, -1);
-        private Dictionary<Maintainable, List<Vector2Int>> machineOccupancies = new Dictionary<Maintainable, List<Vector2Int>>();
-        private Dictionary<Connection, List<Vector2Int>> connectionPaths = new Dictionary<Connection, List<Vector2Int>>();
+        private Vector2Int _hoveredCell = new Vector2Int(-1, -1);
 
+        private FactoryCell[,] _grid; 
+        
+        private Camera _camera;
+        
         public static FactoryGrid Instance { get; private set; }
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                return;
+            }
+            
+            Destroy(gameObject);
+        }
+
+        private void Start()
+        {
+            InitializeGrid();
+        }
+
+        private void InitializeGrid()
+        {
+            _grid = new FactoryCell[gridWidth, gridHeight];
+            for (int i = 0; i <  gridWidth; i++)
+            {
+                for (int j = 0; j < gridHeight; j++)
+                {
+                    _grid[i, j] = new FactoryCell(i,j);
+                }
+            }
+        }
 
         private void Update()
         {
@@ -24,26 +56,74 @@ namespace JSM.Surveillance
 
         private void UpdateHoveredCell()
         {
-            if (Camera.main == null) return;
+            if (_camera == null) return;
 
             Vector3 mousePos = Input.mousePosition;
-            mousePos.z = Mathf.Abs(Camera.main.transform.position.z);
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mousePos);
+            mousePos.z = Mathf.Abs(_camera.transform.position.z);
+            Vector3 mouseWorldPos = _camera.ScreenToWorldPoint(mousePos);
             mouseWorldPos.z = 0;
 
             Vector2Int newHoveredCell = GetGridPosition(mouseWorldPos);
+            _hoveredCell = IsValidGridPosition(newHoveredCell.x, newHoveredCell.y) ? newHoveredCell : new Vector2Int(-1, -1);
+        }
 
-            if (IsValidGridPosition(newHoveredCell.x, newHoveredCell.y))
+        private bool VerifyPlacementValid(List<Vector2Int> positions)
+        {
+            return (!positions.Any(x => _grid[x.x, x.y].IsOccupied));
+        }
+        
+        public bool PlaceDraggable(Draggable draggable)
+        {
+            var positions = GetDraggablePositions(draggable);
+            List<Vector2Int> gridPositions = positions.Select(x => GetGridPosition(x)).ToList();
+
+            if (gridPositions.Contains(new Vector2Int(-1, -1))) {
+                return false;
+            }
+
+            if (!VerifyPlacementValid(gridPositions)) {
+                return false;
+            }
+            
+            foreach (var pos in gridPositions)
             {
-                if (newHoveredCell != hoveredCell)
+                Debug.Log(pos);
+                int x = pos.x;
+                int y = pos.y;
+                _grid[x, y].SetOccupier(draggable);
+            }
+            
+            Vector2 worldPos = new Vector2(
+                gridPositions.Average(x => GetWorldPosition(x).x ) + cellSize/2, 
+                gridPositions.Average(x =>GetWorldPosition(x).y )+cellSize/2
+            ); 
+            
+            draggable.Place(gridPositions, worldPos);
+            return true;
+
+            //_hoveredCell = IsValidGridPosition(newHoveredCell.x, newHoveredCell.y) ? newHoveredCell : new Vector2Int(-1, -1);
+        }
+
+        private List<Vector2> GetDraggablePositions(Draggable draggable)
+        {
+            List<Vector2> positions = new List<Vector2>();
+
+            int width = draggable.Size.x;
+            int height = draggable.Size.y;
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j <  height; j++)
                 {
-                    hoveredCell = newHoveredCell;
+                    Vector2 newPos = new Vector2(
+                        draggable.transform.position.x + (cellSize * (Mathf.FloorToInt(-width / 2) + i)),
+                        draggable.transform.position.y + (cellSize * (Mathf.FloorToInt(-width / 2) + j))
+                    );
+                    
+                    positions.Add(newPos);
                 }
             }
-            else
-            {
-                hoveredCell = new Vector2Int(-1, -1);
-            }
+
+            return positions;
         }
 
         public Vector3 GetWorldPosition(Vector2Int gridPosition)
@@ -85,9 +165,9 @@ namespace JSM.Surveillance
             }
 
             // Draw hover highlight
-            if (IsValidGridPosition(hoveredCell.x, hoveredCell.y))
+            if (IsValidGridPosition(_hoveredCell.x, _hoveredCell.y))
             {
-                Vector3 cellCenter = GetWorldPosition(hoveredCell) + new Vector3(cellSize / 2f, cellSize / 2f, 0);
+                Vector3 cellCenter = GetWorldPosition(_hoveredCell) + new Vector3(cellSize / 2f, cellSize / 2f, 0);
                 Gizmos.color = new Color(0.5f, 0.8f, 1f, 0.3f);
                 Gizmos.DrawCube(cellCenter, new Vector3(cellSize, cellSize, 0.1f));
             }
@@ -105,7 +185,7 @@ namespace JSM.Surveillance
         //get what current cell is hovered
         private Vector2Int GetHoveredCell() 
         {
-            return hoveredCell;
+            return _hoveredCell;
         }
 
     }
