@@ -13,6 +13,7 @@ namespace JSM.Surveillance.Game
     {
         private MapEdgeVertex vert = null;
         private SeparatedAreaView _areaView;
+        [SerializeField] private Transform micModel;
 
         private void Start()
         {
@@ -66,11 +67,15 @@ namespace JSM.Surveillance.Game
             while (true)
             {
                 var mousePos = _mapCellManager.GetMouseCurrentPosition();
-                renderer.RefreshMesh();
+                renderer.RefreshMesh(mousePos);
                 if ((mousePos - lastMousePos).magnitude > 0.1f)
                 {
                     lastMousePos = mousePos;
                     _areaView.SetCenter(mousePos);
+
+                    float rad = Mathf.Atan2(mousePos.y - transform.position.y, mousePos.x - transform.position.x);
+                    micModel.rotation = Quaternion.Euler(micModel.eulerAngles.x, micModel.eulerAngles.y, -rad * Mathf.Rad2Deg-90);
+                    
                     
                     var faces = GetFacesInRange();
                     foreach (var face in faces)
