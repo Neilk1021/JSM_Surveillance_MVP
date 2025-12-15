@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,17 @@ namespace JSM.Surveillance
         public static ConnectionManager Instance { get; private set; }
 
         [SerializeField] private GameObject connectionVisualPrefab;
-
-
+        
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                return;
+            }
+            
+            Destroy(gameObject);
+        }
 
         public void OnNodeClicked(ProcessorNode node)
         {

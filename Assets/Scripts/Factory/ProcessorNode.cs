@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,15 @@ namespace JSM.Surveillance
         [SerializeField] private NodeType type;
         [SerializeField] private int nodeIndex;
 
+        [Header("Position within machine's grid.")]
+        [Tooltip("0 indexed position for the machine's subgrid. For example if a machine is 2x2, then 0 would be the left most cell.")]
+        [HideInInspector][SerializeField] private int posX;
+        [Tooltip("0 indexed position for the machine's subgrid. For example if a machine is 2x2, then 0 would be the bottom most cell.")]
+        [HideInInspector][SerializeField] private int posY;
+        
+        private int _subcellX;
+        private int _subcellY;
+        
         public ProcessorInstance Owner => owner;
         public NodeType Type => type;
         public int NodeIndex => nodeIndex;
@@ -27,5 +37,22 @@ namespace JSM.Surveillance
                 ConnectionManager.Instance.OnNodeClicked(this);
             }
         }
+
+        #if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_subcellX == posX && _subcellY == posY) return;
+            
+            var borderCell = owner.GetComponent<Draggable>().GetBorderCell(_subcellX, _subcellY, posX,posY);
+            posX = borderCell.x;
+            posY = borderCell.y;
+            _subcellX = borderCell.x;
+            _subcellY = borderCell.y;
+            var newPos = owner.GetComponent<Draggable>().GetBorderPosition(borderCell.x, borderCell.y);
+            
+
+            transform.position = newPos;
+        }
+        #endif
     }
 }

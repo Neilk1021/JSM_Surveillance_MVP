@@ -87,7 +87,6 @@ namespace JSM.Surveillance
             
             foreach (var pos in gridPositions)
             {
-                Debug.Log(pos);
                 int x = pos.x;
                 int y = pos.y;
                 _grid[x, y].SetOccupier(draggable);
