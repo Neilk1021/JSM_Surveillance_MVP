@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using cNel.DataStructures;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -50,8 +51,9 @@ namespace JSM.Surveillance
             _draggable = !FactoryGrid.Instance.PlaceDraggable(this);
         }
 
-        public void Place(List<Vector2Int> newPositions, Vector2 worldPos) {
-            this.positions = newPositions.ToArray();
+        public void Place(List<Vector2Int> newPositions, Vector2 worldPos)
+        {
+            base.Initialize(newPositions);
             transform.position = worldPos;
         }
 

@@ -24,6 +24,8 @@ namespace JSM.Surveillance
         
         private int _subcellX;
         private int _subcellY;
+
+        public Vector2Int SubcellPosition => new Vector2Int(_subcellX, _subcellY);
         
         public ProcessorInstance Owner => owner;
         public NodeType Type => type;

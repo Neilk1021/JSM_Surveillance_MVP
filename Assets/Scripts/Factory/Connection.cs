@@ -1,29 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace JSM.Surveillance
 {
     [System.Serializable]
-    public class Connection
+    public class Connection : CellOccupier
     {
-        [SerializeField] private ProcessorInstance inputMachine;
-        [SerializeField] private ProcessorInstance outputMachine;
-
-        public ProcessorInstance InputMachine => inputMachine;
-        public ProcessorInstance OutputMachine => outputMachine;
-
-        [SerializeField] private List<Vector2Int> occupiedPathCells = new List<Vector2Int>();
-        public IReadOnlyList<Vector2Int> OccupiedPathCells => occupiedPathCells;
-
         [SerializeField] private GameObject connectionVisual;
+        
+        private ProcessorInstance _inputMachine; 
+        private ProcessorInstance _outputMachine;
+        private LineRenderer _lineRenderer;
 
-        public void InitializeConnection(ProcessorInstance output, ProcessorInstance input, List<Vector2Int> path, GameObject visual = null)
+        public LineRenderer LineRenderer => _lineRenderer;
+        public ProcessorInstance InputMachine => _inputMachine;
+        public ProcessorInstance OutputMachine => _outputMachine;
+        
+
+        public void InitializeConnection(ProcessorInstance output, ProcessorInstance input, List<Vector2Int> path)
         {
-            outputMachine = output;
-            inputMachine = input;
-            occupiedPathCells = path;
-            connectionVisual = visual;
+            base.Initialize(path); 
+            _outputMachine = output;
+            _inputMachine = input;
+            _lineRenderer = GetComponent<LineRenderer>();
         }
 
         public void RemoveConnection()

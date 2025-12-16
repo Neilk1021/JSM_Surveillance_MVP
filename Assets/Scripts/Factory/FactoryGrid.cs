@@ -18,7 +18,8 @@ namespace JSM.Surveillance
         private FactoryCell[,] _grid; 
         
         private Camera _camera;
-        
+
+        public float CellSize => cellSize;
         public static FactoryGrid Instance { get; private set; }
 
         private void Awake()
@@ -181,6 +182,21 @@ namespace JSM.Surveillance
             return x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
         }
 
+        public bool IsCellEmpty(Vector2 pos) {
+            return IsCellEmpty((int)pos.x, (int)pos.y);
+        }
+        
+        public bool IsCellEmpty(Vector2Int pos) { 
+            return IsCellEmpty(pos.x, pos.y);
+        }
+        
+        public bool IsCellEmpty(int x, int y)
+        {
+            if (!IsValidGridPosition(x, y)) return false;
+            
+            return !_grid[x, y].IsOccupied;
+        }
+        
         //get what current cell is hovered
         private Vector2Int GetHoveredCell() 
         {
