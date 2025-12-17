@@ -72,6 +72,29 @@ namespace JSM.Surveillance
         {
             return (!positions.Any(x => _grid[x.x, x.y].IsOccupied));
         }
+
+        public bool PlaceConnection(Connection connection)
+        {
+            var positions = connection.Positions.ToList();
+            if (positions.Contains(new Vector2Int(-1, -1))) {
+                return false;
+            }
+
+            if (!VerifyPlacementValid(positions))
+            {
+                return false;
+            }
+            
+            
+            foreach (var pos in positions)
+            {
+                int x = pos.x;
+                int y = pos.y;
+                _grid[x, y].SetOccupier(connection);
+            }
+
+            return true;
+        }
         
         public bool PlaceDraggable(Draggable draggable)
         {

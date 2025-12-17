@@ -30,6 +30,10 @@ namespace JSM.Surveillance
         public ProcessorInstance Owner => owner;
         public NodeType Type => type;
         public int NodeIndex => nodeIndex;
+
+        private Connection _connection;
+        public Connection Connection => _connection;
+
         private void OnMouseDown()
         {
             Debug.Log("node clicked: " + name);
@@ -40,7 +44,13 @@ namespace JSM.Surveillance
             }
         }
 
-        #if UNITY_EDITOR
+        //TODO FIX handling
+        public void SetConnection(Connection newConnection)
+        {
+            _connection = newConnection;
+        }
+
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (_subcellX == posX && _subcellY == posY) return;

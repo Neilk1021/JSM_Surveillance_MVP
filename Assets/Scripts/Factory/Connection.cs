@@ -19,11 +19,11 @@ namespace JSM.Surveillance
         public ProcessorInstance OutputMachine => _outputMachine;
         
 
-        public void InitializeConnection(ProcessorInstance output, ProcessorInstance input, List<Vector2Int> path)
+        public void InitializeConnection(ProcessorNode output, ProcessorNode input, List<Vector2Int> path)
         {
             base.Initialize(path); 
-            _outputMachine = output;
-            _inputMachine = input;
+            //_outputMachine = output;
+            //_inputMachine = input;
             _lineRenderer = GetComponent<LineRenderer>();
         }
 
