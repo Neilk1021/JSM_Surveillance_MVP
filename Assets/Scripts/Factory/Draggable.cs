@@ -25,10 +25,11 @@ namespace JSM.Surveillance
             _camera = Camera.main;
         }
 
-        private void Start()
+        protected override void Start()
         {
             _draggable = true;
             _processor = GetComponent<ProcessorInstance>();
+            base.Start();
         }
 
         private void OnMouseDown()
@@ -48,12 +49,12 @@ namespace JSM.Surveillance
 
 
             // Try placement on grid when let go snap to grid (i might need to change pivot of processors?)
-            _draggable = !FactoryGrid.Instance.PlaceDraggable(this);
+            _draggable = this.Grid.PlaceDraggable(this);
         }
 
-        public void Place(List<Vector2Int> newPositions, Vector2 worldPos)
+        public virtual void Place(List<Vector2Int> newPositions, Vector2 worldPos, FactoryGrid grid)
         {
-            base.Initialize(newPositions);
+            base.Initialize(newPositions, grid);
             transform.position = worldPos;
         }
 
@@ -213,5 +214,16 @@ namespace JSM.Surveillance
             return new Vector2Int(posX, posY);
         }
         
+        
+        //TODO implement (this is you haiyi.)
+        public override void Entered()
+        {
+           // haiyi this is functionally the same as OnMouseEntered, but its based on the cell in the grid.
+        }
+
+        public override void Exited()
+        {
+            // functionally the same as OnMouseExited, but its based on the cell in the grid. 
+        }
     }
 }

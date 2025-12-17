@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.Serialization;
 
 namespace JSM.Surveillance
 {
@@ -11,12 +12,10 @@ namespace JSM.Surveillance
         public static ConnectionManager Instance { get; private set; }
         [SerializeField] FactoryGrid grid;
         [SerializeField] private Connection connectionPrefab;
-        [SerializeField] private LineRenderer connectionPreviewPrefab;
+        [SerializeField] private ConnectionPreviewRenderer connectionPreviewPreviewPrefab;
         
         private Camera _camera;
 
-        private ProcessorNode _currentNode = null;
-        
         private void Awake()
         {
             if (Instance == null)
@@ -37,9 +36,9 @@ namespace JSM.Surveillance
             grid ??= FindObjectOfType<FactoryGrid>();
         }
 
-        public void OnNodeClicked(ProcessorNode node)
+        public void OnNodeClicked(ProcessorPort port)
         {
-            Debug.Log($"Node clicked: {node.Type} on processor {node.Owner.name}");
+            Debug.Log($"Node clicked: {port.Type} on processor {port.Owner.name}");
 
             // Check if node already has a connection, if so, should remove connection?
 
@@ -47,32 +46,17 @@ namespace JSM.Surveillance
             //if type input can only connect to output/base resource?
             //if output cannot connect to ohter output.
             //if node is input and pending an output node, connect and set pending null
-            StartCoroutine(MakeConnection(node, PlaceConnection));
+            StartCoroutine(MakeConnection(port));
         }
 
-        private void PlaceConnection(Connection connection)
-        {
-            LineRenderer lr = connection.LineRenderer; 
-            lr.positionCount = connection.Positions.Length;
-            lr.startWidth = 0.1f;
-            lr.endWidth = 0.1f;
-            lr.SetPositions(
-                connection.Positions.Select(x=>
-                        grid.GetWorldPosition(x) + 
-                        new Vector3(grid.CellSize/2, grid.CellSize/2, 0)
-                    ).ToArray()
-                );
-        }
-        
 
-        IEnumerator MakeConnection(ProcessorNode start, Action<Connection> placeAction)
+        IEnumerator MakeConnection(ProcessorPort startPort)
         {
-            bool valid = false;
-            CellOccupier occupier = start.Owner.GetComponent<CellOccupier>();
+            CellOccupier occupier = startPort.Owner.GetComponent<CellOccupier>();
             if(occupier == null) yield break;
             
             Vector2Int rootPos =  occupier.GetRootPosition();
-            Vector2Int startingCell = start.SubcellPosition + rootPos;
+            Vector2Int startingCell = startPort.SubcellPosition + rootPos;
 
             if (!grid.IsCellEmpty(startingCell)) {
                 yield break; 
@@ -82,62 +66,51 @@ namespace JSM.Surveillance
 
             Vector2Int lastPos = startingCell;
             
-            //TODO refactor into its own class.
-            var lr = Instantiate(connectionPreviewPrefab);
-            lr.startColor = Color.red;
-            lr.endColor = Color.red;
+            ProcessorPort endPort = null;
+            var connectionPreview = Instantiate(connectionPreviewPreviewPrefab);
             
             while (Input.GetMouseButton(0))
             {
                 yield return null;
                 
                 var newPos = grid.GetGridPosition(_camera.ScreenToWorldPoint(Input.mousePosition));
-                if (newPos == lastPos) continue;
                 
+                if (newPos == lastPos) continue;
                 if (connectionPositions.Contains(newPos))
                 {
                     lastPos = SlicePositionList(newPos, ref connectionPositions);
-                    UpdateLineRendererPath(lr, connectionPositions);
+
+                    endPort = RefreshPreview(startPort, connectionPositions, newPos, connectionPreview);
                     continue;
                 }
                 if (!grid.IsCellEmpty(newPos)) continue;
-                if (!EnsurePathContinuity(newPos, lastPos, connectionPositions)) {
-                    continue;
-                }
+                if (!EnsurePathContinuity(newPos, lastPos, connectionPositions)) { continue; }
 
                 connectionPositions.Add(newPos);
                 lastPos = newPos;
-
-                if (_currentNode != null && _currentNode != start) {
-                    valid = true;
-                    lr.startColor = Color.green;
-                    lr.endColor = Color.green;
-                }
-                else {
-                    valid = false;
-                    lr.startColor = Color.red;
-                    lr.endColor = Color.red;
-                }
                 
-                UpdateLineRendererPath(lr, connectionPositions);
+                endPort = RefreshPreview(startPort, connectionPositions, newPos, connectionPreview);
             }
             
-            Destroy(lr.gameObject);
-            if (!valid) yield break;
+            Destroy(connectionPreview.gameObject);
+            if (endPort == null || endPort == startPort || endPort.Type == startPort.Type || endPort.Owner == startPort.Owner) yield break;
             
             var connectionObj = Instantiate(connectionPrefab);
-            connectionObj.InitializeConnection(_currentNode, start, connectionPositions);
+            connectionObj.InitializeConnection(startPort, endPort, grid, connectionPositions);
             grid.PlaceConnection(connectionObj);
-            placeAction.Invoke(connectionObj);
         }
 
-        private void UpdateLineRendererPath(LineRenderer lr, List<Vector2Int> connectionPositions)
+        private ProcessorPort RefreshPreview(ProcessorPort startPort, List<Vector2Int> connectionPositions, Vector2Int newPos,
+            ConnectionPreviewRenderer connectionPreview)
         {
-            lr.positionCount = connectionPositions.Count;
-            lr.SetPositions(connectionPositions.Select(x =>
-                grid.GetWorldPosition(x) +
+            var worldPos = connectionPositions.Select(x => 
+                grid.GetWorldPosition(x) + 
                 new Vector3(grid.CellSize / 2, grid.CellSize / 2, 0)
-            ).ToArray());
+            ).ToList();
+                    
+            var endPort = grid.GetPortAtCell(newPos);
+            connectionPreview.UpdateConnectionPath(worldPos, startPort, endPort);
+            return endPort;
         }
 
         private bool EnsurePathContinuity(Vector2Int newPos, Vector2Int lastPos, List<Vector2Int> connectionPositions)
@@ -185,24 +158,5 @@ namespace JSM.Surveillance
             lastPos = newPos;
             return lastPos;
         }
-
-
-        private void RemoveConnection(Connection connection)
-        {
-            //remove connection
-        }
-
-        //TODO fix these so they work.
-        public void OnNodeEntered(ProcessorNode processorNode)
-        {
-            _currentNode = processorNode;
-        }
-
-        public void OnNodeExited(ProcessorNode processorNode)
-        {
-            if(_currentNode == processorNode)
-                _currentNode = null;
-        }
-
     }
 }

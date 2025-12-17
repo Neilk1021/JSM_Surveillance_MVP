@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace JSM.Surveillance
 {
-    public abstract class ProcessorInstance : MonoBehaviour
+    public abstract class ProcessorInstance : Draggable 
     {
         [SerializeField] private ProcessorData data;
         [SerializeField] private Recipe selectedRecipe;
@@ -42,7 +42,7 @@ namespace JSM.Surveillance
 
             if (!isRunning && InputAmountSatisfied())
             {
-                ContumeInputs();
+                ConsumeInputs();
                 isRunning = true;
                 progress = 0f;
             }
@@ -58,6 +58,18 @@ namespace JSM.Surveillance
             }
         }
 
+        public override void Place(List<Vector2Int> newPositions, Vector2 worldPos, FactoryGrid grid)
+        {
+            base.Place(newPositions, worldPos, grid);
+            
+            Vector2Int root = GetRootPosition();
+            foreach (var port in GetComponentsInChildren<ProcessorPort>())
+            {
+                grid.RegisterPort(port.SubcellPosition + root, port);
+            }
+        }
+        
+
         private bool InputAmountSatisfied()
         {
             foreach (var r in selectedRecipe.InputVolume)
@@ -68,7 +80,7 @@ namespace JSM.Surveillance
             return true;
         }
 
-        private void ContumeInputs()
+        private void ConsumeInputs()
         {
             foreach (var r in selectedRecipe.InputVolume)
             {

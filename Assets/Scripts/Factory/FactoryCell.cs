@@ -39,5 +39,15 @@ namespace JSM.Surveillance
             return true;
 
         }
+
+        public void ExitHover()
+        {
+            _occupier?.Exited();
+        }
+
+        public void EnterHover()
+        {
+            _occupier?.Entered();
+        }
     }
 }

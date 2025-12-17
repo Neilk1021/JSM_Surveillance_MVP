@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using cNel.DataStructures;
 using UnityEngine;
 
@@ -6,15 +7,23 @@ namespace JSM.Surveillance
 {
     public abstract class CellOccupier : MonoBehaviour
     {
-        protected Vector2Int[] positions;
+        private Vector2Int[] _positions;
+        private FactoryGrid _grid;
+        
+        private PriorityQueue<Vector2Int, float> _pqPositions = new(PriorityQueueType.Min);
+        public Vector2Int[] Positions => _positions;
+        public PriorityQueue<Vector2Int, float> OrderedPositions => _pqPositions;
 
-        private PriorityQueue<Vector2Int, float> pqPositions;
-        public Vector2Int[] Positions => positions;
-        public PriorityQueue<Vector2Int, float> OrderedPositions => pqPositions; 
+        public FactoryGrid Grid => _grid;
+
+        protected virtual void Start()
+        {
+            _grid = FactoryGrid.ActiveGrid;
+        }
 
         public Vector2Int GetRootPosition()
         {
-            return pqPositions.IsEmpty() ? new Vector2Int(-1, -1) : pqPositions.Peek();
+            return _pqPositions.IsEmpty() ? new Vector2Int(-1, -1) : _pqPositions.Peek();
         }
 
         public void Clear()
@@ -22,16 +31,22 @@ namespace JSM.Surveillance
             Destroy(gameObject);
         }
 
-        protected void Initialize(List<Vector2Int> newPositions)
+        protected void Initialize(List<Vector2Int> newPositions, FactoryGrid grid)
         {
-            this.positions = newPositions.ToArray();
+            this._positions = newPositions.ToArray();
+            this._grid = grid;
 
-            pqPositions = new PriorityQueue<Vector2Int, float>(PriorityQueueType.Min);
+            _pqPositions = new PriorityQueue<Vector2Int, float>(PriorityQueueType.Min);
             foreach (var pos in newPositions)
             {
-                pqPositions.Push(pos, pos.magnitude);
+                _pqPositions.Push(pos, pos.magnitude);
             }
             
         }
+
+        public abstract void Entered();
+
+        public abstract void Exited();
+        
     }
 }

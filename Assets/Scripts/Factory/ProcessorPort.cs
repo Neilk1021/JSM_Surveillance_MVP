@@ -10,7 +10,7 @@ namespace JSM.Surveillance
         Input,
         Output
     }
-    public class ProcessorNode : MonoBehaviour
+    public class ProcessorPort : MonoBehaviour
     {
         [SerializeField] private ProcessorInstance owner;
         [SerializeField] private NodeType type;
@@ -43,8 +43,7 @@ namespace JSM.Surveillance
                 ConnectionManager.Instance.OnNodeClicked(this);
             }
         }
-
-        //TODO FIX handling
+        
         public void SetConnection(Connection newConnection)
         {
             _connection = newConnection;

@@ -2,19 +2,19 @@
 
 namespace JSM.Surveillance
 {
-    [CustomEditor(typeof(ProcessorNode))]
+    [CustomEditor(typeof(ProcessorPort))]
     public class ProcessorNodeEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             // Get a reference to the target script instance
-            ProcessorNode nodeScript = (ProcessorNode)target;
+            ProcessorPort portScript = (ProcessorPort)target;
             DrawDefaultInspector();
             SerializedProperty posX = serializedObject.FindProperty("posX");
             SerializedProperty posY = serializedObject.FindProperty("posY");
             
             serializedObject.Update();
-            var draggable = nodeScript.GetComponentInParent<Draggable>();
+            var draggable = portScript.GetComponentInParent<Draggable>();
             if (draggable != null)
             {
                 posX.intValue = EditorGUILayout.IntSlider(

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,31 +6,74 @@ using UnityEngine;
 
 namespace JSM.Surveillance
 {
+    public enum CellOccupierStatus
+    {
+        NotHovering,
+        Hovering,
+        Selected
+    }
+    
     [System.Serializable]
     public class Connection : CellOccupier
     {
-        [SerializeField] private GameObject connectionVisual;
+        private ProcessorPort _startPort;
+        private ProcessorPort _endPort;
         
         private ProcessorInstance _inputMachine; 
         private ProcessorInstance _outputMachine;
-        private LineRenderer _lineRenderer;
+        private ConnectionRenderer _renderer;
 
-        public LineRenderer LineRenderer => _lineRenderer;
         public ProcessorInstance InputMachine => _inputMachine;
         public ProcessorInstance OutputMachine => _outputMachine;
-        
 
-        public void InitializeConnection(ProcessorNode output, ProcessorNode input, List<Vector2Int> path)
+        public ProcessorPort StartPort => _startPort;
+        public ProcessorPort EndPort => _endPort;
+
+        private CellOccupierStatus _status;  
+        
+        private void Awake()
         {
-            base.Initialize(path); 
-            //_outputMachine = output;
-            //_inputMachine = input;
-            _lineRenderer = GetComponent<LineRenderer>();
+            _renderer = GetComponent<ConnectionRenderer>();
+        }
+
+        private void Update()
+        {
+            _renderer.Render(_status);
+        }
+
+
+        public void InitializeConnection(ProcessorPort start, ProcessorPort end, FactoryGrid grid, List<Vector2Int> path)
+        {
+            base.Initialize(path, grid);
+            _startPort = start;
+            _endPort = end;
+
+            _startPort.SetConnection(this);
+            _endPort.SetConnection(this);
+            
+            _inputMachine = start.Type == NodeType.Input ? start.Owner : end.Owner;
+            _outputMachine = start.Type == NodeType.Output ? start.Owner : end.Owner;
+            
+            _renderer.PlaceConnection();
         }
 
         public void RemoveConnection()
         {
             //remove connection
+        }
+
+        public override void Entered()
+        {
+            if(_status != CellOccupierStatus.Selected)
+                _status = CellOccupierStatus.Hovering;
+        }
+
+        public override void Exited()
+        {
+            
+            if(_status != CellOccupierStatus.Selected)
+                _status = CellOccupierStatus.NotHovering;
+
         }
     }
 }

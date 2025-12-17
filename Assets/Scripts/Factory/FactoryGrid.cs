@@ -15,22 +15,25 @@ namespace JSM.Surveillance
 
         private Vector2Int _hoveredCell = new Vector2Int(-1, -1);
 
+        //Allows multiple grids where we just switch between different grids as needed.
+        public static FactoryGrid ActiveGrid; 
+
+        private readonly Dictionary<Vector2Int, ProcessorPort> _ports = new Dictionary<Vector2Int, ProcessorPort>(); 
+        
         private FactoryCell[,] _grid; 
         
         private Camera _camera;
 
         public float CellSize => cellSize;
-        public static FactoryGrid Instance { get; private set; }
 
         private void Awake()
         {
-            if (Instance == null)
+            if (ActiveGrid == null)
             {
-                Instance = this;
-                return;
+                ActiveGrid = this;
             }
             
-            Destroy(gameObject);
+            _camera = Camera.main;
         }
 
         private void Start()
@@ -60,17 +63,26 @@ namespace JSM.Surveillance
             if (_camera == null) return;
 
             Vector3 mousePos = Input.mousePosition;
-            mousePos.z = Mathf.Abs(_camera.transform.position.z);
             Vector3 mouseWorldPos = _camera.ScreenToWorldPoint(mousePos);
-            mouseWorldPos.z = 0;
 
             Vector2Int newHoveredCell = GetGridPosition(mouseWorldPos);
+
+            if (_hoveredCell == newHoveredCell) return;
+            
+            if(_hoveredCell != new Vector2Int(-1,-1)) 
+                _grid[_hoveredCell.x, _hoveredCell.y].ExitHover();
+                
             _hoveredCell = IsValidGridPosition(newHoveredCell.x, newHoveredCell.y) ? newHoveredCell : new Vector2Int(-1, -1);
+            
+            if (_hoveredCell != new Vector2Int(-1, -1))
+                _grid[_hoveredCell.x, _hoveredCell.y].EnterHover();
         }
 
         private bool VerifyPlacementValid(List<Vector2Int> positions)
         {
-            return (!positions.Any(x => _grid[x.x, x.y].IsOccupied));
+            if (positions == null) return false;
+            
+            return (!positions.Any(x => !IsValidGridPosition(x.x, x.y) || _grid[x.x, x.y].IsOccupied));
         }
 
         public bool PlaceConnection(Connection connection)
@@ -94,6 +106,13 @@ namespace JSM.Surveillance
             }
 
             return true;
+        }
+
+
+
+        public ProcessorPort GetPortAtCell(Vector2Int pos)
+        {
+            return _ports.GetValueOrDefault(pos, null);
         }
         
         public bool PlaceDraggable(Draggable draggable)
@@ -121,7 +140,7 @@ namespace JSM.Surveillance
                 gridPositions.Average(x =>GetWorldPosition(x).y )+cellSize/2
             ); 
             
-            draggable.Place(gridPositions, worldPos);
+            draggable.Place(gridPositions, worldPos, this);
             return true;
 
             //_hoveredCell = IsValidGridPosition(newHoveredCell.x, newHoveredCell.y) ? newHoveredCell : new Vector2Int(-1, -1);
@@ -226,5 +245,14 @@ namespace JSM.Surveillance
             return _hoveredCell;
         }
 
+        
+        public void RegisterPort(Vector2Int pos, ProcessorPort port )
+        {
+            _ports.TryAdd(pos, port);
+        }
+        public void UnregisterPort(Vector2Int pos)
+        {
+            _ports.Remove(pos);
+        }
     }
 }
