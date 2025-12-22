@@ -34,6 +34,12 @@ namespace JSM.Surveillance
         private Connection _connection;
         public Connection Connection => _connection;
 
+        private void Awake()
+        {
+            _subcellX = posX;
+            _subcellY = posY;
+        }
+
         private void OnMouseDown()
         {
             Debug.Log("node clicked: " + name);

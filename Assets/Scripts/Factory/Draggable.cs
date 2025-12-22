@@ -27,7 +27,6 @@ namespace JSM.Surveillance
 
         protected override void Start()
         {
-            _draggable = true;
             _processor = GetComponent<ProcessorInstance>();
             base.Start();
         }
@@ -42,19 +41,20 @@ namespace JSM.Surveillance
 
         private void OnMouseUp()
         {
-            if (!_isDragging) return;
+            if (!_isDragging || !_draggable) return;
             _isDragging = false;
 
             Vector2 mousePos = _camera.ScreenToWorldPoint(Input.mousePosition);
 
 
             // Try placement on grid when let go snap to grid (i might need to change pivot of processors?)
-            _draggable = this.Grid.PlaceDraggable(this);
+            _draggable = !this.Grid.PlaceDraggable(this);
         }
 
         public virtual void Place(List<Vector2Int> newPositions, Vector2 worldPos, FactoryGrid grid)
         {
             base.Initialize(newPositions, grid);
+            _draggable = false;
             transform.position = worldPos;
         }
 

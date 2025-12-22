@@ -8,6 +8,15 @@ namespace JSM.Surveillance
 {
     public class FactoryGrid : MonoBehaviour
     {
+        [Header("Grid Input")]
+        [SerializeField] private InputMachine gridInputPrefab;
+        [SerializeField] private Vector2Int inputPosition;
+        
+        [Header("Grid Output")] 
+        [SerializeField] private OutputMachine gridOutputPrefab;
+        [SerializeField] private Vector2Int outputPosition;
+        
+        [Header("Size")]
         [SerializeField] private int gridWidth = 20;
         [SerializeField] private int gridHeight = 20;
         [SerializeField] private float cellSize = 1f;
@@ -23,6 +32,9 @@ namespace JSM.Surveillance
         private FactoryCell[,] _grid; 
         
         private Camera _camera;
+
+        private InputMachine _gridInput;
+        private OutputMachine _gridOutput;
 
         public float CellSize => cellSize;
 
@@ -51,8 +63,28 @@ namespace JSM.Surveillance
                     _grid[i, j] = new FactoryCell(i,j);
                 }
             }
+            _gridInput = Instantiate(gridInputPrefab, transform);
+            _gridOutput = Instantiate(gridOutputPrefab, transform);
+            
+            InitializeDraggable(_gridInput , inputPosition);
+            InitializeDraggable(_gridOutput, outputPosition);
         }
 
+        private void InitializeDraggable(Draggable draggable, Vector2Int leftCornerGridPos)
+        {
+            List<Vector2Int> draggablePositions = new();
+            for (int i = 0; i < draggable.Size.x; i++)
+            {
+                for (int j = 0; j < draggable.Size.y; j++)
+                {
+                    draggablePositions.Add(new Vector2Int(i,j) + leftCornerGridPos);
+                }
+            }
+
+            Vector2 worldPosition = (Vector2)GetWorldPosition(leftCornerGridPos) + (Vector2)draggable.Size * cellSize/2.0f;
+            draggable.Place(draggablePositions, worldPosition, this);
+        }
+        
         private void Update()
         {
             UpdateHoveredCell();

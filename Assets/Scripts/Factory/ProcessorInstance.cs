@@ -9,28 +9,27 @@ namespace JSM.Surveillance
         [SerializeField] private ProcessorData data;
         [SerializeField] private Recipe selectedRecipe;
         
-        private Dictionary<Resource, int> inputResources = new();
-        private Dictionary<Resource, int> outputResources = new();
+        private readonly Dictionary<Resource, int> _inputResources = new();
+        private readonly Dictionary<Resource, int> _outputResources = new();
 
+        private float _progress = 0f;
+        private bool _isRunning = false;
 
-        private float progress = 0f;
-        private bool isRunning = false;
-
-        public Dictionary<Resource, int> Inputs => inputResources;
-        public Dictionary<Resource, int> Outputs => outputResources;
-        public float Progress => progress;
+        public Dictionary<Resource, int> Inputs => _inputResources;
+        public Dictionary<Resource, int> Outputs => _outputResources;
+        public float Progress => _progress;
         public Recipe Recipe => selectedRecipe;
         public ProcessorData Data => data;
-        public bool IsRunning => isRunning;
+        public bool IsRunning => _isRunning;
 
         /// <summary>
         /// called to set what recipe processor will run
         /// </summary>
-        public void SetRecipe(Recipe recipe)
+        public virtual void SetRecipe(Recipe recipe)
         {
             selectedRecipe = recipe;
-            progress = 0f;
-            isRunning = false;
+            _progress = 0f;
+            _isRunning = false;
         }
 
         /// <summary>
@@ -40,20 +39,20 @@ namespace JSM.Surveillance
         {
             if (selectedRecipe == null) return;
 
-            if (!isRunning && InputAmountSatisfied())
+            if (!_isRunning && InputAmountSatisfied())
             {
                 ConsumeInputs();
-                isRunning = true;
-                progress = 0f;
+                _isRunning = true;
+                _progress = 0f;
             }
-            if (isRunning)
+            if (_isRunning)
             {
-                progress += deltaTime * data.Speed;
-                if (progress >= selectedRecipe.Time)
+                _progress += deltaTime * data.Speed;
+                if (_progress >= selectedRecipe.Time)
                 {
                     ProduceOutputs();
-                    isRunning = false;
-                    progress = 0f;
+                    _isRunning = false;
+                    _progress = 0f;
                 }
             }
         }
@@ -74,7 +73,7 @@ namespace JSM.Surveillance
         {
             foreach (var r in selectedRecipe.InputVolume)
             {
-                if (!inputResources.ContainsKey(r.resource) || inputResources[r.resource] < r.amount)
+                if (!_inputResources.ContainsKey(r.resource) || _inputResources[r.resource] < r.amount)
                     return false;
             }
             return true;
@@ -84,7 +83,7 @@ namespace JSM.Surveillance
         {
             foreach (var r in selectedRecipe.InputVolume)
             {
-                inputResources[r.resource] -= r.amount;
+                _inputResources[r.resource] -= r.amount;
             }
         }
 
@@ -92,11 +91,8 @@ namespace JSM.Surveillance
         {
             foreach (var r in selectedRecipe.OutputVolume)
             {
-                if (!outputResources.ContainsKey(r.resource))
-                {
-                    outputResources[r.resource] = 0;
-                }
-                outputResources[r.resource] += r.amount;
+                _outputResources.TryAdd(r.resource, 0);
+                _outputResources[r.resource] += r.amount;
             }
         }
 
@@ -105,11 +101,8 @@ namespace JSM.Surveillance
         /// </summary>
         public void AddInput(Resource resource, int amount)
         {
-            if (!inputResources.ContainsKey(resource))
-            {
-                inputResources[resource] = 0;
-            }
-            inputResources[resource] += amount;
+            _inputResources.TryAdd(resource, 0);
+            _inputResources[resource] += amount;
         }
 
     }
