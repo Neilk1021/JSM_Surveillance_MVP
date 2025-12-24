@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JSM.Surveillance.UI;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -33,24 +34,32 @@ namespace JSM.Surveillance
         
         private Camera _camera;
 
+        private UIManager _uiManager;
         private InputMachine _gridInput;
         private OutputMachine _gridOutput;
 
         public float CellSize => cellSize;
+        public int Width => gridWidth; 
+        public int Height => gridHeight;
+        public UIManager UIManager => _uiManager;  
 
         private void Awake()
         {
+            _uiManager = GetComponent<UIManager>();
             if (ActiveGrid == null)
             {
                 ActiveGrid = this;
             }
             
             _camera = Camera.main;
+            
+            
+            InitializeGrid();
         }
 
         private void Start()
         {
-            InitializeGrid();
+            InitializeInputOutput();
         }
 
         private void InitializeGrid()
@@ -63,6 +72,10 @@ namespace JSM.Surveillance
                     _grid[i, j] = new FactoryCell(i,j);
                 }
             }
+        }
+
+        private void InitializeInputOutput()
+        {
             _gridInput = Instantiate(gridInputPrefab, transform);
             _gridOutput = Instantiate(gridOutputPrefab, transform);
             
@@ -119,6 +132,7 @@ namespace JSM.Surveillance
 
         public bool PlaceConnection(Connection connection)
         {
+            connection.transform.parent = transform;
             var positions = connection.Positions.ToList();
             if (positions.Contains(new Vector2Int(-1, -1))) {
                 return false;
@@ -149,6 +163,7 @@ namespace JSM.Surveillance
         
         public bool PlaceDraggable(Draggable draggable)
         {
+            draggable.transform.parent = transform;
             var positions = GetDraggablePositions(draggable);
             List<Vector2Int> gridPositions = positions.Select(x => GetGridPosition(x)).ToList();
 
@@ -166,10 +181,10 @@ namespace JSM.Surveillance
                 int y = pos.y;
                 _grid[x, y].SetOccupier(draggable);
             }
-            
+
             Vector2 worldPos = new Vector2(
-                gridPositions.Average(x => GetWorldPosition(x).x ) + cellSize/2, 
-                gridPositions.Average(x =>GetWorldPosition(x).y )+cellSize/2
+                gridPositions.Average(x => GetWorldPosition(x).x) + cellSize / 2,
+                gridPositions.Average(x => GetWorldPosition(x).y) + cellSize / 2
             ); 
             
             draggable.Place(gridPositions, worldPos, this);
@@ -207,14 +222,14 @@ namespace JSM.Surveillance
                 gridPosition.x * cellSize,
                 gridPosition.y * cellSize,
                 0
-            );
+            ) + transform.position;
         }
 
         public Vector2Int GetGridPosition(Vector3 worldPosition)
         {
             return new Vector2Int(
-                Mathf.FloorToInt(worldPosition.x / cellSize),
-                Mathf.FloorToInt(worldPosition.y / cellSize)
+                Mathf.FloorToInt((worldPosition.x - transform.position.x) / cellSize),
+                Mathf.FloorToInt((worldPosition.y - transform.position.y) / cellSize)
             );
         }
 
@@ -225,7 +240,7 @@ namespace JSM.Surveillance
             // Draw vertical lines
             for (int x = 0; x <= gridWidth; x++)
             {
-                Vector3 center = new Vector3(x * cellSize, (gridHeight * cellSize) / 2f, 0);
+                Vector3 center = new Vector3(x * cellSize, (gridHeight * cellSize) / 2f, 0) + transform.position;
                 Vector3 size = new Vector3(gridLineThickness, gridHeight * cellSize, 0.1f);
                 Gizmos.DrawCube(center, size);
             }
@@ -233,7 +248,7 @@ namespace JSM.Surveillance
             // Draw horizontal lines
             for (int y = 0; y <= gridHeight; y++)
             {
-                Vector3 center = new Vector3((gridWidth * cellSize) / 2f, y * cellSize, 0);
+                Vector3 center = new Vector3((gridWidth * cellSize) / 2f, y * cellSize, 0) + transform.position;
                 Vector3 size = new Vector3(gridWidth * cellSize, gridLineThickness, 0.1f);
                 Gizmos.DrawCube(center, size);
             }
@@ -285,6 +300,14 @@ namespace JSM.Surveillance
         public void UnregisterPort(Vector2Int pos)
         {
             _ports.Remove(pos);
+        }
+
+        public FactoryCell GetCell(int x, int y)
+        {
+            if (!IsValidGridPosition(x, y)) 
+                throw new ArgumentException($"{x}, {y} is not in {gameObject.name}'s grid!");
+            
+            return _grid[x, y];
         }
     }
 }

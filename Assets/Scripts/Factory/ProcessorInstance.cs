@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using JSM.Surveillance.UI;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -21,6 +23,16 @@ namespace JSM.Surveillance
         public Recipe Recipe => selectedRecipe;
         public ProcessorData Data => data;
         public bool IsRunning => _isRunning;
+
+
+        protected override void OnMouseDown()
+        {
+            if (Placed) {
+                FactoryGrid.ActiveGrid.UIManager.SwitchUI(this);
+            }
+
+            base.OnMouseDown();
+        }
 
         /// <summary>
         /// called to set what recipe processor will run

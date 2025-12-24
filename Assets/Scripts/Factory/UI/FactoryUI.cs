@@ -1,7 +1,9 @@
-﻿namespace JSM.Surveillance.UI
+﻿using UnityEngine;
+
+namespace JSM.Surveillance.UI
 {
-    public class FactoryUI
+    public abstract class FactoryUI : MonoBehaviour
     {
-        
+        public abstract void Initialize(CellOccupier occupier);
     }
 }

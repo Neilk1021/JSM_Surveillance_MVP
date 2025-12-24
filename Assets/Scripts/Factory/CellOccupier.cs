@@ -12,7 +12,6 @@ namespace JSM.Surveillance
         
         private PriorityQueue<Vector2Int, float> _pqPositions = new(PriorityQueueType.Min);
         public Vector2Int[] Positions => _positions;
-        public PriorityQueue<Vector2Int, float> OrderedPositions => _pqPositions;
 
         public FactoryGrid Grid => _grid;
 
@@ -47,6 +46,6 @@ namespace JSM.Surveillance
         public abstract void Entered();
 
         public abstract void Exited();
-        
+
     }
 }
