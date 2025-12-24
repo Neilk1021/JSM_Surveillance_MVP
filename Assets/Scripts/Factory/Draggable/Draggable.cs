@@ -14,10 +14,9 @@ namespace JSM.Surveillance
 
         public Vector2Int Size => new Vector2Int(width, height);
         
-        private bool _isDragging = false;
-        private ProcessorInstance _processor;
-
         private Camera _camera;
+        
+        private bool _isDragging = false;
         private bool _draggable = true;
         
         private void Awake()
@@ -25,18 +24,10 @@ namespace JSM.Surveillance
             _camera = Camera.main;
         }
 
-        protected override void Start()
-        {
-            _processor = GetComponent<ProcessorInstance>();
-            base.Start();
-        }
-
         private void OnMouseDown()
         {
             if(!_draggable) return;
-            
             _isDragging = true;
-            Debug.Log($"{_processor.name} is being dragged im killing myself");
         }
 
         private void OnMouseUp()
@@ -45,9 +36,6 @@ namespace JSM.Surveillance
             _isDragging = false;
 
             Vector2 mousePos = _camera.ScreenToWorldPoint(Input.mousePosition);
-
-
-            // Try placement on grid when let go snap to grid (i might need to change pivot of processors?)
             _draggable = !this.Grid.PlaceDraggable(this);
         }
 
@@ -66,54 +54,10 @@ namespace JSM.Surveillance
             transform.position = mousePos;
         }
 
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.green;
-            
-            float objWidth = transform.lossyScale.x;
-            float objHeight = transform.lossyScale.y; 
-                    
-            for (int i = 0; i < width; i++)
-            {
-                Vector2 hStart = new Vector2(
-                    transform.position.x  - objWidth/2 + (objWidth/width)*i,
-                    transform.position.y  - objHeight/2
-                );
-                Vector2 hEnd = new Vector2(
-                    transform.position.x  - objWidth/2 + (objWidth/width)*i,
-                    transform.position.y  + objHeight/2
-                );
-                
-                Gizmos.DrawLine(hStart, hEnd);
-            }
-            
-            
-            for (int j = 0; j <  height; j++)
-            {
-        
-                Vector2 vStart = new Vector2(
-                    transform.position.x - objWidth/2,
-                    transform.position.y - objHeight/2 + (objHeight/height) * j
-                );
-                Vector2 vEnd = new Vector2(
-                    transform.position.x + objWidth/2,
-                    transform.position.y - objHeight/2 + (objHeight/height) * j
-                );
-                    
-                    
-                Gizmos.DrawLine(vStart, vEnd);
-            }
-        }
-
         private bool InMachineRange(int x, int y)
         {
             return x < width && x >= 0 && y >= 0 && y < height;
         }
-
-        private bool OnBorder(int x, int y)
-        {
-            return ((x==-1 || x==width) && (y==-1 | y==height));
-        } 
         
         /// <summary>
         /// Gets the position of a subcell on this draggable at position (posX, posY)
@@ -225,5 +169,46 @@ namespace JSM.Surveillance
         {
             // functionally the same as OnMouseExited, but its based on the cell in the grid. 
         }
+        
+        
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.green;
+            
+            float objWidth = transform.lossyScale.x;
+            float objHeight = transform.lossyScale.y; 
+                    
+            for (int i = 0; i < width; i++)
+            {
+                Vector2 hStart = new Vector2(
+                    transform.position.x  - objWidth/2 + (objWidth/width)*i,
+                    transform.position.y  - objHeight/2
+                );
+                Vector2 hEnd = new Vector2(
+                    transform.position.x  - objWidth/2 + (objWidth/width)*i,
+                    transform.position.y  + objHeight/2
+                );
+                
+                Gizmos.DrawLine(hStart, hEnd);
+            }
+            
+            
+            for (int j = 0; j <  height; j++)
+            {
+        
+                Vector2 vStart = new Vector2(
+                    transform.position.x - objWidth/2,
+                    transform.position.y - objHeight/2 + (objHeight/height) * j
+                );
+                Vector2 vEnd = new Vector2(
+                    transform.position.x + objWidth/2,
+                    transform.position.y - objHeight/2 + (objHeight/height) * j
+                );
+                    
+                    
+                Gizmos.DrawLine(vStart, vEnd);
+            }
+        }
+
     }
 }
