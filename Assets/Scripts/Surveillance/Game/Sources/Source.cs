@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace JSM.Surveillance.Game
 {
-    public abstract class Source : MonoBehaviour
+    public abstract partial class Source : MonoBehaviour
     {
         private protected MapCellManager _mapCellManager;
         private protected bool _placed = false;
@@ -110,5 +110,7 @@ namespace JSM.Surveillance.Game
         {
             Destroy(gameObject);
         }
+
+
     }
 }

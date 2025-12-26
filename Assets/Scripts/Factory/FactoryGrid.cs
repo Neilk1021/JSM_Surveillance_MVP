@@ -107,9 +107,8 @@ namespace JSM.Surveillance
         {
             if (_camera == null) return;
 
-            Vector3 mousePos = Input.mousePosition;
-            Vector3 mouseWorldPos = _camera.ScreenToWorldPoint(mousePos);
-
+            var mouseWorldPos = GetMouseWorldPos();
+            if(mouseWorldPos == Vector3.negativeInfinity) return;
             Vector2Int newHoveredCell = GetGridPosition(mouseWorldPos);
 
             if (_hoveredCell == newHoveredCell) return;
@@ -121,6 +120,25 @@ namespace JSM.Surveillance
             
             if (_hoveredCell != new Vector2Int(-1, -1))
                 _grid[_hoveredCell.x, _hoveredCell.y].EnterHover();
+        }
+
+        public Vector3 GetMouseWorldPos()
+        {
+            Vector3 mousePos = Input.mousePosition;
+            Ray ray = _camera.ScreenPointToRay(mousePos);
+
+            RaycastHit[] results = new RaycastHit[32];
+            var size = Physics.RaycastNonAlloc(ray, results);
+            Vector3 mouseWorldPos = Vector3.negativeInfinity;
+            for (int i = 0; i < size; i++)
+            {
+                if (results[i].transform == transform)
+                {
+                    mouseWorldPos = results[i].point;
+                }
+            }
+
+            return mouseWorldPos;
         }
 
         private bool VerifyPlacementValid(List<Vector2Int> positions)
@@ -218,18 +236,21 @@ namespace JSM.Surveillance
         public Vector3 GetWorldPosition(Vector2Int gridPosition)
         {
             // grid start at (0,0)
-            return new Vector3(
+            return transform.rotation * new Vector3(
                 gridPosition.x * cellSize,
                 gridPosition.y * cellSize,
                 0
             ) + transform.position;
+            
         }
 
         public Vector2Int GetGridPosition(Vector3 worldPosition)
         {
+            var localizedPosition = transform.InverseTransformPoint(worldPosition);
+            
             return new Vector2Int(
-                Mathf.FloorToInt((worldPosition.x - transform.position.x) / cellSize),
-                Mathf.FloorToInt((worldPosition.y - transform.position.y) / cellSize)
+                Mathf.FloorToInt((localizedPosition.x ) / cellSize),
+                Mathf.FloorToInt((localizedPosition.y ) / cellSize)
             );
         }
 

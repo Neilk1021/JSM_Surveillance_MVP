@@ -27,6 +27,11 @@ namespace JSM.Surveillance.UI
             return _source;
         }
 
+        public void ModifySource()
+        {
+            _source.SpawnGrid();
+        }
+
         public void SellSource()
         {
             _source.CloseUI();

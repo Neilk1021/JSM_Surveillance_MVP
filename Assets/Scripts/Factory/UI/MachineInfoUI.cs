@@ -1,54 +1,46 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace JSM.Surveillance.UI
 {
-    public class MachineInfoUI : FactoryUI
+    public abstract class MachineInfoUI : FactoryUI, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private TextMeshProUGUI machineNameText;
-        [SerializeField] private TextMeshProUGUI machineProducingText;
-        [SerializeField] private TextMeshProUGUI machineRequirementsText;
-        [SerializeField] private Image previewImage;
+        [SerializeField] protected TextMeshProUGUI machineNameText;
+        [SerializeField] protected Image previewImage;
 
-        private ProcessorInstance _machine;
-
-        public override void Initialize(CellOccupier occupier)
+        private UIManager _uiManager;
+        private bool _inside = false;
+        private bool _initialized = false;
+        
+        private void Update()
         {
-            if ((ProcessorInstance)occupier == null) {
-                throw new ArgumentException("Tried to initialize Machine UI with non machine instance.");
+            if (!Input.GetMouseButtonDown(0)) return;
+            if (_inside) return;
+            if (!_initialized) {
+                _initialized = true;
+                return;
             }
             
-            _machine = (ProcessorInstance)occupier;
-            machineNameText.text = _machine.Data.ShopInfo.name;
-
-            machineProducingText.text = BuildProducingString(_machine.Recipe);
-            machineRequirementsText.text = BuildRequirementsString(_machine.Recipe);
+            _uiManager.Close();
         }
 
-        private string BuildProducingString(Recipe machineRecipe)
+
+        public override void Initialize(CellOccupier occupier, UIManager manager)
         {
-            string output = "<b>Producing:</b>\n";
-
-            foreach (var volume in machineRecipe.OutputVolume)
-            {
-                output += $"{volume.amount}x - {volume.resource.ResourceName}\n";
-            }
-
-            return output;
+            _uiManager = manager;
         }
 
-        private string BuildRequirementsString(Recipe machineRecipe)
+        public void OnPointerEnter(PointerEventData eventData)
         {
-            string output = "<b>Requires:</b>\n";
+            _inside = true;
+        }
 
-            foreach (var volume in machineRecipe.InputVolume)
-            {
-                output += $"{volume.amount}x - {volume.resource.ResourceName}\n";
-            }
-
-            return output;
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _inside = false;
         }
     }
 }

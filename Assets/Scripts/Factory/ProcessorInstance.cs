@@ -6,19 +6,15 @@ using UnityEngine;
 
 namespace JSM.Surveillance
 {
-    public abstract class ProcessorInstance : Draggable 
+    public abstract class ProcessorInstance : MachineInstance 
     {
         [SerializeField] private ProcessorData data;
         [SerializeField] private Recipe selectedRecipe;
-        
-        private readonly Dictionary<Resource, int> _inputResources = new();
-        private readonly Dictionary<Resource, int> _outputResources = new();
 
         private float _progress = 0f;
         private bool _isRunning = false;
 
-        public Dictionary<Resource, int> Inputs => _inputResources;
-        public Dictionary<Resource, int> Outputs => _outputResources;
+
         public float Progress => _progress;
         public Recipe Recipe => selectedRecipe;
         public ProcessorData Data => data;
@@ -69,23 +65,11 @@ namespace JSM.Surveillance
             }
         }
 
-        public override void Place(List<Vector2Int> newPositions, Vector2 worldPos, FactoryGrid grid)
-        {
-            base.Place(newPositions, worldPos, grid);
-            
-            Vector2Int root = GetRootPosition();
-            foreach (var port in GetComponentsInChildren<ProcessorPort>())
-            {
-                grid.RegisterPort(port.SubcellPosition + root, port);
-            }
-        }
-        
-
         private bool InputAmountSatisfied()
         {
             foreach (var r in selectedRecipe.InputVolume)
             {
-                if (!_inputResources.ContainsKey(r.resource) || _inputResources[r.resource] < r.amount)
+                if (!InputResources.ContainsKey(r.resource) || InputResources[r.resource] < r.amount)
                     return false;
             }
             return true;
@@ -95,7 +79,7 @@ namespace JSM.Surveillance
         {
             foreach (var r in selectedRecipe.InputVolume)
             {
-                _inputResources[r.resource] -= r.amount;
+                InputResources[r.resource] -= r.amount;
             }
         }
 
@@ -103,8 +87,8 @@ namespace JSM.Surveillance
         {
             foreach (var r in selectedRecipe.OutputVolume)
             {
-                _outputResources.TryAdd(r.resource, 0);
-                _outputResources[r.resource] += r.amount;
+                OutputResources.TryAdd(r.resource, 0);
+                OutputResources[r.resource] += r.amount;
             }
         }
 
@@ -113,8 +97,8 @@ namespace JSM.Surveillance
         /// </summary>
         public void AddInput(Resource resource, int amount)
         {
-            _inputResources.TryAdd(resource, 0);
-            _inputResources[resource] += amount;
+            InputResources.TryAdd(resource, 0);
+            InputResources[resource] += amount;
         }
 
     }

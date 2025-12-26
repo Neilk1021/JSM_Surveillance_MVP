@@ -12,7 +12,7 @@ namespace JSM.Surveillance
     }
     public class ProcessorPort : MonoBehaviour
     {
-        [SerializeField] private ProcessorInstance owner;
+        [SerializeField] private MachineInstance owner;
         [SerializeField] private NodeType type;
         [SerializeField] private int nodeIndex;
 
@@ -27,7 +27,7 @@ namespace JSM.Surveillance
 
         public Vector2Int SubcellPosition => new Vector2Int(_subcellX, _subcellY);
         
-        public ProcessorInstance Owner => owner;
+        public MachineInstance Owner => owner;
         public NodeType Type => type;
         public int NodeIndex => nodeIndex;
 

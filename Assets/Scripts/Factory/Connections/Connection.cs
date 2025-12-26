@@ -19,12 +19,12 @@ namespace JSM.Surveillance
         private ProcessorPort _startPort;
         private ProcessorPort _endPort;
         
-        private ProcessorInstance _inputMachine; 
-        private ProcessorInstance _outputMachine;
+        private MachineInstance _inputMachine; 
+        private MachineInstance _outputMachine;
         private ConnectionRenderer _renderer;
 
-        public ProcessorInstance InputMachine => _inputMachine;
-        public ProcessorInstance OutputMachine => _outputMachine;
+        public MachineInstance InputMachine => _inputMachine;
+        public MachineInstance OutputMachine => _outputMachine;
 
         public ProcessorPort StartPort => _startPort;
         public ProcessorPort EndPort => _endPort;

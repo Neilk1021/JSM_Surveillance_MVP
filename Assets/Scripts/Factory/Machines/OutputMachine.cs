@@ -1,6 +1,6 @@
 ﻿namespace JSM.Surveillance
 {
-    public class OutputMachine : ProcessorInstance
+    public class OutputMachine : MachineInstance 
     {
         
     }

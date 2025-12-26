@@ -13,10 +13,14 @@ namespace JSM.Surveillance
         private MapCellManager _mapCellManager;
         public static SurveillanceGameManager instance { get; private set; }
         private MoneyManager _moneyManager;
+        
+        [Tooltip("Used in case source doesn't have grid.")]
+        [SerializeField]private FactoryGrid defaultSourceGrid;
 
         public MoneyManager MoneyManager => _moneyManager;
-        
-        
+        public FactoryGrid DefaultSourceGrid => defaultSourceGrid; 
+
+
         private void Awake() {
             if (instance != null)
             {
