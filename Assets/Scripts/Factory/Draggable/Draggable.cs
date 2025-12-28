@@ -33,7 +33,7 @@ namespace JSM.Surveillance
             Placed = Grid.PlaceDraggable(this);
         }
 
-        public virtual void Place(List<Vector2Int> newPositions, Vector2 worldPos, FactoryGrid grid)
+        public virtual void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)
         {
             Initialize(newPositions, grid);
             Placed = true;

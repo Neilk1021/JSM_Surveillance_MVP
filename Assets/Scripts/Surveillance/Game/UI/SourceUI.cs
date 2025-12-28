@@ -20,6 +20,7 @@ namespace JSM.Surveillance.UI
             _source = source;
             if (Camera.main != null) transform.rotation = Camera.main.transform.rotation;
             populationText.text = $"Daily people watched: {source.GetPeopleInRange()}";
+            ItemPreviewer.LoadPreview(source.Data.ShopInfo.itemModelPrefab);
         }
 
         public Source GetSource()

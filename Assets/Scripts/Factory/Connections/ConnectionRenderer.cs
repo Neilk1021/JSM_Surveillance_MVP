@@ -28,17 +28,17 @@ namespace JSM.Surveillance
             lr.positionCount = connection.Positions.Length + 2;
 
             Vector3[] worldPositions = new Vector3[lr.positionCount];
-            worldPositions[0] = connection.StartPort.transform.position;
+            worldPositions[0] = transform.InverseTransformPoint(connection.StartPort.transform.position);
                 
             for (int i = 0; i < connection.Positions.Length; i++)
             {
-                worldPositions[i + 1] = (
+                worldPositions[i + 1] = transform.InverseTransformPoint((
                     connection.Grid.GetWorldPosition(connection.Positions[i]) + 
                     new Vector3(connection.Grid.CellSize / 2, connection.Grid.CellSize / 2, 0)
-                );
+                ));
             }
 
-            worldPositions[^1] = connection.EndPort.transform.position;
+            worldPositions[^1] = transform.InverseTransformPoint(connection.EndPort.transform.position);
             lr.SetPositions(worldPositions);
         }
 

@@ -44,9 +44,9 @@ namespace JSM.Surveillance
         {
             Debug.Log("node clicked: " + name);
 
-            if (ConnectionManager.Instance != null)
+            if (owner.Grid.ConnectionManager != null)
             {
-                ConnectionManager.Instance.OnNodeClicked(this);
+                owner.Grid.ConnectionManager.OnNodeClicked(this);
             }
         }
         

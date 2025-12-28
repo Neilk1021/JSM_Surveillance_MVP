@@ -37,6 +37,12 @@ namespace JSM.Surveillance.UI
                 Destroy(_currentPreview);
             }
             _currentPreview = Instantiate(newPreview, previewHolder);
+            var layer = LayerMask.NameToLayer("Factory");
+            _currentPreview.layer = layer;
+            foreach (Transform child in _currentPreview.transform)
+            {
+                child.gameObject.layer = layer;
+            }
         }
         
     }

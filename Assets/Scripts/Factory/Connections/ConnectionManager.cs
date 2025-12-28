@@ -9,23 +9,11 @@ namespace JSM.Surveillance
 {
     public class ConnectionManager : MonoBehaviour
     {
-        public static ConnectionManager Instance { get; private set; }
         [SerializeField] FactoryGrid grid;
         [SerializeField] private Connection connectionPrefab;
         [SerializeField] private ConnectionPreviewRenderer connectionPreviewPreviewPrefab;
         
         private Camera _camera;
-
-        private void Awake()
-        {
-            if (Instance == null)
-            {
-                Instance = this;
-                return;
-            }
-            
-            Destroy(gameObject);
-        }
 
         private void Start() {
             if (grid is null) {
@@ -67,7 +55,7 @@ namespace JSM.Surveillance
             Vector2Int lastPos = startingCell;
             
             ProcessorPort endPort = null;
-            var connectionPreview = Instantiate(connectionPreviewPreviewPrefab);
+            var connectionPreview = Instantiate(connectionPreviewPreviewPrefab, transform);
             
             while (Input.GetMouseButton(0))
             {
@@ -95,7 +83,7 @@ namespace JSM.Surveillance
             Destroy(connectionPreview.gameObject);
             if (endPort == null || endPort == startPort || endPort.Type == startPort.Type || endPort.Owner == startPort.Owner) yield break;
             
-            var connectionObj = Instantiate(connectionPrefab);
+            var connectionObj = Instantiate(connectionPrefab, transform);
             connectionObj.InitializeConnection(startPort, endPort, grid, connectionPositions);
             grid.PlaceConnection(connectionObj);
         }

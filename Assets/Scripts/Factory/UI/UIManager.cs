@@ -5,13 +5,22 @@ namespace JSM.Surveillance.UI
 {
     public class UIManager : MonoBehaviour
     {
+        [Header("UI prefabs")]
         [SerializeField] private FactoryUI defaultUI;
         [SerializeField] private InputMachineUI inputUI;
         [SerializeField] private OutputMachineUI outputUI;
         [SerializeField] private MachineInfoUI processorUI;
 
+        [Header("Components Reference")] [SerializeField]
+        private Canvas canvas;
+        
+        
         private FactoryUI _currentUI = null;
         private CellOccupier _currentData = null;
+
+        private void Awake() {
+            canvas.worldCamera = GetComponentInParent<Camera>();
+        }
 
         public void SwitchUI(InputMachine inputMachine)
         {

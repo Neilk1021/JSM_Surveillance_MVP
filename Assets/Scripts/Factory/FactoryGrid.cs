@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JSM.Surveillance.Game;
 using JSM.Surveillance.UI;
 using UnityEngine;
 
@@ -41,7 +42,12 @@ namespace JSM.Surveillance
         public float CellSize => cellSize;
         public int Width => gridWidth; 
         public int Height => gridHeight;
-        public UIManager UIManager => _uiManager;  
+        public UIManager UIManager => _uiManager;
+        private ConnectionManager _connectionManager;
+        public  Source Source { get; private set; }
+        
+        public ConnectionManager ConnectionManager => _connectionManager;
+        
 
         private void Awake()
         {
@@ -50,9 +56,10 @@ namespace JSM.Surveillance
             {
                 ActiveGrid = this;
             }
-            
-            _camera = Camera.main;
-            
+
+            _connectionManager = GetComponentInChildren<ConnectionManager>();
+            _camera = GameObject.FindGameObjectWithTag("FactoryCam").GetComponent<Camera>();
+            _camera ??= Camera.main;
             
             InitializeGrid();
         }
@@ -94,7 +101,7 @@ namespace JSM.Surveillance
                 }
             }
 
-            Vector2 worldPosition = (Vector2)GetWorldPosition(leftCornerGridPos) + (Vector2)draggable.Size * cellSize/2.0f;
+            Vector3 worldPosition = GetWorldPosition(leftCornerGridPos) + (Vector3)((Vector2)draggable.Size) * cellSize/2.0f;
             draggable.Place(draggablePositions, worldPosition, this);
         }
         
@@ -329,6 +336,12 @@ namespace JSM.Surveillance
                 throw new ArgumentException($"{x}, {y} is not in {gameObject.name}'s grid!");
             
             return _grid[x, y];
+        }
+
+
+        public void SetSource(Source source)
+        {
+            Source = source;
         }
     }
 }

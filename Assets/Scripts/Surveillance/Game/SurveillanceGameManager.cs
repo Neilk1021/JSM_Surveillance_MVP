@@ -20,7 +20,6 @@ namespace JSM.Surveillance
         public MoneyManager MoneyManager => _moneyManager;
         public FactoryGrid DefaultSourceGrid => defaultSourceGrid; 
 
-
         private void Awake() {
             if (instance != null)
             {
@@ -32,7 +31,6 @@ namespace JSM.Surveillance
             _moneyManager = GetComponent<MoneyManager>();
             _mapCellManager = FindObjectOfType<MapCellManager>();
         }
-
         
         public bool BuySource(SourceData data)
         {

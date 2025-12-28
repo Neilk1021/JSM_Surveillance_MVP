@@ -10,12 +10,13 @@ namespace JSM.Surveillance.Game
 {
     public abstract partial class Source : MonoBehaviour
     {
+        [SerializeField] private string sourceName; 
         private protected MapCellManager _mapCellManager;
         private protected bool _placed = false;
         private SourceData _data;
 
         public SourceData Data => _data;
-        
+        public string SourceName => sourceName;
         [SerializeField] private SourceUI sourceUI;
         
         public virtual void Init(MapCellManager manager, SourceData data)
@@ -108,9 +109,13 @@ namespace JSM.Surveillance.Game
 
         public virtual void Destroy()
         {
+            if(_grid != null) Destroy(_grid.gameObject);
             Destroy(gameObject);
         }
 
-
+        public void UpdateName(string newName)
+        {
+            sourceName = newName;
+        }
     }
 }

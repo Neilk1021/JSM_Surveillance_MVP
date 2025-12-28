@@ -21,7 +21,12 @@ namespace JSM.Surveillance.Game
                 return;
             }
 
-            _grid = Instantiate(gridPrefab, transform.position, Quaternion.identity);
+            if (Camera.main != null)
+            {
+                _grid = Instantiate(gridPrefab, GameObject.FindGameObjectWithTag("FactoryCam").transform);
+                _grid.SetSource(this);
+                _grid.transform.localPosition = new Vector3(0, -5, 1);
+            }
         }
     }
 }

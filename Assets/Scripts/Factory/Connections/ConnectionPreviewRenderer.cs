@@ -35,14 +35,14 @@ namespace JSM.Surveillance
             lr.positionCount = worldPositionsList.Count + 2;
 
             Vector3[] worldPositions = new Vector3[lr.positionCount];
-            worldPositions[0] = start.transform.position;
+            worldPositions[0] = transform.InverseTransformPoint(start.transform.position);
                 
             for (int i = 0; i < worldPositionsList.Count; i++)
             {
-                worldPositions[i + 1] = worldPositionsList[i];
+                worldPositions[i + 1] = transform.InverseTransformPoint(worldPositionsList[i]);
             }
 
-            worldPositions[^1] = end == null ? worldPositions[^2] : end.transform.position;
+            worldPositions[^1] = end == null ? worldPositions[^2] : transform.InverseTransformPoint(end.transform.position);
             lr.SetPositions(worldPositions);
         }
         

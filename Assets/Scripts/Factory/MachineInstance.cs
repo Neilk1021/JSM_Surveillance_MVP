@@ -11,7 +11,7 @@ namespace JSM.Surveillance
         public Dictionary<Resource, int> Inputs => InputResources;
         public Dictionary<Resource, int> Outputs => OutputResources;
         
-        public override void Place(List<Vector2Int> newPositions, Vector2 worldPos, FactoryGrid grid)
+        public override void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)
         {
             base.Place(newPositions, worldPos, grid);
             
