@@ -13,11 +13,20 @@ namespace JSM.Surveillance.Game
     {
         private MapEdgeVertex vert = null;
         private SeparatedAreaView _areaView;
+        private static int _micCount = 0;
         [SerializeField] private Transform micModel;
 
         private void Start()
         {
             _areaView = GetComponent<SeparatedAreaView>();
+        }
+        
+        
+        public override void Init(MapCellManager manager, SourceData data)
+        {
+            base.Init(manager, data);
+            _micCount++;
+            sourceName += $" {_micCount}";
         }
         
         protected override void MoveSource()

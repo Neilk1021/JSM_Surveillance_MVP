@@ -15,6 +15,8 @@ namespace JSM.Surveillance.UI
         private SortingGroup _group;
         private int _startingGroupIndex;
 
+        public static int GlobalSortOrder => _globalSortOrder;
+
         private void Awake()
         {
             _group = GetComponent<SortingGroup>();

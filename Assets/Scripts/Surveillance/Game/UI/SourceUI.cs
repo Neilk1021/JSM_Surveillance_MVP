@@ -8,6 +8,11 @@ namespace JSM.Surveillance.UI
 {
     public class SourceUI : MonoBehaviour
     {
+        [SerializeField] private TextMeshProUGUI nameText;
+        [SerializeField] private TextMeshProUGUI descriptionText;
+        [SerializeField] private TextMeshProUGUI producingText;
+        [SerializeField] private TextMeshProUGUI linkedToText;
+        
         [SerializeField] private TextMeshProUGUI populationText;
         
         private Source _source;
@@ -18,9 +23,21 @@ namespace JSM.Surveillance.UI
         {
             _manager = manager;
             _source = source;
+            _source.OnModified.AddListener(ReloadUI);
             if (Camera.main != null) transform.rotation = Camera.main.transform.rotation;
-            populationText.text = $"Daily people watched: {source.GetPeopleInRange()}";
             ItemPreviewer.LoadPreview(source.Data.ShopInfo.itemModelPrefab);
+            ReloadUI();
+        }
+
+        private void ReloadUI()
+        {
+            populationText.text = $"Daily people watched: {_source.GetPeopleInRange()}";
+            nameText.text = $"{_source.Data.ShopInfo.name}";
+            descriptionText.text = $"{_source.Data.ShopInfo.desc}";
+            
+            //TODO replace this with an actual check to see what its producing
+            producingText.text = $"Producing: [Nothing] Must Modify";
+            linkedToText.text = $"Sending to: [Nothing] Selling Data";
         }
 
         public Source GetSource()

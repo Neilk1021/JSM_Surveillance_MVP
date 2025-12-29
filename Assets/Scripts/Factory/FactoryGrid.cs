@@ -86,6 +86,8 @@ namespace JSM.Surveillance
             _gridInput = Instantiate(gridInputPrefab, transform);
             _gridOutput = Instantiate(gridOutputPrefab, transform);
             
+            _gridInput.Initialize(Source);
+            
             InitializeDraggable(_gridInput , inputPosition);
             InitializeDraggable(_gridOutput, outputPosition);
         }
@@ -101,8 +103,8 @@ namespace JSM.Surveillance
                 }
             }
 
-            Vector3 worldPosition = GetWorldPosition(leftCornerGridPos) + (Vector3)((Vector2)draggable.Size) * cellSize/2.0f;
-            draggable.Place(draggablePositions, worldPosition, this);
+            //Vector3 worldPosition = GetWorldPosition(leftCornerGridPos) + (Vector3)((Vector2)draggable.Size) * cellSize/2.0f;
+            PlaceDraggable(draggable, draggablePositions);
         }
         
         private void Update()
@@ -185,12 +187,15 @@ namespace JSM.Surveillance
         {
             return _ports.GetValueOrDefault(pos, null);
         }
+
+        public bool PlaceDraggableAtCurrentPosition(Draggable draggable)
+        {
+            return PlaceDraggable(draggable, GetDraggablePositions(draggable).Select(x=>GetGridPosition(x)).ToList());
+        }
         
-        public bool PlaceDraggable(Draggable draggable)
+        public bool PlaceDraggable(Draggable draggable, List<Vector2Int> gridPositions)
         {
             draggable.transform.parent = transform;
-            var positions = GetDraggablePositions(draggable);
-            List<Vector2Int> gridPositions = positions.Select(x => GetGridPosition(x)).ToList();
 
             if (gridPositions.Contains(new Vector2Int(-1, -1))) {
                 return false;
@@ -207,15 +212,14 @@ namespace JSM.Surveillance
                 _grid[x, y].SetOccupier(draggable);
             }
 
-            Vector2 worldPos = new Vector2(
+            Vector3 worldPos = new Vector3(
                 gridPositions.Average(x => GetWorldPosition(x).x) + cellSize / 2,
-                gridPositions.Average(x => GetWorldPosition(x).y) + cellSize / 2
+                gridPositions.Average(x => GetWorldPosition(x).y) + cellSize / 2,
+                transform.position.z
             ); 
             
             draggable.Place(gridPositions, worldPos, this);
             return true;
-
-            //_hoveredCell = IsValidGridPosition(newHoveredCell.x, newHoveredCell.y) ? newHoveredCell : new Vector2Int(-1, -1);
         }
 
         private List<Vector2> GetDraggablePositions(Draggable draggable)

@@ -17,6 +17,7 @@ namespace JSM.Surveillance.UI
         
         private FactoryUI _currentUI = null;
         private CellOccupier _currentData = null;
+        public Camera WorldCamera => canvas.worldCamera;
 
         private void Awake() {
             canvas.worldCamera = GetComponentInParent<Camera>();
@@ -25,6 +26,7 @@ namespace JSM.Surveillance.UI
         public void SwitchUI(InputMachine inputMachine)
         {
             if (IsCurrentMachine(inputMachine)) return;
+            SetUI(inputUI, inputMachine);
         }
         
         public void SwitchUI(ProcessorInstance processorInstance)

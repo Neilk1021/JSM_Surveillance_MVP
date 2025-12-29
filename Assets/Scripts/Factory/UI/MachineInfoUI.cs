@@ -9,12 +9,17 @@ namespace JSM.Surveillance.UI
     public abstract class MachineInfoUI : FactoryUI, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] protected TextMeshProUGUI machineNameText;
-        [SerializeField] protected Image previewImage;
-
+        [SerializeField] private Canvas canvas;
+        
         private UIManager _uiManager;
         private bool _inside = false;
         private bool _initialized = false;
-        
+
+        private void Start()
+        {
+            canvas.worldCamera = _uiManager.WorldCamera;
+        }
+
         private void Update()
         {
             if (!Input.GetMouseButtonDown(0)) return;
@@ -27,9 +32,15 @@ namespace JSM.Surveillance.UI
             _uiManager.Close();
         }
 
+        public void Close()
+        {
+            _uiManager.Close();
+        }
+
 
         public override void Initialize(CellOccupier occupier, UIManager manager)
         {
+            canvas.sortingOrder += SurveillanceWindow.GlobalSortOrder+1;
             _uiManager = manager;
         }
 

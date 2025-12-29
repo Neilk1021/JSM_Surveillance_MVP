@@ -22,6 +22,7 @@ namespace JSM.Surveillance.UI
             _source = GetComponentInParent<FactoryGrid>().Source;
             UpdateActiveObjects();
             inputField.onSubmit.AddListener(x=>SwitchMode());
+            sourceName.text = _source.SourceName;
         }
 
         public void SwitchMode()
@@ -41,6 +42,7 @@ namespace JSM.Surveillance.UI
             _changingName = true;
             UpdateActiveObjects();
             inputField.text = _source.SourceName;
+            inputField.Select();
 
         }
 

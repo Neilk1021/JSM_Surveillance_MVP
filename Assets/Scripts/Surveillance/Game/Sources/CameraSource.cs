@@ -14,10 +14,19 @@ namespace JSM.Surveillance.Game
     {
         private MapEdgeVertex vert = null;
         private FovView _fovView;
+        private static int _cameraCount = 0; 
 
         private void Start()
         {
             _fovView = GetComponent<FovView>();
+        }
+
+
+        public override void Init(MapCellManager manager, SourceData data)
+        {
+            base.Init(manager, data);
+            _cameraCount++;
+            sourceName += $" {_cameraCount}";
         }
 
         protected override void MoveSource()

@@ -6,6 +6,7 @@ namespace JSM.Surveillance.UI
 {
     public class InputMachineUI : MachineInfoUI
     {
+        [SerializeField] private TextMeshProUGUI producingText;    
         private InputMachine _machine;
         public override void Initialize(CellOccupier occupier, UIManager manager)
         {
@@ -16,9 +17,8 @@ namespace JSM.Surveillance.UI
                 throw new ArgumentException("Tried to initialize Machine UI with non machine instance.");
             }
 
-            machineNameText.text = _machine.Data.ShopInfo.name;
-            
-
+            machineNameText.text = _machine.Source.SourceName;
+            producingText.text = $"<b>Produces:</b>\nDEBUG, need to figure out how to calc first";
         }
 
     }

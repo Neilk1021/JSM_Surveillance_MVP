@@ -5,12 +5,13 @@ using JSM.Surveillance.UI;
 using JSM.Surveillance.Util;
 using Surveillance.Game;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace JSM.Surveillance.Game
 {
     public abstract partial class Source : MonoBehaviour
     {
-        [SerializeField] private string sourceName; 
+        [SerializeField] protected string sourceName; 
         private protected MapCellManager _mapCellManager;
         private protected bool _placed = false;
         private SourceData _data;
@@ -18,9 +19,11 @@ namespace JSM.Surveillance.Game
         public SourceData Data => _data;
         public string SourceName => sourceName;
         [SerializeField] private SourceUI sourceUI;
+        public readonly UnityEvent OnModified = new UnityEvent();
         
         public virtual void Init(MapCellManager manager, SourceData data)
         {
+            sourceName = data.ShopInfo.name;
             _data = data;
             _mapCellManager = manager;
             _placed = false;

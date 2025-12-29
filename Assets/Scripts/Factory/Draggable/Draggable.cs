@@ -30,7 +30,7 @@ namespace JSM.Surveillance
         {
             if (!_isDragging || Placed) return;
             _isDragging = false;
-            Placed = Grid.PlaceDraggable(this);
+            Placed = Grid.PlaceDraggableAtCurrentPosition(this);
         }
 
         public virtual void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)

@@ -21,6 +21,12 @@ namespace JSM.Surveillance
             base.OnMouseDown();
         }
 
+        public void Initialize(Source newSource)
+        {
+            source = newSource;
+            sourceData = newSource.Data;
+        }
+
         
         //TODO make it read from the game.
     }

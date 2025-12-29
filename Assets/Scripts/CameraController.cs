@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour
     
     private float _startZ;
     private float _currentZoom = 1;
+    private bool _scrollEnabled = true;
     
     private void Start()
     {
@@ -21,6 +22,8 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
+        if(!_scrollEnabled) return;
+        
         Vector3 dir = new Vector3(Input.GetAxisRaw("Horizontal")* speed * _currentZoom, Input.GetAxisRaw("Vertical")*speed * _currentZoom, 0);
 
         float z = 0;
@@ -34,5 +37,10 @@ public class CameraController : MonoBehaviour
         
         transform.localPosition += dir;
         transform.localPosition = new Vector3(transform.position.x, transform.localPosition.y, z);
+    }
+
+    public void SetScrollActive(bool b)
+    {
+        _scrollEnabled = b;
     }
 }
