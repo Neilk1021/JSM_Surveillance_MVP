@@ -28,5 +28,17 @@ namespace JSM.Surveillance.Game
                 _grid.transform.localPosition = new Vector3(0, -6.5f, 1.25f);
             }
         }
+
+        public void HandleOutputResourceVolume(OutputMachine machine)
+        {
+            foreach (var machineOutputResource in machine.OutputResources)
+            {
+                SurveillanceGameManager.instance.MoneyManager.ChangeMoneyBy(machineOutputResource.Value *
+                                                                            machineOutputResource.Key.Value);
+                Debug.Log(machineOutputResource.Value);
+            }
+
+            machine.OutputResources.Clear();
+        }
     }
 }

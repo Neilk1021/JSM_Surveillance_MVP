@@ -15,7 +15,7 @@ namespace JSM.Surveillance
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Color validColor, invalidColor;
         
-        public Vector2Int Size => new Vector2Int(width, height);
+        public override Vector2Int Size => new Vector2Int(width, height);
         
         protected bool Placed = false;
         private SortingGroup _sortingGroup;
@@ -29,11 +29,10 @@ namespace JSM.Surveillance
         {
         }
 
-        public virtual void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)
+        public override void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)
         {
-            Initialize(newPositions, grid);
+            base.Place(newPositions, worldPos, grid);
             Placed = true;
-            transform.position = worldPos;
         }
 
         // private void Update()
@@ -55,6 +54,7 @@ namespace JSM.Surveillance
             // functionally the same as OnMouseExited, but its based on the cell in the grid. 
         }
 
+        
         public void StartPlacement()
         {
             StopAllCoroutines();
@@ -75,7 +75,7 @@ namespace JSM.Surveillance
                 {
                     if (Grid.MouseOverGrid())
                     {
-                        spriteRenderer.color =  (Grid.IsDraggableValid(this) ? validColor : invalidColor);
+                        spriteRenderer.color =  (Grid.IsCellOccupierValid(this) ? validColor : invalidColor);
                         var gridPos = Grid.GetGridPosition(Grid.GetMouseWorldPos3D());
                         transform.position = Grid.GetWorldPosition(gridPos);
                     }
@@ -89,7 +89,7 @@ namespace JSM.Surveillance
                     
                     return Input.GetMouseButtonDown(0);
                 });
-                Placed = Grid.PlaceDraggableAtCurrentPosition(this);
+                Placed = Grid.PlaceCellOccupierAtCurrentPosition(this);
                 yield return new WaitForEndOfFrame();
             }
 

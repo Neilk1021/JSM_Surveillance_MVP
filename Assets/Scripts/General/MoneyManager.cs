@@ -7,7 +7,6 @@ namespace JSM.Surveillance
     {
         [SerializeField] private int money;
 
-
         public readonly UnityEvent<int> MoneyChanged = new UnityEvent<int>();
         public int Money => money;
         

@@ -9,6 +9,8 @@ namespace JSM.Surveillance.UI
         [SerializeField] TextMeshProUGUI machineProducingText;
         [SerializeField] private TextMeshProUGUI machineRequirementsText;
         
+        [SerializeField] private ChangeRecipeUI changeRecipeUI;
+        
         private ProcessorInstance _machine;
         public override void Initialize(CellOccupier occupier, UIManager manager)
         {
@@ -18,21 +20,21 @@ namespace JSM.Surveillance.UI
             if (_machine == null) {
                 throw new ArgumentException("Tried to initialize Machine UI with non machine instance.");
             }
-
-            machineNameText.text = _machine.Data.ShopInfo.name;
-
-            machineProducingText.text = BuildProducingString(_machine.Recipe);
-            machineRequirementsText.text = BuildRequirementsString(_machine.Recipe);
+            
+            Reload();
         }
 
         private string BuildProducingString(Recipe machineRecipe)
         {
             string output = "<b>Producing:</b>\n";
 
-            foreach (var volume in machineRecipe.OutputVolume)
+            if (machineRecipe == null)
             {
-                output += $"{volume.amount}x - {volume.resource.ResourceName}\n";
+                output += $"Nothing.\nSelect a recipe";
+                return output;
             }
+            
+            output += $"{machineRecipe.OutputVolume.amount}x - {machineRecipe.OutputVolume.resource.ResourceName}\n";
 
             return output;
         }
@@ -41,12 +43,43 @@ namespace JSM.Surveillance.UI
         {
             string output = "<b>Requires:</b>\n";
 
-            foreach (var volume in machineRecipe.InputVolume)
+            if (machineRecipe == null)
+            {
+                output += $"Nothing.";
+                return output;
+            }
+            
+            foreach (var volume in machineRecipe.InputVolumes)
             {
                 output += $"{volume.amount}x - {volume.resource.ResourceName}\n";
             }
 
             return output;
+        }
+
+        public void Sell()
+        {
+            _machine.Sell();
+            Close();
+        }
+
+        public void Move()
+        {
+            _machine.Move();
+            Close();
+        }
+        public void ChangeRecipe()
+        {
+            changeRecipeUI.gameObject.SetActive(true);
+            changeRecipeUI.Load(_machine);
+        }
+        
+        public void Reload()
+        {
+            machineNameText.text = _machine.Data.ShopInfo.name;
+            machineProducingText.text = BuildProducingString(_machine.Recipe);
+            machineRequirementsText.text = BuildRequirementsString(_machine.Recipe);
+
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -10,16 +11,21 @@ namespace JSM.Surveillance
     {
         [SerializeField] private string guid = System.Guid.NewGuid().ToString();
         [SerializeField] private string recipeName;
-        [SerializeField] private ResourceVolume[] inputVolume;
-        [SerializeField] private ResourceVolume[] outputVolume;
+        [SerializeField] private List<ResourceVolume> inputVolumes;
+        [SerializeField] private ResourceVolume outputVolume;
         [SerializeField] private float time;
 
         public string Guid => guid;
         public string RecipeName => recipeName;
-        public ResourceVolume[] InputVolume => inputVolume;
-        public ResourceVolume[] OutputVolume => outputVolume;
+        public List<ResourceVolume> InputVolumes => inputVolumes;
+        public ResourceVolume OutputVolume => outputVolume;
         public float Time => time;
 
+        public bool RequiresInput(Resource resource)
+        {
+            return inputVolumes.Exists(x=> x.resource == resource);
+        }
+        
         private void OnValidate()
         {
             if (string.IsNullOrEmpty(guid))

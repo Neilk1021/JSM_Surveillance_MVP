@@ -12,7 +12,6 @@ namespace JSM.Surveillance.UI
         [SerializeField] private Canvas canvas;
         
         private UIManager _uiManager;
-        private bool _inside = false;
         private bool _initialized = false;
 
         private void Start()
@@ -23,7 +22,7 @@ namespace JSM.Surveillance.UI
         private void Update()
         {
             if (!Input.GetMouseButtonDown(0)) return;
-            if (_inside) return;
+            if (MouseInside) return;
             if (!_initialized) {
                 _initialized = true;
                 return;
@@ -46,12 +45,17 @@ namespace JSM.Surveillance.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            _inside = true;
+            MouseInside = true;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            _inside = false;
+            MouseInside = false;
+        }
+
+        public void SetInside(bool inside)
+        {
+            MouseInside = inside;
         }
     }
 }

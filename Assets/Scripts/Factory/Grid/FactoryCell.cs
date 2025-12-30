@@ -23,8 +23,6 @@ namespace JSM.Surveillance
         public void Clear()
         {
             if(!IsOccupied){return;}
-
-            _occupier.Clear();
             _occupier = null;
         }
 

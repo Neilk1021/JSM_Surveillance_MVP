@@ -10,7 +10,9 @@ namespace JSM.Surveillance
         [SerializeField] private string guid = System.Guid.NewGuid().ToString();
         [SerializeField] private string resourceName;
         [SerializeField] private Sprite sprite;
+        [SerializeField] private int value;
 
+        public int Value => value;
         public string Guid => guid;
         public string ResourceName => resourceName;
         public Sprite Sprite => sprite;

@@ -13,7 +13,7 @@ namespace JSM.Surveillance.UI
 
         [Header("Components Reference")] [SerializeField]
         private Canvas canvas;
-        
+
         
         private FactoryUI _currentUI = null;
         private CellOccupier _currentData = null;
@@ -43,7 +43,7 @@ namespace JSM.Surveillance.UI
         }
         
         private bool IsCurrentMachine(CellOccupier occupier) {
-            if (_currentData == occupier)
+            if (_currentData == occupier && !_currentUI.MouseInside)
             {
                 Close();
                 return true;
@@ -53,6 +53,7 @@ namespace JSM.Surveillance.UI
             return false;
         }
 
+  
 
         public void Close()
         {

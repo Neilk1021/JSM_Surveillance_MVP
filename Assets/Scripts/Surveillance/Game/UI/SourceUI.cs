@@ -59,7 +59,7 @@ namespace JSM.Surveillance.UI
         private void DestroySource()
         {
             _source.CloseUI();
-            Destroy(_source.gameObject);
+            _source.Destroy();
         }
     }
 }

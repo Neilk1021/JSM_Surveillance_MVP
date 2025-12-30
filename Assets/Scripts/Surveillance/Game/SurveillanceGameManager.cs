@@ -65,7 +65,7 @@ namespace JSM.Surveillance
         {
             _moneyManager.ChangeMoneyBy(source.Data.UpfrontCost);
             
-            Destroy(source.gameObject);
+            source.Destroy();
         }
     }
 }

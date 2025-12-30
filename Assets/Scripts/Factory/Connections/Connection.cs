@@ -39,8 +39,14 @@ namespace JSM.Surveillance
         private void Update()
         {
             _renderer.Render(_status);
+            if (_status == CellOccupierStatus.Hovering)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Remove();
+                }
+            }
         }
-
 
         public void InitializeConnection(ProcessorPort start, ProcessorPort end, FactoryGrid grid, List<Vector2Int> path)
         {
@@ -51,16 +57,12 @@ namespace JSM.Surveillance
             _startPort.SetConnection(this);
             _endPort.SetConnection(this);
             
-            _inputMachine = start.Type == NodeType.Input ? start.Owner : end.Owner;
-            _outputMachine = start.Type == NodeType.Output ? start.Owner : end.Owner;
+            _inputMachine = start.Type == NodeType.Output ? start.Owner : end.Owner;
+            _outputMachine = start.Type == NodeType.Input ? start.Owner : end.Owner;
             
             _renderer.PlaceConnection();
         }
 
-        public void RemoveConnection()
-        {
-            //remove connection
-        }
 
         public override void Entered()
         {

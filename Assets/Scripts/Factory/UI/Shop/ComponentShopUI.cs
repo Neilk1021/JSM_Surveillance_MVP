@@ -44,6 +44,10 @@ namespace JSM.Surveillance.UI
 
         public void Buy(ProcessorInstance processorPrefab)
         {
+            if (!SurveillanceGameManager.instance.MoneyManager.ChangeMoneyBy(-processorPrefab.Data.UpfrontCost)) {
+                return;
+            }
+            
             var processorObj = Instantiate(processorPrefab, _grid.transform);
             processorObj.StartPlacement();
         }

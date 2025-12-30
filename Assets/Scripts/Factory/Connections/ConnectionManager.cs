@@ -83,9 +83,9 @@ namespace JSM.Surveillance
             Destroy(connectionPreview.gameObject);
             if (endPort == null || endPort == startPort || endPort.Type == startPort.Type || endPort.Owner == startPort.Owner) yield break;
             
-            var connectionObj = Instantiate(connectionPrefab, transform);
-            connectionObj.InitializeConnection(startPort, endPort, grid, connectionPositions);
-            grid.PlaceConnection(connectionObj);
+
+            grid.PlaceConnection(connectionPrefab, startPort, endPort, connectionPositions);
+
         }
 
         private ProcessorPort RefreshPreview(ProcessorPort startPort, List<Vector2Int> connectionPositions, Vector2Int newPos,

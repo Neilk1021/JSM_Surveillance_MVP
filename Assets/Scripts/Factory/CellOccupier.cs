@@ -9,6 +9,8 @@ namespace JSM.Surveillance
     {
         private Vector2Int[] _positions;
         private FactoryGrid _grid;
+
+        public virtual Vector2Int Size => new Vector2Int(1, 1);
         
         private PriorityQueue<Vector2Int, float> _pqPositions = new(PriorityQueueType.Min);
         public Vector2Int[] Positions => _positions;
@@ -35,6 +37,14 @@ namespace JSM.Surveillance
             this._positions = newPositions.ToArray();
             this._grid = grid;
 
+            
+            foreach (var pos in newPositions)
+            {
+                int x = pos.x;
+                int y = pos.y;
+                _grid[x, y].SetOccupier(this);
+            }
+
             _pqPositions = new PriorityQueue<Vector2Int, float>(PriorityQueueType.Min);
             foreach (var pos in newPositions)
             {
@@ -42,6 +52,28 @@ namespace JSM.Surveillance
             }
             
         }
+
+        protected void ClearFromBoard()
+        {
+            foreach (var pos in _positions)
+            {
+                int x = pos.x;
+                int y = pos.y;
+                _grid[x, y].Clear();
+            }
+        }
+        
+        protected void Remove()
+        {
+            Destroy(gameObject);
+        }
+        
+        public virtual void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)
+        {
+            Initialize(newPositions, grid);
+            transform.position = worldPos;
+        }
+
 
         public abstract void Entered();
 
