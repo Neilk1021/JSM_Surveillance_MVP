@@ -12,10 +12,13 @@ namespace JSM.Surveillance.UI
         [SerializeField] private List<ProcessorInstance> buyableProcessors;
         [Tooltip("The transform that all the UI prefabs should be spawned under.")]
         [SerializeField] private Transform contentView;
+
+        private FactoryGrid _grid;
         
         private void Awake()
         {
             if (Camera.main != null) _cc = Camera.main.GetComponent<CameraController>();
+            _grid = GetComponentInParent<FactoryGrid>();
         }
 
         private void Start()
@@ -23,7 +26,7 @@ namespace JSM.Surveillance.UI
             foreach (var processor in buyableProcessors)
             {
                 var element = Instantiate(componentUIElementPrefab, contentView);
-                element.LoadProcessor(processor);
+                element.Load(processor, this);
             }
         }
 
@@ -37,6 +40,12 @@ namespace JSM.Surveillance.UI
         public void OnPointerExit(PointerEventData eventData)
         {
             _cc?.SetScrollActive(true);
+        }
+
+        public void Buy(ProcessorInstance processorPrefab)
+        {
+            var processorObj = Instantiate(processorPrefab, _grid.transform);
+            processorObj.StartPlacement();
         }
     }
 }

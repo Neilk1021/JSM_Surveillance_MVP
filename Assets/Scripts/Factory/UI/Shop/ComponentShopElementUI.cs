@@ -14,8 +14,15 @@ namespace JSM.Surveillance.UI
         
         private ProcessorInstance _processorInstance;
         private ComponentShopPreviewUI _previewInstance;
+        private ComponentShopUI _shopUI;
 
-        public void LoadProcessor(ProcessorInstance processorInstance)
+        public void Load(ProcessorInstance processor, ComponentShopUI shop)
+        {
+            _shopUI = shop;
+            LoadProcessor(processor);
+        }
+        
+        private void LoadProcessor(ProcessorInstance processorInstance)
         {
             _processorInstance = processorInstance;
             RefreshUI();
@@ -43,7 +50,12 @@ namespace JSM.Surveillance.UI
             if(_previewInstance == null) return;
             
             Destroy(_previewInstance.gameObject);
-            _processorInstance = null;
+            _previewInstance = null;
+        }
+
+        public void Buy()
+        {
+            _shopUI.Buy(_processorInstance);
         }
     }
 }

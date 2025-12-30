@@ -1,0 +1,19 @@
+Todo - Neil K.
+
+- Citizens that move around and have info (should be easy)?
+- Actually run simulation and give back money to player.
+- Delete machines and connections
+- Change Recipes
+- Close Grid for a camera?
+- Link up sources
+- Allow inputs into grids
+- Different grids?
+
+CCTV 
+- 1 linked input
+
+Mic 
+- No linked input. 
+
+Basic Server
+- 2 linked inputs

@@ -8,6 +8,7 @@ namespace JSM.Surveillance
 {
     public abstract class ProcessorInstance : MachineInstance 
     {
+        [Header("Processor Info")]
         [SerializeField] private ProcessorData data;
         [SerializeField] private Recipe selectedRecipe;
 
@@ -24,7 +25,7 @@ namespace JSM.Surveillance
         protected override void OnMouseDown()
         {
             if (Placed) {
-                FactoryGrid.ActiveGrid.UIManager.SwitchUI(this);
+                Grid.UIManager.SwitchUI(this);
             }
 
             base.OnMouseDown();
@@ -100,6 +101,7 @@ namespace JSM.Surveillance
             InputResources.TryAdd(resource, 0);
             InputResources[resource] += amount;
         }
+
 
     }
 }

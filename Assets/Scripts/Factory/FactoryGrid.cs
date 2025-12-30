@@ -27,7 +27,6 @@ namespace JSM.Surveillance
         private Vector2Int _hoveredCell = new Vector2Int(-1, -1);
 
         //Allows multiple grids where we just switch between different grids as needed.
-        public static FactoryGrid ActiveGrid; 
 
         private readonly Dictionary<Vector2Int, ProcessorPort> _ports = new Dictionary<Vector2Int, ProcessorPort>(); 
         
@@ -52,11 +51,7 @@ namespace JSM.Surveillance
         private void Awake()
         {
             _uiManager = GetComponent<UIManager>();
-            if (ActiveGrid == null)
-            {
-                ActiveGrid = this;
-            }
-
+            
             _connectionManager = GetComponentInChildren<ConnectionManager>();
             _camera = GameObject.FindGameObjectWithTag("FactoryCam").GetComponent<Camera>();
             _camera ??= Camera.main;
@@ -116,7 +111,7 @@ namespace JSM.Surveillance
         {
             if (_camera == null) return;
 
-            var mouseWorldPos = GetMouseWorldPos();
+            var mouseWorldPos = GetMouseWorldPos3D();
             if(mouseWorldPos == Vector3.negativeInfinity) return;
             Vector2Int newHoveredCell = GetGridPosition(mouseWorldPos);
 
@@ -131,7 +126,13 @@ namespace JSM.Surveillance
                 _grid[_hoveredCell.x, _hoveredCell.y].EnterHover();
         }
 
-        public Vector3 GetMouseWorldPos()
+        public Vector2 GetMouseWorldPos2D()
+        {
+            Vector3 mousePos = Input.mousePosition;
+            return _camera.ScreenToWorldPoint(mousePos);
+        }
+        
+        public Vector3 GetMouseWorldPos3D()
         {
             Vector3 mousePos = Input.mousePosition;
             Ray ray = _camera.ScreenPointToRay(mousePos);
@@ -170,7 +171,6 @@ namespace JSM.Surveillance
                 return false;
             }
             
-            
             foreach (var pos in positions)
             {
                 int x = pos.x;
@@ -182,7 +182,6 @@ namespace JSM.Surveillance
         }
 
 
-
         public ProcessorPort GetPortAtCell(Vector2Int pos)
         {
             return _ports.GetValueOrDefault(pos, null);
@@ -191,6 +190,11 @@ namespace JSM.Surveillance
         public bool PlaceDraggableAtCurrentPosition(Draggable draggable)
         {
             return PlaceDraggable(draggable, GetDraggablePositions(draggable).Select(x=>GetGridPosition(x)).ToList());
+        }
+
+        public bool IsDraggableValid(Draggable draggable)
+        {
+            return VerifyPlacementValid(GetDraggablePositions(draggable).Select(x=>GetGridPosition(x)).ToList());
         }
         
         public bool PlaceDraggable(Draggable draggable, List<Vector2Int> gridPositions)
@@ -298,6 +302,11 @@ namespace JSM.Surveillance
         //tryPlaceMachine: check if space is occupied
         //placeMachine
 
+        private bool IsValidGridPosition(Vector2Int pos)
+        {
+            return IsValidGridPosition(pos.x, pos.y);
+        }
+
         private bool IsValidGridPosition(int x, int y)
         {
             return x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
@@ -334,6 +343,7 @@ namespace JSM.Surveillance
             _ports.Remove(pos);
         }
 
+        
         public FactoryCell GetCell(int x, int y)
         {
             if (!IsValidGridPosition(x, y)) 
@@ -347,5 +357,11 @@ namespace JSM.Surveillance
         {
             Source = source;
         }
+
+        public bool MouseOverGrid()
+        {
+            return IsValidGridPosition(GetGridPosition(GetMouseWorldPos3D()));
+        }
+
     }
 }

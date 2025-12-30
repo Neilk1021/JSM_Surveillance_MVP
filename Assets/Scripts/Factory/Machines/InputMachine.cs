@@ -15,7 +15,7 @@ namespace JSM.Surveillance
         protected override void OnMouseDown()
         {
             if (Placed) {
-                FactoryGrid.ActiveGrid.UIManager.SwitchUI(this);
+                Grid.UIManager.SwitchUI(this);
             }
 
             base.OnMouseDown();

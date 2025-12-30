@@ -61,7 +61,7 @@ namespace JSM.Surveillance
             {
                 yield return null;
                 
-                var newPos = grid.GetGridPosition(grid.GetMouseWorldPos());
+                var newPos = grid.GetGridPosition(grid.GetMouseWorldPos3D());
                 
                 if (newPos == lastPos) continue;
                 if (connectionPositions.Contains(newPos))

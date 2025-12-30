@@ -18,7 +18,6 @@ namespace JSM.Surveillance
         protected virtual void Start()
         {
             _grid = GetComponentInParent<FactoryGrid>();
-            _grid ??= FactoryGrid.ActiveGrid;
         }
 
         public Vector2Int GetRootPosition()
