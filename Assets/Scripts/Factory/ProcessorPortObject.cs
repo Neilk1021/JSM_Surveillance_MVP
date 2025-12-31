@@ -7,12 +7,13 @@ namespace JSM.Surveillance
 {
     public enum NodeType
     {
-        Input,
-        Output
+        End,
+        Start
     }
-    public class ProcessorPort : MonoBehaviour
+
+    public class ProcessorPortObject : MonoBehaviour
     {
-        [SerializeField] private MachineInstance owner;
+        [SerializeField] private MachineObject owner;
         [SerializeField] private NodeType type;
         [SerializeField] private int nodeIndex;
 
@@ -27,12 +28,12 @@ namespace JSM.Surveillance
 
         public Vector2Int SubcellPosition => new Vector2Int(_subcellX, _subcellY);
         
-        public MachineInstance Owner => owner;
+        public MachineObject Owner => owner;
         public NodeType Type => type;
         public int NodeIndex => nodeIndex;
 
-        private Connection _connection;
-        public Connection Connection => _connection;
+        private ConnectionObject _connectionObject;
+        public ConnectionObject ConnectionObject => _connectionObject;
 
         private void Awake()
         {
@@ -42,20 +43,23 @@ namespace JSM.Surveillance
 
         private void OnMouseDown()
         {
-            Debug.Log("node clicked: " + name);
-
             if (owner.Grid.ConnectionManager != null)
             {
                 owner.Grid.ConnectionManager.OnNodeClicked(this);
             }
         }
         
-        public void SetConnection(Connection newConnection)
+        public void SetConnection(ConnectionObject newConnectionObject)
         {
-            _connection = newConnection;
+            _connectionObject = newConnectionObject;
         }
 
-#if UNITY_EDITOR
+        //public ProcessorPort BuildInstance()
+        //{
+            //return new ProcessorPort(connec)
+        //}
+
+        #if UNITY_EDITOR
         private void OnValidate()
         {
             if (_subcellX == posX && _subcellY == posY) return;

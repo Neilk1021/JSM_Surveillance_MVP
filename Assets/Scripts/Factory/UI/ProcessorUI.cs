@@ -11,12 +11,12 @@ namespace JSM.Surveillance.UI
         
         [SerializeField] private ChangeRecipeUI changeRecipeUI;
         
-        private ProcessorInstance _machine;
+        private ProcessorObject _machine;
         public override void Initialize(CellOccupier occupier, UIManager manager)
         {
             base.Initialize(occupier, manager);
             
-            _machine = (ProcessorInstance)occupier;
+            _machine = (ProcessorObject)occupier;
             if (_machine == null) {
                 throw new ArgumentException("Tried to initialize Machine UI with non machine instance.");
             }

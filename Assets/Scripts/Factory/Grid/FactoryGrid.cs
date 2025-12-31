@@ -10,11 +10,11 @@ namespace JSM.Surveillance
 {
     public partial class FactoryGrid : MonoBehaviour
     {
-        [Header("Grid Input")]
-        [SerializeField] private InputMachine gridInputPrefab;
+        [Header("Grid End")]
+        [SerializeField] private InputMachineObject gridInputPrefab;
         [SerializeField] private Vector2Int inputPosition;
         
-        [Header("Grid Output")] 
+        [Header("Grid Start")] 
         [SerializeField] private OutputMachine gridOutputPrefab;
         [SerializeField] private Vector2Int outputPosition;
         
@@ -22,14 +22,14 @@ namespace JSM.Surveillance
 
         //Allows multiple grids where we just switch between different grids as needed.
 
-        private readonly Dictionary<Vector2Int, ProcessorPort> _ports = new Dictionary<Vector2Int, ProcessorPort>(); 
+        private readonly Dictionary<Vector2Int, ProcessorPortObject> _ports = new Dictionary<Vector2Int, ProcessorPortObject>(); 
         
         private FactoryCell[,] _grid; 
         
         private Camera _camera;
 
         private UIManager _uiManager;
-        private InputMachine _gridInput;
+        private InputMachineObject _gridInput;
         private OutputMachine _gridOutput;
 
         public UIManager UIManager => _uiManager;
@@ -94,7 +94,7 @@ namespace JSM.Surveillance
         
         private void Update()
         {
-            /*if (Input.GetKeyDown(KeyCode.P))
+            /*if (End.GetKeyDown(KeyCode.P))
             {
                 StartSimulation();
             }*/
@@ -122,7 +122,7 @@ namespace JSM.Surveillance
         }
         
 
-        public bool PlaceConnection(Connection connectionPrefab, ProcessorPort startPort, ProcessorPort endPort, List<Vector2Int> connectionPositions)
+        public bool PlaceConnection(ConnectionObject connectionObjectPrefab, ProcessorPortObject startPortObject, ProcessorPortObject endPortObject, List<Vector2Int> connectionPositions)
         {
             if (connectionPositions.Contains(new Vector2Int(-1, -1))) {
                 return false;
@@ -131,8 +131,8 @@ namespace JSM.Surveillance
                 return false;
             }
             
-            var connectionObj = Instantiate(connectionPrefab, transform);
-            connectionObj.InitializeConnection(startPort, endPort, this, connectionPositions);
+            var connectionObj = Instantiate(connectionObjectPrefab, transform);
+            connectionObj.InitializeConnection(startPortObject, endPortObject, this, connectionPositions);
             connectionObj.transform.parent = transform;
 
             return true;
@@ -169,9 +169,9 @@ namespace JSM.Surveillance
             return true;
         }
 
-        public void RegisterPort(Vector2Int pos, ProcessorPort port )
+        public void RegisterPort(Vector2Int pos, ProcessorPortObject portObject )
         {
-            _ports.TryAdd(pos, port);
+            _ports.TryAdd(pos, portObject);
         }
         public void UnregisterPort(Vector2Int pos)
         {
@@ -192,124 +192,24 @@ namespace JSM.Surveillance
             Source = source;
         }
 
-         public FactoryCell this[int i, int i1] => _grid[i, i1];
+        public FactoryCell this[int i, int i1] => _grid[i, i1];
 
-         // ReSharper disable Unity.PerformanceAnalysis
-         private void StartSimulation()
-         {
-             StartChildren(_gridInput);
-             FeedAllMachines(_gridInput);
-         }
+        public FactoryGridSimulation BuildSimulator()
+        {
+            return new FactoryGridSimulation(GetComponentsInChildren<MachineObject>(),Source);
+        }
 
-         private void StartChildren(MachineInstance machineInstance)
-         {
-             if(machineInstance == null) return;
-             
-             if (machineInstance is ProcessorInstance processorInstance)
-             {
-                 if(processorInstance.IsRunning) return;
-                 processorInstance.StartSimulation();
-             }
+        public void SaveGridToSource()
+        {
+            //todo save position stuff
 
-             foreach (var port in machineInstance.OutputPorts)
-             {
-                 if (port.Connection != null)
-                 {
-                     StartChildren(port.Connection.OutputMachine);
-                 }
-             }
-         }
-         
-         // ReSharper disable Unity.PerformanceAnalysis
-         public void ReloadMachineResources()
-         {
-            FeedAllMachines(_gridInput);
-         }
+            Source.SetSimulation(BuildSimulator());
+        }
 
-        
-         private void FeedAllMachines(MachineInstance currentMachine)
-         {
-             if (currentMachine == null) return;
-             if (currentMachine is OutputMachine outputMachine)
-             {
-                 Source.HandleOutputResourceVolume(outputMachine);
-                 return;
-             }
-             
-             
-             List<MachineInstance> nextMachines = new List<MachineInstance>();
-             var splitAmnt = 0;
-             
-             foreach (var port in currentMachine.OutputPorts)
-             {
-                 if (port.Connection == null) continue; 
-                 MachineInstance nextMachine = port.Connection.OutputMachine;
-                 nextMachines.Add(nextMachine);
-                 switch (nextMachine)
-                 {
-                     case ProcessorInstance nextProcessor:
-                         if (nextProcessor.Recipe != null &&
-                             nextProcessor.Recipe.RequiresInput(currentMachine.Output.resource))
-                         {
-                             ++splitAmnt;
-                         }
-                         break;
-                     case OutputMachine:
-                         ++splitAmnt;
-                         break;
-                     default: 
-                         break;
-                 }
-             }
-
-             if (currentMachine.Output.amount > 0)
-             {
-                 FeedChildMachines(currentMachine, nextMachines, splitAmnt);
-             }
-
-             foreach (var machine in nextMachines)
-             {
-                 FeedAllMachines(machine);
-             }
-         }
-
-         private void FeedChildMachines(MachineInstance currentMachine, List<MachineInstance> nextMachines, int splitAmnt)
-         {
-             foreach (var machine in nextMachines.TakeWhile(machine => splitAmnt != 0))
-             {
-                 switch (machine)
-                 {
-                     case ProcessorInstance processor when processor.Recipe == null || !processor.Recipe.RequiresInput(currentMachine.Output.resource):
-                         break;
-                     case ProcessorInstance processor:
-                         FeedProcessorInputs(currentMachine, processor, splitAmnt);
-                         splitAmnt -= 1;
-                         break;
-                     case OutputMachine output:
-                         FeedOutputResources(currentMachine, output, splitAmnt);
-                         splitAmnt -= 1;
-                         break;
-                 }
-             }
-         }
-
-         private void FeedOutputResources(MachineInstance previous, OutputMachine outputMachine, int splitAmnt)
-         {
-             int amnt = previous.RemoveOutput(previous.Output.amount / splitAmnt);
-             outputMachine.AddResource(previous.Output.resource, amnt);
-         }
-         
-         private void FeedProcessorInputs(MachineInstance previous, ProcessorInstance current, int splitAmnt)
-         {
-             int amnt = previous.RemoveOutput( previous.Output.amount / splitAmnt);
-             int excess = current.AddInput(previous.Output.resource, amnt);
-             previous.AddOutput(previous.Output.resource, excess);
-         }
-         private bool IsValidTarget(MachineInstance m, Resource res) => m switch
-         {
-             ProcessorInstance p => p.Recipe?.RequiresInput(res) ?? false,
-             OutputMachine => true,
-             _ => false
-         };
+        public void CloseGrid()
+        {
+            SaveGridToSource();
+            Destroy(gameObject);
+        }
     }
 }

@@ -39,7 +39,7 @@ namespace JSM.Surveillance
         // {
         //     if (!_isDragging || Placed) return;
         //
-        //     Vector2 mousePos = _camera.ScreenToWorldPoint(Input.mousePosition);
+        //     Vector2 mousePos = _camera.ScreenToWorldPoint(End.mousePosition);
         //     transform.position = mousePos;
         // }
 

@@ -9,13 +9,13 @@ namespace JSM.Surveillance.UI
         [SerializeField] private TextMeshProUGUI descText;
         [SerializeField] private TextMeshProUGUI costText;
 
-        public void LoadInformation(ProcessorInstance processor)
+        public void LoadInformation(ProcessorObject processor)
         {
             nameText.text = $"{processor.Data.ShopInfo.name}";
             descText.text = $"{processor.Data.ShopInfo.desc}";
             costText.text = $"<i>Cost: ${processor.Data.UpfrontCost}</i>";
 
-            //nameText.text = $"{machineInstance.}";
+            //nameText.text = $"{machineObject.}";
         }
 
     }

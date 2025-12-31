@@ -12,28 +12,28 @@ namespace JSM.Surveillance.UI
         [SerializeField] private TextMeshProUGUI costText;
         [SerializeField] private ComponentShopPreviewUI previewUIPrefab;
         
-        private ProcessorInstance _processorInstance;
+        private ProcessorObject _processorObject;
         private ComponentShopPreviewUI _previewInstance;
         private ComponentShopUI _shopUI;
 
-        public void Load(ProcessorInstance processor, ComponentShopUI shop)
+        public void Load(ProcessorObject processor, ComponentShopUI shop)
         {
             _shopUI = shop;
             LoadProcessor(processor);
         }
         
-        private void LoadProcessor(ProcessorInstance processorInstance)
+        private void LoadProcessor(ProcessorObject processorObject)
         {
-            _processorInstance = processorInstance;
+            _processorObject = processorObject;
             RefreshUI();
         }
 
         private void RefreshUI()
         {
-            if(_processorInstance == null) return;
+            if(_processorObject == null) return;
             
-            nameText.text = $"{_processorInstance.Data.ShopInfo.name}";
-            costText.text = $"Cost: ${_processorInstance.Data.UpfrontCost}";
+            nameText.text = $"{_processorObject.Data.ShopInfo.name}";
+            costText.text = $"Cost: ${_processorObject.Data.UpfrontCost}";
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -41,7 +41,7 @@ namespace JSM.Surveillance.UI
             if(_previewInstance != null) return;
 
             _previewInstance = Instantiate(previewUIPrefab, transform);
-            _previewInstance.LoadInformation(_processorInstance);
+            _previewInstance.LoadInformation(_processorObject);
             
         }
 
@@ -55,7 +55,7 @@ namespace JSM.Surveillance.UI
 
         public void Buy()
         {
-            _shopUI.Buy(_processorInstance);
+            _shopUI.Buy(_processorObject);
         }
     }
 }

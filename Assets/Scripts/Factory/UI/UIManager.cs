@@ -19,20 +19,25 @@ namespace JSM.Surveillance.UI
         private CellOccupier _currentData = null;
         public Camera WorldCamera => canvas.worldCamera;
 
+        public bool IsUIOpen()
+        {
+            return _currentUI != null;
+        }
+        
         private void Awake() {
             canvas.worldCamera = GetComponentInParent<Camera>();
         }
 
-        public void SwitchUI(InputMachine inputMachine)
+        public void SwitchUI(InputMachineObject inputMachineObject)
         {
-            if (IsCurrentMachine(inputMachine)) return;
-            SetUI(inputUI, inputMachine);
+            if (IsCurrentMachine(inputMachineObject)) return;
+            SetUI(inputUI, inputMachineObject);
         }
         
-        public void SwitchUI(ProcessorInstance processorInstance)
+        public void SwitchUI(ProcessorObject processorObject)
         {
-            if (IsCurrentMachine(processorInstance)) return;
-            SetUI(processorUI, processorInstance);
+            if (IsCurrentMachine(processorObject)) return;
+            SetUI(processorUI, processorObject);
         }
 
         private void SetUI(FactoryUI ui, CellOccupier value)

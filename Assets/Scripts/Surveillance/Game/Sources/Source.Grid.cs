@@ -9,8 +9,15 @@ namespace JSM.Surveillance.Game
         [SerializeField] private FactoryGrid gridPrefab;
 
         private FactoryGrid _grid = null;
-        
-        protected virtual void Awake() {
+        [SerializeField] public Resource Resource;
+        public FactoryGrid Grid => _grid;
+        private FactoryGridSimulation _simulation;
+        private FactorySimulationRunner _factorySimulationRunner;
+
+
+        protected virtual void Awake()
+        {
+            _factorySimulationRunner = GetComponent<FactorySimulationRunner>();
             gridPrefab ??= SurveillanceGameManager.instance.DefaultSourceGrid;
         }
         
@@ -29,7 +36,7 @@ namespace JSM.Surveillance.Game
             }
         }
 
-        public void HandleOutputResourceVolume(OutputMachine machine)
+        public void HandleOutputResourceVolume(OutputMachineInstance machine)
         {
             foreach (var machineOutputResource in machine.OutputResources)
             {
@@ -39,6 +46,17 @@ namespace JSM.Surveillance.Game
             }
 
             machine.OutputResources.Clear();
+        }
+
+        public void SetSimulation(FactoryGridSimulation buildSimulator)
+        {
+            _simulation = buildSimulator;
+        }
+
+        public void RunSimulator()
+        {
+            _factorySimulationRunner.Load(_simulation);
+            _factorySimulationRunner.Run();
         }
     }
 }

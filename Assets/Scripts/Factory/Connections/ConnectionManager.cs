@@ -10,7 +10,7 @@ namespace JSM.Surveillance
     public class ConnectionManager : MonoBehaviour
     {
         [SerializeField] FactoryGrid grid;
-        [SerializeField] private Connection connectionPrefab;
+        [FormerlySerializedAs("connectionPrefab")] [SerializeField] private ConnectionObject connectionObjectPrefab;
         [SerializeField] private ConnectionPreviewRenderer connectionPreviewPreviewPrefab;
         
         private Camera _camera;
@@ -24,9 +24,9 @@ namespace JSM.Surveillance
             grid ??= FindObjectOfType<FactoryGrid>();
         }
 
-        public void OnNodeClicked(ProcessorPort port)
+        public void OnNodeClicked(ProcessorPortObject portObject)
         {
-            Debug.Log($"Node clicked: {port.Type} on processor {port.Owner.name}");
+            Debug.Log($"Node clicked: {portObject.Type} on processor {portObject.Owner.name}");
 
             // Check if node already has a connection, if so, should remove connection?
 
@@ -34,17 +34,17 @@ namespace JSM.Surveillance
             //if type input can only connect to output/base resource?
             //if output cannot connect to ohter output.
             //if node is input and pending an output node, connect and set pending null
-            StartCoroutine(MakeConnection(port));
+            StartCoroutine(MakeConnection(portObject));
         }
 
 
-        IEnumerator MakeConnection(ProcessorPort startPort)
+        IEnumerator MakeConnection(ProcessorPortObject startPortObject)
         {
-            CellOccupier occupier = startPort.Owner.GetComponent<CellOccupier>();
+            CellOccupier occupier = startPortObject.Owner.GetComponent<CellOccupier>();
             if(occupier == null) yield break;
             
             Vector2Int rootPos =  occupier.GetRootPosition();
-            Vector2Int startingCell = startPort.SubcellPosition + rootPos;
+            Vector2Int startingCell = startPortObject.SubcellPosition + rootPos;
 
             if (!grid.IsCellEmpty(startingCell)) {
                 yield break; 
@@ -54,7 +54,7 @@ namespace JSM.Surveillance
 
             Vector2Int lastPos = startingCell;
             
-            ProcessorPort endPort = null;
+            ProcessorPortObject endPortObject = null;
             var connectionPreview = Instantiate(connectionPreviewPreviewPrefab, transform);
             
             while (Input.GetMouseButton(0))
@@ -68,7 +68,7 @@ namespace JSM.Surveillance
                 {
                     lastPos = SlicePositionList(newPos, ref connectionPositions);
 
-                    endPort = RefreshPreview(startPort, connectionPositions, newPos, connectionPreview);
+                    endPortObject = RefreshPreview(startPortObject, connectionPositions, newPos, connectionPreview);
                     continue;
                 }
                 if (!grid.IsCellEmpty(newPos)) continue;
@@ -77,18 +77,18 @@ namespace JSM.Surveillance
                 connectionPositions.Add(newPos);
                 lastPos = newPos;
                 
-                endPort = RefreshPreview(startPort, connectionPositions, newPos, connectionPreview);
+                endPortObject = RefreshPreview(startPortObject, connectionPositions, newPos, connectionPreview);
             }
             
             Destroy(connectionPreview.gameObject);
-            if (endPort == null || endPort == startPort || endPort.Type == startPort.Type || endPort.Owner == startPort.Owner) yield break;
+            if (endPortObject == null || endPortObject == startPortObject || endPortObject.Type == startPortObject.Type || endPortObject.Owner == startPortObject.Owner) yield break;
             
 
-            grid.PlaceConnection(connectionPrefab, startPort, endPort, connectionPositions);
+            grid.PlaceConnection(connectionObjectPrefab, startPortObject, endPortObject, connectionPositions);
 
         }
 
-        private ProcessorPort RefreshPreview(ProcessorPort startPort, List<Vector2Int> connectionPositions, Vector2Int newPos,
+        private ProcessorPortObject RefreshPreview(ProcessorPortObject startPortObject, List<Vector2Int> connectionPositions, Vector2Int newPos,
             ConnectionPreviewRenderer connectionPreview)
         {
             var worldPos = connectionPositions.Select(x => 
@@ -97,7 +97,7 @@ namespace JSM.Surveillance
             ).ToList();
                     
             var endPort = grid.GetPortAtCell(newPos);
-            connectionPreview.UpdateConnectionPath(worldPos, startPort, endPort);
+            connectionPreview.UpdateConnectionPath(worldPos, startPortObject, endPort);
             return endPort;
         }
 

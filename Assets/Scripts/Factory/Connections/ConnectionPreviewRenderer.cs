@@ -13,9 +13,9 @@ namespace JSM.Surveillance
             lr ??= GetComponent<LineRenderer>();
         }
 
-        private void SwitchLRColor(ProcessorPort start, ProcessorPort endPort)
+        private void SwitchLRColor(ProcessorPortObject start, ProcessorPortObject endPortObject)
         {
-            if (endPort != null &&  endPort != start && endPort.Type != start.Type && endPort.Owner != start.Owner) {
+            if (endPortObject != null &&  endPortObject != start && endPortObject.Type != start.Type && endPortObject.Owner != start.Owner) {
                 lr.startColor = Color.green;
                 lr.endColor = Color.green;
             }
@@ -27,8 +27,8 @@ namespace JSM.Surveillance
 
         public void UpdateConnectionPath(
             List<Vector3> worldPositionsList, 
-            ProcessorPort start, 
-            ProcessorPort end= null)
+            ProcessorPortObject start, 
+            ProcessorPortObject end= null)
         {
             SwitchLRColor(start, end);
             

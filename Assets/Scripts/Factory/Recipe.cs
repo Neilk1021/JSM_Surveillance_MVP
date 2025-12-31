@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace JSM.Surveillance
 {
@@ -13,13 +14,13 @@ namespace JSM.Surveillance
         [SerializeField] private string recipeName;
         [SerializeField] private List<ResourceVolume> inputVolumes;
         [SerializeField] private ResourceVolume outputVolume;
-        [SerializeField] private float time;
+        [FormerlySerializedAs("time")] [SerializeField] private int ticks;
 
         public string Guid => guid;
         public string RecipeName => recipeName;
         public List<ResourceVolume> InputVolumes => inputVolumes;
         public ResourceVolume OutputVolume => outputVolume;
-        public float Time => time;
+        public int Ticks => ticks;
 
         public bool RequiresInput(Resource resource)
         {

@@ -14,20 +14,20 @@ namespace JSM.Surveillance
     }
     
     [System.Serializable]
-    public class Connection : CellOccupier
+    public class ConnectionObject : CellOccupier
     {
-        private ProcessorPort _startPort;
-        private ProcessorPort _endPort;
+        private ProcessorPortObject _startPortObject;
+        private ProcessorPortObject _endPortObject;
         
-        private MachineInstance _inputMachine; 
-        private MachineInstance _outputMachine;
+        private MachineObject _endMachine; 
+        private MachineObject _startMachine;
         private ConnectionRenderer _renderer;
 
-        public MachineInstance InputMachine => _inputMachine;
-        public MachineInstance OutputMachine => _outputMachine;
+        public MachineObject EndMachine => _endMachine;
+        public MachineObject StartMachine => _startMachine;
 
-        public ProcessorPort StartPort => _startPort;
-        public ProcessorPort EndPort => _endPort;
+        public ProcessorPortObject StartPortObject => _startPortObject;
+        public ProcessorPortObject EndPortObject => _endPortObject;
 
         private CellOccupierStatus _status;  
         
@@ -41,24 +41,24 @@ namespace JSM.Surveillance
             _renderer.Render(_status);
             if (_status == CellOccupierStatus.Hovering)
             {
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && !Grid.UIManager.IsUIOpen())
                 {
                     Remove();
                 }
             }
         }
 
-        public void InitializeConnection(ProcessorPort start, ProcessorPort end, FactoryGrid grid, List<Vector2Int> path)
+        public void InitializeConnection(ProcessorPortObject start, ProcessorPortObject end, FactoryGrid grid, List<Vector2Int> path)
         {
             base.Initialize(path, grid);
-            _startPort = start;
-            _endPort = end;
+            _startPortObject = start;
+            _endPortObject = end;
 
-            _startPort.SetConnection(this);
-            _endPort.SetConnection(this);
+            _startPortObject.SetConnection(this);
+            _endPortObject.SetConnection(this);
             
-            _inputMachine = start.Type == NodeType.Output ? start.Owner : end.Owner;
-            _outputMachine = start.Type == NodeType.Input ? start.Owner : end.Owner;
+            _endMachine = start.Type == NodeType.End ? start.Owner : end.Owner;
+            _startMachine = start.Type == NodeType.Start ? start.Owner : end.Owner;
             
             _renderer.PlaceConnection();
         }

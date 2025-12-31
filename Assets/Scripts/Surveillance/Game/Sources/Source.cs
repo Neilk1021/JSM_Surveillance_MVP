@@ -33,6 +33,11 @@ namespace JSM.Surveillance.Game
         {
             MoveSource();
             CheckIfPlaced();
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                RunSimulator();
+            }
         }
 
         public virtual void CheckIfPlaced()

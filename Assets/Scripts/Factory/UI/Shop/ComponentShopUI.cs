@@ -9,7 +9,7 @@ namespace JSM.Surveillance.UI
     public class ComponentShopUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private ComponentShopElementUI componentUIElementPrefab;
-        [SerializeField] private List<ProcessorInstance> buyableProcessors;
+        [SerializeField] private List<ProcessorObject> buyableProcessors;
         [Tooltip("The transform that all the UI prefabs should be spawned under.")]
         [SerializeField] private Transform contentView;
 
@@ -42,7 +42,7 @@ namespace JSM.Surveillance.UI
             _cc?.SetScrollActive(true);
         }
 
-        public void Buy(ProcessorInstance processorPrefab)
+        public void Buy(ProcessorObject processorPrefab)
         {
             if (!SurveillanceGameManager.instance.MoneyManager.ChangeMoneyBy(-processorPrefab.Data.UpfrontCost)) {
                 return;

@@ -28,7 +28,7 @@ namespace JSM.Surveillance
             
         }
         
-        public ProcessorPort GetPortAtCell(Vector2Int pos)
+        public ProcessorPortObject GetPortAtCell(Vector2Int pos)
         {
             return _ports.GetValueOrDefault(pos, null);
         }

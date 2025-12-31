@@ -10,9 +10,9 @@ namespace JSM.Surveillance.UI
         [SerializeField] private RecipeSelectionUI recipeSelectionPrefab;
         
         private ProcessorUI _parent;
-        private ProcessorInstance _processor;
+        private ProcessorObject _processor;
 
-        public void Load(ProcessorInstance processor)
+        public void Load(ProcessorObject processor)
         {
             _processor = processor;
             

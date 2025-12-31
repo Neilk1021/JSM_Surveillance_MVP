@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace JSM.Surveillance
 {
@@ -8,7 +9,7 @@ namespace JSM.Surveillance
     {
         [Header("References")]
         [SerializeField] private LineRenderer lr;
-        [SerializeField] private Connection connection;
+        [FormerlySerializedAs("connection")] [SerializeField] private ConnectionObject connectionObject;
 
         [Header("Colors")] [SerializeField] private Color normalColor;
         [SerializeField] private Color highlightedColor;
@@ -17,7 +18,7 @@ namespace JSM.Surveillance
         private void Awake()
         {
             lr ??= GetComponent<LineRenderer>();
-            connection ??= GetComponent<Connection>();
+            connectionObject ??= GetComponent<ConnectionObject>();
         }
 
         public void PlaceConnection()
@@ -25,20 +26,20 @@ namespace JSM.Surveillance
             lr.startWidth = 0.1f;
             lr.endWidth = 0.1f;
    
-            lr.positionCount = connection.Positions.Length + 2;
+            lr.positionCount = connectionObject.Positions.Length + 2;
 
             Vector3[] worldPositions = new Vector3[lr.positionCount];
-            worldPositions[0] = transform.InverseTransformPoint(connection.StartPort.transform.position);
+            worldPositions[0] = transform.InverseTransformPoint(connectionObject.StartPortObject.transform.position);
                 
-            for (int i = 0; i < connection.Positions.Length; i++)
+            for (int i = 0; i < connectionObject.Positions.Length; i++)
             {
                 worldPositions[i + 1] = transform.InverseTransformPoint((
-                    connection.Grid.GetWorldPosition(connection.Positions[i]) + 
-                    new Vector3(connection.Grid.CellSize / 2, connection.Grid.CellSize / 2, 0)
+                    connectionObject.Grid.GetWorldPosition(connectionObject.Positions[i]) + 
+                    new Vector3(connectionObject.Grid.CellSize / 2, connectionObject.Grid.CellSize / 2, 0)
                 ));
             }
 
-            worldPositions[^1] = transform.InverseTransformPoint(connection.EndPort.transform.position);
+            worldPositions[^1] = transform.InverseTransformPoint(connectionObject.EndPortObject.transform.position);
             lr.SetPositions(worldPositions);
         }
 
