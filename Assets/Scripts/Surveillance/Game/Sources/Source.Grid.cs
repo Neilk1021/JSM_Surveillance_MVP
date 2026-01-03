@@ -35,11 +35,7 @@ namespace JSM.Surveillance.Game
                 _grid = Instantiate(gridPrefab, GameObject.FindGameObjectWithTag("FactoryCam").transform);
                 _grid.SetSource(this);
                 _grid.transform.localPosition = new Vector3(0, -6.5f, 1.25f);
-
-                if (_lastLayout != null)
-                {
-                    _grid.LoadFactoryLayout(_lastLayout);
-                }
+                _grid.Initialize(_lastLayout);
             }
         }
 

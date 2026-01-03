@@ -48,7 +48,7 @@ namespace JSM.Surveillance.Game
             transform.position = new  Vector3(currentPos.x, currentPos.y, transform.position.z);
         }
 
-        public override void CheckIfPlaced()
+        protected override void CheckIfPlaced()
         {
             if (!_placed && Input.GetMouseButtonDown(0) && vert is not null)
             {

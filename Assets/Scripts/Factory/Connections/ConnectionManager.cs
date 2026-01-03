@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using JSM.Surveillance.Saving;
 using UnityEngine.Serialization;
 
 namespace JSM.Surveillance
@@ -37,7 +38,17 @@ namespace JSM.Surveillance
             StartCoroutine(MakeConnection(portObject));
         }
 
-
+        public void PlaceConnection(ConnectionEdge edge)
+        {
+            grid.PlaceConnection(
+                connectionObjectPrefab, 
+                grid.GetPortAtCell(edge.fromPos),
+                grid.GetPortAtCell(edge.toPos),
+                edge.positions.ToList()
+            );
+        }
+        
+        
         IEnumerator MakeConnection(ProcessorPortObject startPortObject)
         {
             CellOccupier occupier = startPortObject.Owner.GetComponent<CellOccupier>();

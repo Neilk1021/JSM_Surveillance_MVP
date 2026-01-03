@@ -53,7 +53,7 @@ namespace JSM.Surveillance
             base.Initialize(path, grid);
             _startPortObject = start;
             _endPortObject = end;
-
+            
             _startPortObject.SetConnection(this);
             _endPortObject.SetConnection(this);
             

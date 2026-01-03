@@ -40,7 +40,7 @@ namespace JSM.Surveillance.Game
             }
         }
 
-        public virtual void CheckIfPlaced()
+        protected virtual void CheckIfPlaced()
         {
             if (Input.GetMouseButtonDown(0))
             {

@@ -45,17 +45,29 @@ namespace JSM.Surveillance
         private void Awake()
         {
             _uiManager = GetComponent<UIManager>();
-            
             _connectionManager = GetComponentInChildren<ConnectionManager>();
             _camera = GetComponentInParent<Camera>();
             _camera ??= Camera.main;
-            
-            InitializeGrid();
         }
 
         private void Start()
         {
+        }
+
+        public void Initialize(FactoryBlueprint blueprint = null)
+        {
+            
+            _uiManager ??= GetComponent<UIManager>();
+            _connectionManager ??= GetComponentInChildren<ConnectionManager>();
+            _camera ??= GetComponentInParent<Camera>();
+            _camera ??= Camera.main;
+            
+            InitializeGrid();
             InitializeInputOutput();
+            
+            if(blueprint == null) return;
+            
+            LoadFactoryLayout(blueprint);
         }
 
         private void InitializeGrid()
@@ -230,18 +242,19 @@ namespace JSM.Surveillance
                     localPos = machineObject.transform.localPosition
                 }).ToList();
 
-            List<ConnectionEdge> connectionEdges = connectionObjects.Select(connectionObject =>
-                new ConnectionEdge()
-                {
-                    fromPos = connectionObject.StartMachine.GetRootPosition(),
-                    toPos = connectionObject.EndMachine.GetRootPosition(),
+            List<ConnectionEdge> connectionEdges = connectionObjects.Select(connectionObject => new ConnectionEdge()
+            {
+                fromPos = connectionObject.StartPortObject.SubcellPosition +
+                          connectionObject.StartMachine.GetRootPosition(),
+                toPos = connectionObject.EndPortObject.SubcellPosition +
+                        connectionObject.EndMachine.GetRootPosition(),
 
-                    outputPortIndex = connectionObject.StartMachine.GetOutputPortIndex(connectionObject.StartPortObject),
-                    inputPortIndex = connectionObject.EndMachine.GetInputPortIndex(connectionObject.EndPortObject),
-        
-                    positions = connectionObject.Positions
-                }
-            ).ToList(); 
+                outputPortIndex =
+                    connectionObject.StartMachine.GetOutputPortIndex(connectionObject.StartPortObject),
+                inputPortIndex = connectionObject.EndMachine.GetInputPortIndex(connectionObject.EndPortObject),
+
+                positions = connectionObject.Positions
+            }).ToList(); 
             
             return new FactoryBlueprint()
             {
@@ -250,7 +263,7 @@ namespace JSM.Surveillance
             };
         }
 
-        public void LoadFactoryLayout(FactoryBlueprint blueprint)
+        private void LoadFactoryLayout(FactoryBlueprint blueprint)
         {
             foreach (var machine in blueprint.machines)
             {
@@ -260,7 +273,7 @@ namespace JSM.Surveillance
                 }
                 
                 var machineObj = Instantiate(machinePrefab, transform);
-                machineObj.Place(machine.positions, new Vector3(), this);
+                PlaceCellOccupier(machineObj, machine.positions);
                 machineObj.transform.localPosition = machine.localPos;
 
                 if (machineObj is ProcessorObject pO)
@@ -271,7 +284,7 @@ namespace JSM.Surveillance
 
             foreach (var connection in blueprint.connections)
             {
-                //TODO load connections
+                _connectionManager.PlaceConnection(connection);
             }
         }
     }
