@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using JSM.Surveillance.Game;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,7 +19,8 @@ namespace JSM.Surveillance
         [SerializeField]private FactoryGrid defaultSourceGrid;
 
         public MoneyManager MoneyManager => _moneyManager;
-        public FactoryGrid DefaultSourceGrid => defaultSourceGrid; 
+        public FactoryGrid DefaultSourceGrid => defaultSourceGrid;
+        private readonly List<Source> _sources = new List<Source>();
 
         private void Awake() {
             if (instance != null)
@@ -40,14 +42,16 @@ namespace JSM.Surveillance
                 return false;
             }
             
-            SpawnSource(data);
+            _sources.Add(SpawnSource(data));
             return true;
         }
 
-        private static void SpawnSource(SourceData data)
+        private static Source SpawnSource(SourceData data)
         {
             var obj = Instantiate(data.Source.gameObject);
-            obj.GetComponent<Source>().Init(FindObjectOfType<MapCellManager>(), data);
+            var spawnSource = obj.GetComponent<Source>();
+            spawnSource.Init(FindObjectOfType<MapCellManager>(), data);
+            return spawnSource;
         }
 
         private static void CheckSourceDataValidity(SourceData data)
@@ -66,6 +70,18 @@ namespace JSM.Surveillance
             _moneyManager.ChangeMoneyBy(source.Data.UpfrontCost);
             
             source.Destroy();
+        }
+
+        public Source GetSourceClosetTo(Vector3 pos, float threshold)
+        {
+            if (_sources.Count <= 0) {
+                throw new ArgumentException("No sources in the scene!");
+            }
+
+            return _sources 
+                .Where(x=> Vector2.Distance(pos,x.transform.position) < threshold)
+                .OrderBy(x=> Vector2.Distance(pos, x.transform.position))
+                .FirstOrDefault();        
         }
     }
 }

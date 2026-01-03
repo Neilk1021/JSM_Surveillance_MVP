@@ -15,7 +15,8 @@ namespace JSM.Surveillance.Game
         private FactoryGridSimulation _simulation;
         private FactorySimulationRunner _factorySimulationRunner;
         private FactoryBlueprint _lastLayout;
-        
+
+        private ResourceVolume _storedResourceVolume;
 
         protected virtual void Awake()
         {
@@ -39,16 +40,44 @@ namespace JSM.Surveillance.Game
             }
         }
 
-        public void HandleOutputResourceVolume(OutputMachineInstance machine)
+        private void SellOutput()
         {
+            SurveillanceGameManager.instance.
+                MoneyManager.ChangeMoneyBy(_storedResourceVolume.amount * _storedResourceVolume.resource.Value);
+        }
+
+        public ResourceVolume TakeResources()
+        {
+            var vol = new ResourceVolume()
+            {
+                resource = _storedResourceVolume.resource,
+                amount =  _storedResourceVolume.amount
+            };
+            _storedResourceVolume.amount = 0;
+            return vol;
+        }
+
+        public virtual void HandleOutputResourceVolume(OutputMachineInstance machine)
+        {
+            //broken cuz machines should only really store 1 thing
             foreach (var machineOutputResource in machine.OutputResources)
             {
-                SurveillanceGameManager.instance.MoneyManager.ChangeMoneyBy(machineOutputResource.Value *
-                                                                            machineOutputResource.Key.Value);
-                Debug.Log(machineOutputResource.Value);
+                if (_storedResourceVolume.resource == machineOutputResource.Key)
+                {
+                    _storedResourceVolume.amount += machineOutputResource.Value;
+                    continue;
+                }
+
+                _storedResourceVolume.resource = machineOutputResource.Key;
+                _storedResourceVolume.amount = machineOutputResource.Value;
             }
 
             machine.OutputResources.Clear();
+
+            if (_nextSource == null)
+            {
+                SellOutput();
+            }
         }
 
         public void SetSimulation(FactoryGridSimulation buildSimulator)

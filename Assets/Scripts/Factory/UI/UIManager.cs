@@ -40,6 +40,11 @@ namespace JSM.Surveillance.UI
             SetUI(processorUI, processorObject);
         }
 
+        public void SwitchUI(ExternalInputObject inputMachineObject)
+        {
+            throw new NotImplementedException();
+        }
+
         private void SetUI(FactoryUI ui, CellOccupier value)
         {
             _currentData = value;
@@ -67,5 +72,6 @@ namespace JSM.Surveillance.UI
             Destroy(_currentUI.gameObject);
             _currentData = null;
         }
+
     }
 }

@@ -8,15 +8,17 @@ namespace JSM.Surveillance
 {
     public class FactoryGridSimulation 
     {
-        private InputMachineInstance _gridInput;
+        private readonly InputMachineInstance _gridInput;
         private OutputMachineInstance _gridOutput;
-        private MachineInstance[] _machines; 
-        
-        private Source _source;
+        private readonly MachineInstance[] _machines; 
+        private readonly Source _source;
+
+        private readonly List<ExternalInputInstance> _externalInputs;
 
         public FactoryGridSimulation(IEnumerable<MachineObject> machineObjects, Source source)
         {
             _source = source;
+            _externalInputs = new List<ExternalInputInstance>();
             Dictionary<MachineObject, MachineInstance> lookup = machineObjects.ToDictionary(x=>x, x=>x.BuildInstance());
 
             foreach (var machineObject in lookup)
@@ -43,6 +45,9 @@ namespace JSM.Surveillance
                     case OutputMachineInstance omInstance:
                         _gridOutput = omInstance;
                         break;
+                    case ExternalInputInstance eimInstance:
+                        _externalInputs.Add(eimInstance);
+                        break;
                 }
             }
 
@@ -59,12 +64,17 @@ namespace JSM.Surveillance
         }
         
         // ReSharper disable Unity.PerformanceAnalysis
-        public void ReloadMachineResources()
+        private void ReloadMachineResources()
         {
-            FeedAllMachines(_gridInput);
+            var visited = new HashSet<MachineInstance>();
+            FeedAllMachines(_gridInput, visited);
+            foreach (var externalInput in _externalInputs)
+            {
+                FeedAllMachines(externalInput, visited);
+            }
         }
 
-        private void FeedAllMachines(MachineInstance currentMachine)
+        private void FeedAllMachines(MachineInstance currentMachine, HashSet<MachineInstance> visited)
         {
             if (currentMachine == null) return;
             if (currentMachine is OutputMachineInstance outputMachine)
@@ -104,9 +114,12 @@ namespace JSM.Surveillance
                 FeedChildMachines(currentMachine, nextMachines, splitAmnt);
             }
 
+            visited.Add(currentMachine);
             foreach (var machine in nextMachines)
             {
-                FeedAllMachines(machine);
+                if(visited.Contains(machine))continue;
+                
+                FeedAllMachines(machine, visited);
             }
         }
 

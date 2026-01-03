@@ -31,10 +31,10 @@ namespace JSM.Surveillance.Game
         
         protected override void MoveSource()
         {
-            if(_placed) return;
+            if(Placed) return;
 
-            var mousePos = _mapCellManager.GetMouseCurrentPosition();
-            vert = _mapCellManager.GetVertexClosetTo(mousePos, 0.5f);
+            var mousePos = MapCellManager.GetMouseCurrentPosition();
+            vert = MapCellManager.GetVertexClosetTo(mousePos, 0.5f);
             
             Vector3 currentPos;
             
@@ -50,7 +50,7 @@ namespace JSM.Surveillance.Game
 
         protected override void CheckIfPlaced()
         {
-            if (!_placed && Input.GetMouseButtonDown(0) && vert is not null)
+            if (!Placed && Input.GetMouseButtonDown(0) && vert is not null)
             {
                 if (vert.GetSource() != null) {
                     return;
@@ -68,14 +68,14 @@ namespace JSM.Surveillance.Game
             Vector3 initialMousePosition = Input.mousePosition;
             float initialZRotation = transform.rotation.eulerAngles.z;
 
-            _mapCellManager.SetMapMode(MapMode.Placement);
+            MapCellManager.SetMapMode(MapMode.Placement);
             var renderer = GetComponent<SeparatedAreaViewRenderer>();
             yield return new WaitForFixedUpdate();
             
-            var lastMousePos =  _mapCellManager.GetMouseCurrentPosition();
+            var lastMousePos =  MapCellManager.GetMouseCurrentPosition();
             while (true)
             {
-                var mousePos = _mapCellManager.GetMouseCurrentPosition();
+                var mousePos = MapCellManager.GetMouseCurrentPosition();
                 renderer.RefreshMesh(mousePos);
                 if ((mousePos - lastMousePos).magnitude > 0.1f)
                 {
@@ -89,7 +89,7 @@ namespace JSM.Surveillance.Game
                     var faces = GetFacesInRange();
                     foreach (var face in faces)
                     {
-                        _mapCellManager.SetFacePlacementPct(face.Key,face.Value);
+                        MapCellManager.SetFacePlacementPct(face.Key,face.Value);
                     }
                 }
                 
@@ -102,19 +102,19 @@ namespace JSM.Surveillance.Game
                 yield return null;
             }
 
-            _mapCellManager.SetMapMode(MapMode.Normal);
+            MapCellManager.SetMapMode(MapMode.Normal);
         }
         
         public override int GetPeopleInRange(float radius = 2)
         {
             int pop = 0;
-            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,4);
+            var faces = MapCellManager.GetFacesAroundPoint(transform.position,4);
             foreach (var face in faces)
             {
                 int cellPop = (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(
                     _areaView.Center, 
                     _areaView.Range, 
-                    _mapCellManager.GetFacePoints(face)) * (float)_mapCellManager.GetPopulationInFace(face));
+                    MapCellManager.GetFacePoints(face)) * (float)MapCellManager.GetPopulationInFace(face));
                 
                 //Debug.Log($"Face at {_mapCellManager.GetCell(face).transform.position}, is {face.data.dailyPopulation} and has {cellPop} in view of Camera");
                 pop += cellPop;
@@ -126,13 +126,13 @@ namespace JSM.Surveillance.Game
         {
             int pop = 0;
             Dictionary<HEFace, float> facesPct = new Dictionary<HEFace, float>();
-            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,4).ToList();
+            var faces = MapCellManager.GetFacesAroundPoint(transform.position,4).ToList();
             foreach (var face in faces)
             {
                 facesPct[face] = (GeometryUtils.CalculateCirclePolygonOverlapPct(
                     _areaView.Center, 
                     _areaView.Range, 
-                    _mapCellManager.GetFacePoints(face)));
+                    MapCellManager.GetFacePoints(face)));
             }
             return facesPct; 
         } 

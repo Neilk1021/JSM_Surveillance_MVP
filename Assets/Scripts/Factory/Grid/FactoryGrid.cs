@@ -6,9 +6,17 @@ using JSM.Surveillance.Game;
 using JSM.Surveillance.Saving;
 using JSM.Surveillance.UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace JSM.Surveillance
 {
+    [System.Serializable]
+    public struct ExternalInputMachinePlacement
+    {
+        public ExternalInputObject machineObject;
+        public Vector2Int machinePosition;
+    }
+    
     public partial class FactoryGrid : MonoBehaviour
     {
         [Header("Grid End")]
@@ -18,6 +26,10 @@ namespace JSM.Surveillance
         [Header("Grid Start")] 
         [SerializeField] private OutputMachine gridOutputPrefab;
         [SerializeField] private Vector2Int outputPosition;
+
+        [Header("External Inputs")] [SerializeField]
+        private List<ExternalInputMachinePlacement> externalMachinePlacements;
+        
         
         private Vector2Int _hoveredCell = new Vector2Int(-1, -1);
 
@@ -56,7 +68,6 @@ namespace JSM.Surveillance
 
         public void Initialize(FactoryBlueprint blueprint = null)
         {
-            
             _uiManager ??= GetComponent<UIManager>();
             _connectionManager ??= GetComponentInChildren<ConnectionManager>();
             _camera ??= GetComponentInParent<Camera>();
@@ -64,10 +75,21 @@ namespace JSM.Surveillance
             
             InitializeGrid();
             InitializeInputOutput();
+            InitializeExternalMachines();
             
             if(blueprint == null) return;
             
             LoadFactoryLayout(blueprint);
+        }
+
+        private void InitializeExternalMachines()
+        {
+            for(int i = 0; i < externalMachinePlacements.Capacity && i < Source.MaxIncomingSourceLinks; ++i)
+            {
+                var newMachine = Instantiate(externalMachinePlacements[i].machineObject, transform);
+                newMachine.Initialize(Source, i);
+                InitializeCellOccupier(newMachine, externalMachinePlacements[i].machinePosition);
+            }
         }
 
         private void InitializeGrid()
@@ -268,7 +290,7 @@ namespace JSM.Surveillance
             foreach (var machine in blueprint.machines)
             {
                 var machinePrefab = machineBank.GetMachine(machine.prefabId);
-                if (machinePrefab is InputMachineObject || machinePrefab is OutputMachine) {
+                if (machinePrefab is InputMachineObject or OutputMachine or ExternalInputObject) {
                     continue;
                 }
                 

@@ -45,6 +45,14 @@ namespace JSM.Surveillance.UI
             return _source;
         }
 
+        public void LinkSource()
+        {
+            if(_source.Grid != null && _source.Grid.MouseOverGrid()) return;
+            
+            _source.StartLinking();
+            _source.CloseUI();
+        }
+        
         public void ModifySource()
         {
             _source.SpawnGrid();
@@ -52,7 +60,7 @@ namespace JSM.Surveillance.UI
 
         public void SellSource()
         {
-            if(_source.Grid.MouseOverGrid()) return;
+            if(_source.Grid != null && _source.Grid.MouseOverGrid()) return;
             
             _source.CloseUI();
             SurveillanceGameManager.instance.SellSource(_source);

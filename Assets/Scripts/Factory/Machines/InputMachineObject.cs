@@ -7,17 +7,16 @@ namespace JSM.Surveillance
 {
     public class InputMachineObject : MachineObject
     {
-        [SerializeField] private SourceData sourceData;
-        [SerializeField] private Source source;
+        private Source _source;
         
         private int _peopleInRange;
 
-        public SourceData Data => sourceData;
-        public Source Source => source;
+        public Source Source => _source;
 
-        private void Start()
+        protected override void Start()
         {
-            _peopleInRange = source.GetPeopleInRange();
+            _peopleInRange = _source.GetPeopleInRange();
+            base.Start();
         }
 
         protected override void OnMouseDown()
@@ -31,13 +30,12 @@ namespace JSM.Surveillance
 
         public void Initialize(Source newSource)
         {
-            source = newSource;
-            sourceData = newSource.Data;
+            _source = newSource;
         }
 
         public override MachineInstance BuildInstance()
         {
-            return new InputMachineInstance(source, inventorySize);
+            return new InputMachineInstance(_source, inventorySize);
         }
     }
 }

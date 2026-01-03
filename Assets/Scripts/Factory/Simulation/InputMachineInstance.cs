@@ -16,7 +16,6 @@ namespace JSM.Surveillance
         
         public override void ProcessTicks(int deltaTicks = 1)
         {
-            
             AddOutput(_source.Resource, _peopleInRange);
         }
         

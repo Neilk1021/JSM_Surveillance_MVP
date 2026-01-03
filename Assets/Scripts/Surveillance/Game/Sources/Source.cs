@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using JSM.Surveillance.Surveillance;
 using JSM.Surveillance.UI;
 using JSM.Surveillance.Util;
@@ -11,22 +13,31 @@ namespace JSM.Surveillance.Game
 {
     public abstract partial class Source : MonoBehaviour
     {
-        [SerializeField] protected string sourceName; 
-        private protected MapCellManager _mapCellManager;
-        private protected bool _placed = false;
-        private SourceData _data;
+        [SerializeField] protected string sourceName;
+        [SerializeField] private int maxIncomingSourceLinks = 0;
+        [SerializeField] private LinkRenderer linkRendererPrefab;
 
+        private LinkRenderer _linkRenderer;
+        private protected MapCellManager MapCellManager;
+        private protected bool Placed = false;
+        private SourceData _data;
+        private Source _nextSource = null;
+        private Source[] _incomingSources;
+        
         public SourceData Data => _data;
         public string SourceName => sourceName;
         [SerializeField] private SourceUI sourceUI;
         public readonly UnityEvent OnModified = new UnityEvent();
-        
+        public int MaxIncomingSourceLinks => maxIncomingSourceLinks;
+        public Source[] IncomingSourceLinks => _incomingSources; 
+
         public virtual void Init(MapCellManager manager, SourceData data)
         {
+            _incomingSources = new Source[maxIncomingSourceLinks];
             sourceName = data.ShopInfo.name;
             _data = data;
-            _mapCellManager = manager;
-            _placed = false;
+            MapCellManager = manager;
+            Placed = false;
         }
 
         private void Update()
@@ -48,11 +59,52 @@ namespace JSM.Surveillance.Game
             }
         }
 
+        public bool LinkToSource(Source dest)
+        {
+            if (!dest.AddIncomingSource(this)) return false;
+            
+            if (_nextSource != null)
+            {
+                _nextSource.RemoveIncomingSource(this);
+            }
+            
+            _nextSource = dest;
+            return true;
+        }
+
+        private bool RemoveIncomingSource(Source source)
+        {
+            for (int i = 0; i < _incomingSources.Length; i++)
+            {
+                if (_incomingSources[i] != source) continue;
+                
+                _incomingSources[i] = null;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool AddIncomingSource(Source source)
+        {
+            if (_incomingSources.Contains(source)) return false;
+            
+            for (int i = 0; i < _incomingSources.Length; i++)
+            {
+                if (_incomingSources[i] != null) continue;
+
+                _incomingSources[i] = source;
+                return true;
+            }
+
+            return false;
+        }
+
         protected virtual void MoveSource()
         {
-            if(_placed) return;
+            if(Placed) return;
 
-            Vector3 currentPos = _mapCellManager.GetMouseCurrentPosition();
+            Vector3 currentPos = MapCellManager.GetMouseCurrentPosition();
             if(currentPos.Equals(Vector3.negativeInfinity)) return;
             
             transform.position = new  Vector3(currentPos.x, currentPos.y, transform.position.z);
@@ -60,14 +112,14 @@ namespace JSM.Surveillance.Game
 
         public virtual void Place(Vector2 pos)
         {
-            _placed = true;
+            Placed = true;
     
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
         }
 
         public SourceUI CreateUI()
         {
-            if (!_placed) {
+            if (!Placed) {
                 return null;
             }
             
@@ -77,7 +129,7 @@ namespace JSM.Surveillance.Game
                 Quaternion.identity
             );
             var sourceUIComponent = sourceUIObj.GetComponent<SourceUI>();
-            sourceUIComponent.Init(this, _mapCellManager); 
+            sourceUIComponent.Init(this, MapCellManager); 
             
             return sourceUIComponent;
         }
@@ -85,10 +137,10 @@ namespace JSM.Surveillance.Game
         public virtual int GetPeopleInRange(float radius = 2)
         {
             int pop = 0;
-            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,4);
+            var faces = MapCellManager.GetFacesAroundPoint(transform.position,4);
             foreach (var face in faces)
             {
-                pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)) * (float)_mapCellManager.GetPopulationInFace(face));
+                pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, MapCellManager.GetFacePoints(face)) * (float)MapCellManager.GetPopulationInFace(face));
             }
             return pop;
         }
@@ -97,33 +149,107 @@ namespace JSM.Surveillance.Game
         {
             int pop = 0;
             Dictionary<HEFace, float> facesPct = new Dictionary<HEFace, float>();
-            var faces = _mapCellManager.GetFacesAroundPoint(transform.position,3);
+            var faces = MapCellManager.GetFacesAroundPoint(transform.position,3);
             foreach (var face in faces)
             {
-                facesPct[face] = (GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, _mapCellManager.GetFacePoints(face)));
+                facesPct[face] = (GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, MapCellManager.GetFacePoints(face)));
             }
             return facesPct; 
         } 
         
         private void OnMouseDown()
         {
-            _mapCellManager.SwitchUIPreview(this);
+            MapCellManager.SwitchUIPreview(this);
         }
 
         public void CloseUI()
         {
-            _mapCellManager.CloseUIPreview();
+            MapCellManager.CloseUIPreview();
         }
 
         public virtual void Destroy()
         {
+            if (_nextSource != null)
+            {
+                _nextSource.RemoveIncomingSource(this);
+            }
+
+            foreach (var incomingSource in _incomingSources)
+            {
+                if (incomingSource != null)
+                {
+                    incomingSource.ClearNextSource();
+                }
+            }
+            
             if(_grid != null) Destroy(_grid.gameObject);
             Destroy(gameObject);
+        }
+
+        private void ClearNextSource()
+        {
+            _nextSource = null;
+            if(_linkRenderer)
+                Destroy(_linkRenderer.gameObject);
         }
 
         public void UpdateName(string newName)
         {
             sourceName = newName;
+        }
+
+        public void StartLinking()
+        {
+            if (_linkRenderer != null)
+            {
+                Destroy(_linkRenderer.gameObject);
+            }
+
+            StartCoroutine(Link());
+        }
+
+        private IEnumerator Link()
+        {
+            _linkRenderer = Instantiate(linkRendererPrefab, transform);
+            _linkRenderer.SetStart(transform.position);
+            Source destSource = null;
+            while (true)
+            {
+                yield return null;
+
+                var mousePos = MapCellManager.GetMouseCurrentPosition();
+                if(mousePos == Vector3.negativeInfinity) continue;
+                
+                destSource = SurveillanceGameManager.instance.GetSourceClosetTo(mousePos, 0.5f);
+                if (destSource == this) destSource = null;
+                
+                var currentPos = !destSource ? mousePos : destSource.transform.position;
+                _linkRenderer.SetEnd(currentPos);
+                
+                
+                if (Input.GetMouseButtonDown(0))
+                {
+                    break;
+                }
+            }
+
+            if (!destSource)
+            {
+                if (!_nextSource)
+                {
+                    Destroy(_linkRenderer.gameObject);
+                    yield break;
+                }
+                
+                _linkRenderer.SetEnd(_nextSource.transform.position);
+               yield break; 
+            }
+
+            if (LinkToSource(destSource))
+            {
+                _linkRenderer.SetEnd(destSource.transform.position);
+            }
+            Destroy(_linkRenderer.gameObject);
         }
     }
 }
