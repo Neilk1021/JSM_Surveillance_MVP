@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JSM.Surveillance.Game;
+using JSM.Surveillance.Saving;
 using JSM.Surveillance.UI;
 using UnityEngine;
 
@@ -20,6 +21,8 @@ namespace JSM.Surveillance
         
         private Vector2Int _hoveredCell = new Vector2Int(-1, -1);
 
+        [SerializeField] private MachineBank machineBank;
+        
         //Allows multiple grids where we just switch between different grids as needed.
 
         private readonly Dictionary<Vector2Int, ProcessorPortObject> _ports = new Dictionary<Vector2Int, ProcessorPortObject>(); 
@@ -203,6 +206,7 @@ namespace JSM.Surveillance
         {
             //todo save position stuff
 
+            Source.SetLastLayout(SaveCurrentLayout());
             Source.SetSimulation(BuildSimulator());
         }
 
@@ -210,6 +214,65 @@ namespace JSM.Surveillance
         {
             SaveGridToSource();
             Destroy(gameObject);
+        }
+
+        public FactoryBlueprint SaveCurrentLayout()
+        {
+            var machineObjects = GetComponentsInChildren<MachineObject>();
+            var connectionObjects = GetComponentsInChildren<ConnectionObject>();
+
+            List<MachineNode> machineNodes = machineObjects.Select(
+                machineObject => new MachineNode()
+                {
+                    positions = machineObject.Positions.ToList(),
+                    prefabId = machineObject.GetPrefabId(), 
+                    recipeId = machineObject is ProcessorObject pO && pO.Recipe != null ? pO.Recipe.Guid : "",
+                    localPos = machineObject.transform.localPosition
+                }).ToList();
+
+            List<ConnectionEdge> connectionEdges = connectionObjects.Select(connectionObject =>
+                new ConnectionEdge()
+                {
+                    fromPos = connectionObject.StartMachine.GetRootPosition(),
+                    toPos = connectionObject.EndMachine.GetRootPosition(),
+
+                    outputPortIndex = connectionObject.StartMachine.GetOutputPortIndex(connectionObject.StartPortObject),
+                    inputPortIndex = connectionObject.EndMachine.GetInputPortIndex(connectionObject.EndPortObject),
+        
+                    positions = connectionObject.Positions
+                }
+            ).ToList(); 
+            
+            return new FactoryBlueprint()
+            {
+                machines = machineNodes,
+                connections =  connectionEdges
+            };
+        }
+
+        public void LoadFactoryLayout(FactoryBlueprint blueprint)
+        {
+            foreach (var machine in blueprint.machines)
+            {
+                var machinePrefab = machineBank.GetMachine(machine.prefabId);
+                if (machinePrefab is InputMachineObject || machinePrefab is OutputMachine) {
+                    continue;
+                }
+                
+                var machineObj = Instantiate(machinePrefab, transform);
+                machineObj.Place(machine.positions, new Vector3(), this);
+                machineObj.transform.localPosition = machine.localPos;
+
+                if (machineObj is ProcessorObject pO)
+                {
+                    pO.LoadRecipeById(machine.recipeId);
+                }
+            }
+
+            foreach (var connection in blueprint.connections)
+            {
+                //TODO load connections
+            }
         }
     }
 }

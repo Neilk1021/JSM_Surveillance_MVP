@@ -2,6 +2,7 @@
 
 namespace JSM.Surveillance
 {
+    [System.Serializable]
     public class OutputMachineInstance : MachineInstance
     {
         private readonly Dictionary<Resource, int> _storedOutput =new Dictionary<Resource, int>();

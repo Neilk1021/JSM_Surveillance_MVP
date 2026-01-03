@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace JSM.Surveillance
 {
     public abstract class MachineObject : Draggable
     {
+        [Header("GUID")]
+        [FormerlySerializedAs("_guid")] [SerializeField] private string guid;
+        [Header("InventorySize")]
         [SerializeField] protected int inventorySize = 20;
         private readonly List<ProcessorPortObject> _iPorts = new();
         private readonly List<ProcessorPortObject> _oPorts = new();
@@ -13,6 +17,7 @@ namespace JSM.Surveillance
         public IReadOnlyList<ProcessorPortObject> InputPorts => _iPorts;
         public IReadOnlyList<ProcessorPortObject> OutputPorts => _oPorts;
 
+        public string Guid => guid;
         
         public override void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)
         {
@@ -81,5 +86,20 @@ namespace JSM.Surveillance
         }
         
         public abstract MachineInstance BuildInstance();
+
+        public string GetPrefabId()
+        {
+            return guid.ToString();
+        }
+
+        public int GetInputPortIndex(ProcessorPortObject port)
+        {
+            return _iPorts.IndexOf(port);
+        }
+
+        public int GetOutputPortIndex(ProcessorPortObject port)
+        {
+            return _oPorts.IndexOf(port);
+        }
     }
 }

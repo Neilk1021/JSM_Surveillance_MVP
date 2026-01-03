@@ -1,5 +1,7 @@
 ﻿namespace JSM.Surveillance
 {
+    
+    [System.Serializable]
     public class ConnectionInstance
     {
         public MachineInstance Start { get; private set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using JSM.Surveillance.Saving;
 using UnityEngine;
 
 namespace JSM.Surveillance.Game
@@ -13,7 +14,8 @@ namespace JSM.Surveillance.Game
         public FactoryGrid Grid => _grid;
         private FactoryGridSimulation _simulation;
         private FactorySimulationRunner _factorySimulationRunner;
-
+        private FactoryBlueprint _lastLayout;
+        
 
         protected virtual void Awake()
         {
@@ -33,6 +35,11 @@ namespace JSM.Surveillance.Game
                 _grid = Instantiate(gridPrefab, GameObject.FindGameObjectWithTag("FactoryCam").transform);
                 _grid.SetSource(this);
                 _grid.transform.localPosition = new Vector3(0, -6.5f, 1.25f);
+
+                if (_lastLayout != null)
+                {
+                    _grid.LoadFactoryLayout(_lastLayout);
+                }
             }
         }
 
@@ -57,6 +64,11 @@ namespace JSM.Surveillance.Game
         {
             _factorySimulationRunner.Load(_simulation);
             _factorySimulationRunner.Run();
+        }
+
+        public void SetLastLayout(FactoryBlueprint newLayout)
+        {
+            _lastLayout = newLayout;
         }
     }
 }

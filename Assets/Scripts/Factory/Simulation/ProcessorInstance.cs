@@ -2,6 +2,7 @@
 
 namespace JSM.Surveillance
 {
+    [System.Serializable]
     public class ProcessorInstance : MachineInstance
     {
         private ProcessorData _data;

@@ -47,5 +47,10 @@ namespace JSM.Surveillance
         {
             return new ProcessorInstance(selectedRecipe, data, inventorySize);
         }
+
+        public void LoadRecipeById(string machineRecipeId)
+        {
+            selectedRecipe = availableRecipes.GetRecipeById(machineRecipeId);
+        }
     }
 }

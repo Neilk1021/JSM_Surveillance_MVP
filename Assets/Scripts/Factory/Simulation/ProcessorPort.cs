@@ -1,5 +1,6 @@
 ﻿namespace JSM.Surveillance
 {
+    [System.Serializable]
     public class ProcessorPort
     {
         private MachineInstance _owner;

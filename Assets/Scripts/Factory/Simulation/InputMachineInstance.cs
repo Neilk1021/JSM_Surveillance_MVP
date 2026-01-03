@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace JSM.Surveillance
 {
+    [System.Serializable]
     public class InputMachineInstance : MachineInstance
     {
         private readonly SourceData _sourceData;
@@ -25,6 +26,5 @@ namespace JSM.Surveillance
             _sourceData = newSource.Data;
             _peopleInRange = _source.GetPeopleInRange();
         }
-
     }
 }

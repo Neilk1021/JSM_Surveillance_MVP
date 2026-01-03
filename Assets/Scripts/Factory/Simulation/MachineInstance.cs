@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace JSM.Surveillance
 {
+    [System.Serializable]
     public class MachineInstance
     {
         private int _inventorySize; 

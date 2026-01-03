@@ -25,5 +25,10 @@ namespace JSM.Surveillance
         {
             return recipes;
         }
+
+        public Recipe GetRecipeById(string recipeId)
+        {
+            return Array.Find(recipes, r => r.Guid == recipeId);
+        }
     }
 }
