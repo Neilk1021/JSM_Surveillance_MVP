@@ -14,6 +14,7 @@ namespace JSM.Surveillance.Game
     {
         public int DailyPopulation;
         public float RiskFactor;
+        public InformationRatio Ratio;
     }
     
     [RequireComponent(typeof(MapCellRendering))]
@@ -52,7 +53,12 @@ namespace JSM.Surveillance.Game
         public CellData GetData()
         {
             face.EnsureSOFromJson();
-            return new CellData() { DailyPopulation = face.data.dailyPopulation, RiskFactor = face.data.riskFactor };
+            return new CellData()
+            {
+                DailyPopulation = face.data.dailyPopulation, 
+                RiskFactor = face.data.riskFactor,
+                Ratio =  face.data.ratio
+            };
         }
         
         private void Awake()

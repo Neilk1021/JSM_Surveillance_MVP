@@ -33,6 +33,24 @@ public static class PaintingToolbar
         {
             _interaction.SwitchPaintMode(PopulationPainter.PaintType.Risk);
         });
+        
+        
+        AddToolButton(toolbar, "d_scenevis_visible_hover@2x",     "Consumer", () =>
+        {
+            _interaction.SwitchPaintMode(PopulationPainter.PaintType.Consumer);
+        });
+        
+        
+        AddToolButton(toolbar, "d_scenevis_visible_hover@2x",     "GovtInfo", () =>
+        {
+            _interaction.SwitchPaintMode(PopulationPainter.PaintType.GovtInfo);
+        });
+        
+        AddToolButton(toolbar, "d_scenevis_visible_hover@2x",     "CorpInfo", () =>
+        {
+            _interaction.SwitchPaintMode(PopulationPainter.PaintType.CorpInfo);
+        });
+
 
         return toolbar;
         

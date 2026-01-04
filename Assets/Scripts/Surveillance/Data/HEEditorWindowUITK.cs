@@ -344,6 +344,15 @@ public class GraphDrawElement : VisualElement
                 case PopulationPainter.PaintType.Population:
                     p.fillColor = Color.Lerp( Color.grey, Color.green, Mathf.InverseLerp(_populationDelta.min, _populationDelta.max, f.data.dailyPopulation)); 
                     break;
+                case PopulationPainter.PaintType.Consumer:
+                    p.fillColor = Color.Lerp(Color.grey, Color.yellow, f.data.ratio.consumer);
+                    break;
+                case PopulationPainter.PaintType.CorpInfo:
+                    p.fillColor = Color.Lerp( Color.grey, Color.cyan, f.data.ratio.corporate); 
+                    break;
+                case PopulationPainter.PaintType.GovtInfo:
+                    p.fillColor = Color.Lerp(Color.grey, Color.magenta,f.data.ratio.government);
+                    break;
             }
             return;
         }

@@ -42,6 +42,8 @@ namespace JSM.Surveillance.Game
 
         private void SellOutput()
         {
+            if(_storedResourceVolume.resource == null) return;
+            
             SurveillanceGameManager.instance.
                 MoneyManager.ChangeMoneyBy(_storedResourceVolume.amount * _storedResourceVolume.resource.Value);
         }

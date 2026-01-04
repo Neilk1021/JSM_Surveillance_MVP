@@ -10,6 +10,9 @@ namespace JSM.Surveillance.Game
         Normal,
         Population,
         Risk, 
+        Consumer,
+        Corp,
+        Govt,
         Placement
     }
     
@@ -18,30 +21,29 @@ namespace JSM.Surveillance.Game
         [SerializeField] private int maxPop = 50;
         [SerializeField] private Gradient populationGradient;
         [SerializeField] private Gradient riskGradient;
+        [SerializeField] private Gradient consumerGradient;
+        [SerializeField] private Gradient govtGradient;
+        [SerializeField] private Gradient corpGradient;
         [SerializeField] private Color buildingColor = new Color(0.01f, 0.04f, 0.07f);
         
         [SerializeField] [HideInInspector] private MapCellRendering[] cellRenderers;
+
+        public static MapRenderingManager instance;
+
+        private void Awake()
+        {
+            if (instance == null)
+            {
+                instance = this;
+                return;
+            }
+            
+            Destroy(this);
+        }
+
         public void Init(MapCellRendering[] newCellRenderers)
         {
             cellRenderers = newCellRenderers;
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                ChangeRendering(MapMode.Normal);
-            }
-
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                ChangeRendering(MapMode.Population);
-            }
-
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                ChangeRendering(MapMode.Risk);
-            }
         }
 
         private void Start()
@@ -84,6 +86,23 @@ namespace JSM.Surveillance.Game
                         mapCell.SetColor(!mapCell.Cell.IsStreet ? buildingColor : color, color);
                         mapCell.SetBorderColor(new Color(0.5f,0.1f,0.05f));
                         break;
+                    case MapMode.Consumer:
+                        color = mapCell.Cell.IsStreet ? consumerGradient.Evaluate(data.Ratio.consumer) : new Color(0.4f, 0.45f, 0.00f);
+                        mapCell.SetColor(!mapCell.Cell.IsStreet ? buildingColor : color, color);
+                        mapCell.SetBorderColor(new Color(0.5f,0.5f,0.1f));
+                        break;
+                    case MapMode.Corp:
+                        color = mapCell.Cell.IsStreet ? corpGradient.Evaluate(data.Ratio.corporate) : new Color(0.2f, 0.5f, 0.5f);
+                        mapCell.SetColor(!mapCell.Cell.IsStreet ? buildingColor : color, color);
+                        mapCell.SetBorderColor(new Color(0.3f,0.6f,0.6f));
+                        break;
+                    case MapMode.Govt:
+                        color = mapCell.Cell.IsStreet ? govtGradient.Evaluate(data.Ratio.government) : new Color(0.5f, 0.05f, 0.5f);
+                        mapCell.SetColor(!mapCell.Cell.IsStreet ? buildingColor : color, color);
+                        mapCell.SetBorderColor(new Color(0.7f,0.1f,0.7f));
+                        break;
+
+                    
                 }
             }
         }

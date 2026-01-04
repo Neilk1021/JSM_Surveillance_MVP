@@ -27,6 +27,8 @@ namespace JSM.Surveillance.Game
             base.Init(manager, data);
             _cameraCount++;
             sourceName += $" {_cameraCount}";
+            
+            MapCellManager.SetMapMode(MapMode.Population);
         }
 
         protected override void MoveSource()
@@ -34,6 +36,8 @@ namespace JSM.Surveillance.Game
             if(Placed) return;
 
             var mousePos = MapCellManager.GetMouseCurrentPosition();
+            if(mousePos.Equals(Vector3.negativeInfinity)) return;
+            
             vert = MapCellManager.GetVertexClosetTo(mousePos, 0.5f);
             
             Vector3 currentPos;
@@ -67,7 +71,6 @@ namespace JSM.Surveillance.Game
             Vector3 initialMousePosition = Input.mousePosition;
             float initialZRotation = transform.rotation.eulerAngles.z;
 
-            MapCellManager.SetMapMode(MapMode.Placement);
             yield return new WaitForFixedUpdate();
             
             while (true)

@@ -42,7 +42,8 @@ namespace JSM.Surveillance.UI
         private static readonly int EdgeColor = Shader.PropertyToID("_EdgeColor");
         private MapCell _cell;
         public MapCell Cell => _cell;
-        
+
+        private Color _currentColor;
 
         public void SetFace(HEFace newFace, Material newLit)
         {
@@ -76,6 +77,7 @@ namespace JSM.Surveillance.UI
         
         public void SetColor(Color interiorColor, Color exteriorColor)
         {
+            _currentColor = interiorColor;
             _meshRenderer.material = lit;
             lit.SetColor(CenterColor,  interiorColor);
             lit.SetColor(EdgeColor, exteriorColor);
@@ -158,8 +160,7 @@ namespace JSM.Surveillance.UI
         {
             if(!_cell.IsStreet)return;
             
-            Color color = Color.Lerp(Color.black, Color.green, faceValue);
-            
+            Color color = Color.Lerp(_currentColor, Color.green, faceValue);
             _meshRenderer.material.SetColor(CenterColor, color);
         }
     }

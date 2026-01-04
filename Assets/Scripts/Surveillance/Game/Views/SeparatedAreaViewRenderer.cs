@@ -34,7 +34,7 @@ namespace JSM.Surveillance.Game
 
         public void RefreshMesh(Vector3 center)
         {
-            if(center == Vector3.negativeInfinity)return;
+            if(center.Equals(Vector3.negativeInfinity))return;
             
             listnerCenterObj.transform.position = new Vector3(center.x, center.y,transform.position.z);
             _meshFilter.mesh = _view.GetMesh();

@@ -248,6 +248,7 @@ namespace JSM.Surveillance.Game
             if (LinkToSource(destSource))
             {
                 _linkRenderer.SetEnd(destSource.transform.position);
+                yield break;
             }
             Destroy(_linkRenderer.gameObject);
         }

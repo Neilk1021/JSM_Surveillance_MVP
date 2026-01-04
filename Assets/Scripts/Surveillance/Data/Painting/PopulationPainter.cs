@@ -12,7 +12,10 @@ namespace JSM.Surveillance.Data
         public enum  PaintType
         {
             Population,
-            Risk
+            Risk,
+            Consumer,
+            CorpInfo,
+            GovtInfo
         }
 
         const int PopulationDelta = 1;
@@ -49,6 +52,18 @@ namespace JSM.Surveillance.Data
                         case PaintType.Risk:
                             face.data.riskFactor += RiskDelta * (remove ? -1 : 1);
                             face.data.riskFactor = Mathf.Clamp01(face.data.riskFactor);
+                            break;
+                        case PaintType.Consumer:
+                            face.data.ratio.consumer += RiskDelta * (remove ? -1 : 1);
+                            face.data.ratio.consumer = Mathf.Clamp01(face.data.ratio.consumer);
+                            break;
+                        case PaintType.CorpInfo:
+                            face.data.ratio.corporate += RiskDelta * (remove ? -1 : 1);
+                            face.data.ratio.corporate = Mathf.Clamp01(face.data.ratio.corporate);
+                            break;
+                        case PaintType.GovtInfo:
+                            face.data.ratio.government += RiskDelta * (remove ? -1 : 1);
+                            face.data.ratio.government = Mathf.Clamp01(face.data.ratio.government);
                             break;
                     }
                     

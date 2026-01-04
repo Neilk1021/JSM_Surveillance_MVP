@@ -72,10 +72,7 @@ namespace JSM.Surveillance.Game
 
         public void SetMapMode(MapMode mode)
         {
-            foreach (var cellPair in _cells)
-            {
-                cellPair.Value.Rendering.SetMode(mode);
-            }
+            MapRenderingManager.instance.ChangeRendering(mode);
         }
 
         public void SetFacePlacementPct(HEFace faceKey, float faceValue)
