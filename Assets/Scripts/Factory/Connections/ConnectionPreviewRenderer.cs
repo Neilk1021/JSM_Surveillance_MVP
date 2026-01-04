@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -43,6 +44,7 @@ namespace JSM.Surveillance
             }
 
             worldPositions[^1] = end == null ? worldPositions[^2] : transform.InverseTransformPoint(end.transform.position);
+            if(start.Type == NodeType.End) worldPositions = worldPositions.Reverse().ToArray();
             lr.SetPositions(worldPositions);
         }
         

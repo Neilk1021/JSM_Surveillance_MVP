@@ -30,45 +30,45 @@ namespace JSM.Surveillance.Data
                 if (face == null || face.loop == null || face.loop.Count < 3) 
                     continue;
                 
-                if(!face.data.isStreet || face.isExterior) continue;
+                if(!face.Data.isStreet || face.isExterior) continue;
                 
                 float distSqr = DistancePointToPolygonSqr(data, worldPoint, face.loop);
                 if (distSqr <= radiusSqr)
                 {
-                    if (face.data == null) {
+                    if (face.Data == null) {
                         face.EnsureSOFromJson();
                     }
 
-                    if (face.data == null) {
+                    if (face.Data == null) {
                         return;
                     }
 
                     switch (type)
                     {
                         case PaintType.Population:
-                            face.data.dailyPopulation += PopulationDelta * (remove ? -1 : 1);
-                            face.data.dailyPopulation = (int)Mathf.Clamp(face.data.dailyPopulation, 0, 100000000000000);
+                            face.Data.dailyPopulation += PopulationDelta * (remove ? -1 : 1);
+                            face.Data.dailyPopulation = (int)Mathf.Clamp(face.Data.dailyPopulation, 0, 100000000000000);
                             break;
                         case PaintType.Risk:
-                            face.data.riskFactor += RiskDelta * (remove ? -1 : 1);
-                            face.data.riskFactor = Mathf.Clamp01(face.data.riskFactor);
+                            face.Data.riskFactor += RiskDelta * (remove ? -1 : 1);
+                            face.Data.riskFactor = Mathf.Clamp01(face.Data.riskFactor);
                             break;
                         case PaintType.Consumer:
-                            face.data.ratio.consumer += RiskDelta * (remove ? -1 : 1);
-                            face.data.ratio.consumer = Mathf.Clamp01(face.data.ratio.consumer);
+                            face.Data.ratio.consumer += RiskDelta * (remove ? -1 : 1);
+                            face.Data.ratio.consumer = Mathf.Clamp01(face.Data.ratio.consumer);
                             break;
                         case PaintType.CorpInfo:
-                            face.data.ratio.corporate += RiskDelta * (remove ? -1 : 1);
-                            face.data.ratio.corporate = Mathf.Clamp01(face.data.ratio.corporate);
+                            face.Data.ratio.corporate += RiskDelta * (remove ? -1 : 1);
+                            face.Data.ratio.corporate = Mathf.Clamp01(face.Data.ratio.corporate);
                             break;
                         case PaintType.GovtInfo:
-                            face.data.ratio.government += RiskDelta * (remove ? -1 : 1);
-                            face.data.ratio.government = Mathf.Clamp01(face.data.ratio.government);
+                            face.Data.ratio.government += RiskDelta * (remove ? -1 : 1);
+                            face.Data.ratio.government = Mathf.Clamp01(face.Data.ratio.government);
                             break;
                     }
                     
                     face.SyncDataJsonFromSO();
-                    EditorUtility.SetDirty(face.data);
+                    EditorUtility.SetDirty(face.Data);
                     
                 }
             }

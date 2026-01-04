@@ -18,7 +18,7 @@ namespace JSM.Surveillance
         
         public Dictionary<Resource, int> Inputs => InputResources;
         public ResourceVolume Output => OutputResources;
-
+        
         public MachineInstance(int inventorySize)
         {
             _inventorySize = inventorySize;

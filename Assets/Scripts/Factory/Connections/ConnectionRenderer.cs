@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -14,6 +15,7 @@ namespace JSM.Surveillance
         [Header("Colors")] [SerializeField] private Color normalColor;
         [SerializeField] private Color highlightedColor;
         [SerializeField] private Color selectedColor;
+        private Vector3[] worldPositions;
         
         private void Awake()
         {
@@ -28,7 +30,7 @@ namespace JSM.Surveillance
    
             lr.positionCount = connectionObject.Positions.Length + 2;
 
-            Vector3[] worldPositions = new Vector3[lr.positionCount];
+            worldPositions = new Vector3[lr.positionCount];
             worldPositions[0] = transform.InverseTransformPoint(connectionObject.StartPortObject.transform.position);
                 
             for (int i = 0; i < connectionObject.Positions.Length; i++)
@@ -43,6 +45,12 @@ namespace JSM.Surveillance
             lr.SetPositions(worldPositions);
         }
 
+        public void FlipDirection()
+        {
+            worldPositions = worldPositions.Reverse().ToArray();
+            lr.SetPositions(worldPositions);
+        }
+        
         public void Render(CellOccupierStatus status)
         {
             Color color;

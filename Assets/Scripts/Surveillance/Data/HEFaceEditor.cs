@@ -36,7 +36,7 @@ namespace JSM.Surveillance.Surveillance
         
         public HEFaceEditor(HEFace face)
         {
-            _state = face.data;
+            _state = face.Data;
             _face = face;
         }
 

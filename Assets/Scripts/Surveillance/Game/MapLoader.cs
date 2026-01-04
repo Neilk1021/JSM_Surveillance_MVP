@@ -45,7 +45,7 @@ namespace Surveillance.Game
         private GameObject GenerateAndPreparePolygonForShader(HEFace face)
         {
             face.EnsureSOFromJson();
-            if (face.data == null) {
+            if (face.Data == null) {
                 return null;
             }
             
@@ -71,12 +71,12 @@ namespace Surveillance.Game
         {
             var go = new GameObject("Filled Face Shader");
             go.transform.parent = transform;
-            go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y, face.data.isStreet ? 0.0001f :  0);
+            go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y, face.Data.isStreet ? 0.0001f :  0);
             go.AddComponent<MeshFilter>().sharedMesh = mesh;
             go.AddComponent<MeshRenderer>();
 
             
-            Material material = new Material(Shader.Find( face.data.isStreet ?  "Unlit/PolygonEdgeFactorStreet":  "Unlit/PolygonEdgeFactor")); 
+            Material material = new Material(Shader.Find( face.Data.isStreet ?  "Unlit/PolygonEdgeFactorStreet":  "Unlit/PolygonEdgeFactor")); 
 
             var points = GeneratePointsFromFace(verts2D);
 
@@ -104,7 +104,7 @@ namespace Surveillance.Game
             
             for (int i = 0; i < verts2D.Count; i++)
             {
-                if (face.data.isStreet) {
+                if (face.Data.isStreet) {
                     streetVertices.Add(verts2D[i]);
                 }
                 else {

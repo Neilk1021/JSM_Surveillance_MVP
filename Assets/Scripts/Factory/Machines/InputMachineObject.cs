@@ -1,5 +1,6 @@
 ﻿using System;
 using JSM.Surveillance.Game;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -7,6 +8,7 @@ namespace JSM.Surveillance
 {
     public class InputMachineObject : MachineObject
     {
+        [SerializeField] private TextMeshProUGUI inputText;
         private Source _source;
         
         private int _peopleInRange;
@@ -16,6 +18,7 @@ namespace JSM.Surveillance
         protected override void Start()
         {
             _peopleInRange = _source.GetPeopleInRange();
+            inputText.text = $"{_source.SourceName}\n[{_source.resource.name}]";
             base.Start();
         }
 

@@ -104,7 +104,7 @@ namespace JSM.Surveillance.Game
             MapCellManager.SetMapMode(MapMode.Normal);
         }
         
-        public override int GetPeopleInRange(float radius = 2)
+        public override int GetPeopleInRange()
         {
             int pop = 0;
             var faces = MapCellManager.GetFacesAroundPoint(transform.position,4);
@@ -123,7 +123,7 @@ namespace JSM.Surveillance.Game
             return pop;
         } 
         
-        public override Dictionary<HEFace, float> GetFacesInRange(float radius = 2)
+        public override Dictionary<HEFace, float> GetFacesInRange()
         {
             int pop = 0;
             Dictionary<HEFace, float> facesPct = new Dictionary<HEFace, float>();
@@ -151,6 +151,11 @@ namespace JSM.Surveillance.Game
         {
             vert?.RemoveSource();
             base.Destroy();
+        }
+
+        public override int GetRawResourceRate()
+        {
+            return GetPeopleInRange();
         }
     }
 }

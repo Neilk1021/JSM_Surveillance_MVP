@@ -15,7 +15,8 @@ namespace JSM.Surveillance.Game
         private SeparatedAreaView _areaView;
         private static int _micCount = 0;
         [SerializeField] private Transform micModel;
-
+        
+        
         private void Start()
         {
             _areaView = GetComponent<SeparatedAreaView>();
@@ -108,7 +109,7 @@ namespace JSM.Surveillance.Game
             MapCellManager.SetMapMode(MapMode.Normal);
         }
         
-        public override int GetPeopleInRange(float radius = 2)
+        public override int GetPeopleInRange()
         {
             int pop = 0;
             var faces = MapCellManager.GetFacesAroundPoint(transform.position,4);
@@ -125,7 +126,7 @@ namespace JSM.Surveillance.Game
             return pop;
         } 
         
-        public override Dictionary<HEFace, float> GetFacesInRange(float radius = 2)
+        public override Dictionary<HEFace, float> GetFacesInRange()
         {
             int pop = 0;
             Dictionary<HEFace, float> facesPct = new Dictionary<HEFace, float>();
@@ -139,7 +140,6 @@ namespace JSM.Surveillance.Game
             }
             return facesPct; 
         } 
-
         
         
         public override void Place(Vector2 pos)
@@ -152,6 +152,22 @@ namespace JSM.Surveillance.Game
         {
             vert?.RemoveSource();
             base.Destroy();
-        } 
+        }
+
+        public override int GetRawResourceRate()
+        {
+            float pop = 0;
+            var faces = MapCellManager.GetFacesAroundPoint(transform.position,4);
+            foreach (var face in faces)
+            {
+                float cellPop = (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(
+                    _areaView.Center, 
+                    _areaView.Range, 
+                    MapCellManager.GetFacePoints(face)) * (float)MapCellManager.GetPopulationInFace(face) * MapCellManager.GetResourceRatioInFace(face, resource));
+                
+                pop += cellPop;
+            }
+            return (int)pop;
+        }
     }
 }

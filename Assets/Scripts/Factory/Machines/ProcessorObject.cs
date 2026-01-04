@@ -35,6 +35,7 @@ namespace JSM.Surveillance
         public virtual void SetRecipe(Recipe recipe)
         {
             selectedRecipe = recipe;
+            _grid.Modified();
         }
 
         public override void Sell()

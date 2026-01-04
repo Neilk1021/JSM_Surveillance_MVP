@@ -6,6 +6,7 @@ using JSM.Surveillance.Game;
 using JSM.Surveillance.Saving;
 using JSM.Surveillance.UI;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 namespace JSM.Surveillance
@@ -52,7 +53,8 @@ namespace JSM.Surveillance
         public  Source Source { get; private set; }
         
         public ConnectionManager ConnectionManager => _connectionManager;
-        
+        public readonly UnityEvent OnModify = new();
+
 
         private void Awake()
         {
@@ -80,6 +82,7 @@ namespace JSM.Surveillance
             if(blueprint == null) return;
             
             LoadFactoryLayout(blueprint);
+            OnModify?.Invoke();
         }
 
         private void InitializeExternalMachines()
@@ -172,6 +175,7 @@ namespace JSM.Surveillance
             connectionObj.InitializeConnection(startPortObject, endPortObject, this, connectionPositions);
             connectionObj.transform.parent = transform;
 
+            OnModify?.Invoke();
             return true;
         }
 
@@ -203,8 +207,10 @@ namespace JSM.Surveillance
             ); 
             
             cellOccupier.Place(gridPositions, worldPos, this);
+            OnModify?.Invoke();
             return true;
         }
+        
 
         public void RegisterPort(Vector2Int pos, ProcessorPortObject portObject )
         {
@@ -309,5 +315,28 @@ namespace JSM.Surveillance
                 _connectionManager.PlaceConnection(connection);
             }
         }
+
+        public Resource GetOutputResourceType()
+        {
+            return _gridOutput?.InputPorts
+                .Select(x => x.ConnectionObject?.StartMachine switch
+                {
+                    ProcessorObject pO => pO.Recipe != null ?  pO.Recipe.OutputVolume.resource : null,
+                    InputMachineObject iO     => iO.Source.resource,
+                    _                    => null
+                })
+                .FirstOrDefault(resource => resource != null);
+        }
+
+        public void Modified()
+        {
+            StartCoroutine(ModifyAfterFrameEnd());
+        }
+        
+        private IEnumerator ModifyAfterFrameEnd()
+        {
+            yield return new WaitForEndOfFrame();
+            OnModify?.Invoke();
+        } 
     }
 }

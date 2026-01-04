@@ -42,17 +42,23 @@ namespace JSM.Surveillance.UI
 
         public void SwitchUI(ExternalInputObject inputMachineObject)
         {
+            if (IsCurrentMachine(inputMachineObject)) return;
             throw new NotImplementedException();
         }
 
         private void SetUI(FactoryUI ui, CellOccupier value)
         {
             _currentData = value;
-            _currentUI = Instantiate(ui, value.transform.position + Vector3.right * 5, Quaternion.identity);
+            _currentUI = Instantiate(ui, value.transform.position + Vector3.right * 3, Quaternion.identity);
             _currentUI.Initialize(_currentData, this);   
         }
         
         private bool IsCurrentMachine(CellOccupier occupier) {
+            if (_currentUI && _currentUI.MouseInside)
+            {
+                return true;
+            }
+            
             if (_currentData == occupier && !_currentUI.MouseInside)
             {
                 Close();

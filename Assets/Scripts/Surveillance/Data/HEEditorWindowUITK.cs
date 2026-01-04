@@ -290,8 +290,8 @@ public class GraphDrawElement : VisualElement
         _populationDelta = CalculatePopulationMinMax();
         foreach (var f in Faces)
         {
-            if (f.data == null) {
-                f.data = ScriptableObject.CreateInstance<HEFaceGameData>();
+            if (f.Data == null) {
+                f.Data = ScriptableObject.CreateInstance<HEFaceGameData>();
             }
             
             if (f.isExterior) continue;
@@ -313,7 +313,7 @@ public class GraphDrawElement : VisualElement
 
     private void EnsureFacesContainData()
     {
-        if(Faces.All(x => x.data != null))
+        if(Faces.All(x => x.Data != null))
             return;
 
         foreach (var t in Faces)
@@ -324,14 +324,14 @@ public class GraphDrawElement : VisualElement
     
     private (int min, int max) CalculatePopulationMinMax() {
         EnsureFacesContainData();
-        return (Faces.Min(x => x.data.dailyPopulation), Faces.Max(x => x.data.dailyPopulation));
+        return (Faces.Min(x => x.Data.dailyPopulation), Faces.Max(x => x.Data.dailyPopulation));
     }
 
     private void SetPenColor(Painter2D p, HEFace f)
     {
         if (mode == HEToolbar.Mode.Paint) {
             
-            if (!f.data.isStreet) {
+            if (!f.Data.isStreet) {
                 p.fillColor = Color.black;
                 return;
             }
@@ -339,25 +339,25 @@ public class GraphDrawElement : VisualElement
             switch (type)
             {
                 case PopulationPainter.PaintType.Risk:
-                    p.fillColor = Color.Lerp(Color.grey, Color.red, f.data.riskFactor);
+                    p.fillColor = Color.Lerp(Color.grey, Color.red, f.Data.riskFactor);
                     break;
                 case PopulationPainter.PaintType.Population:
-                    p.fillColor = Color.Lerp( Color.grey, Color.green, Mathf.InverseLerp(_populationDelta.min, _populationDelta.max, f.data.dailyPopulation)); 
+                    p.fillColor = Color.Lerp( Color.grey, Color.green, Mathf.InverseLerp(_populationDelta.min, _populationDelta.max, f.Data.dailyPopulation)); 
                     break;
                 case PopulationPainter.PaintType.Consumer:
-                    p.fillColor = Color.Lerp(Color.grey, Color.yellow, f.data.ratio.consumer);
+                    p.fillColor = Color.Lerp(Color.grey, Color.yellow, f.Data.ratio.consumer);
                     break;
                 case PopulationPainter.PaintType.CorpInfo:
-                    p.fillColor = Color.Lerp( Color.grey, Color.cyan, f.data.ratio.corporate); 
+                    p.fillColor = Color.Lerp( Color.grey, Color.cyan, f.Data.ratio.corporate); 
                     break;
                 case PopulationPainter.PaintType.GovtInfo:
-                    p.fillColor = Color.Lerp(Color.grey, Color.magenta,f.data.ratio.government);
+                    p.fillColor = Color.Lerp(Color.grey, Color.magenta,f.Data.ratio.government);
                     break;
             }
             return;
         }
         
-        if (!f.data.isStreet) {
+        if (!f.Data.isStreet) {
             var col = new Color(0.2f,0.2f,0.2f,0.4f) ; 
             p.fillColor = SelectedFace >= 0 && Faces[SelectedFace] == f ? new Color(0.2f,0.2f,0.2f,0.8f) : col;
         }

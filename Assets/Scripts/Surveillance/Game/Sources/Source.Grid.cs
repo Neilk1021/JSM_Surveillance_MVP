@@ -1,6 +1,8 @@
 ﻿using System;
 using JSM.Surveillance.Saving;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace JSM.Surveillance.Game
 {
@@ -10,8 +12,9 @@ namespace JSM.Surveillance.Game
         [SerializeField] private FactoryGrid gridPrefab;
 
         private FactoryGrid _grid = null;
-        [SerializeField] public Resource Resource;
+        [FormerlySerializedAs("Resource")] [SerializeField] public Resource resource;
         public FactoryGrid Grid => _grid;
+
         private FactoryGridSimulation _simulation;
         private FactorySimulationRunner _factorySimulationRunner;
         private FactoryBlueprint _lastLayout;
@@ -35,9 +38,15 @@ namespace JSM.Surveillance.Game
             {
                 _grid = Instantiate(gridPrefab, GameObject.FindGameObjectWithTag("FactoryCam").transform);
                 _grid.SetSource(this);
-                _grid.transform.localPosition = new Vector3(0, -6.5f, 1.25f);
+                _grid.transform.localPosition = new Vector3(0, -5.25f, 1.25f);
                 _grid.Initialize(_lastLayout);
+                _grid.OnModify.AddListener(Modified);
             }
+        }
+
+        private void Modified()
+        {
+            OnModified?.Invoke();
         }
 
         private void SellOutput()
@@ -85,6 +94,7 @@ namespace JSM.Surveillance.Game
         public void SetSimulation(FactoryGridSimulation buildSimulator)
         {
             _simulation = buildSimulator;
+            OnModified?.Invoke();
         }
 
         public void RunSimulator()
@@ -96,6 +106,14 @@ namespace JSM.Surveillance.Game
         public void SetLastLayout(FactoryBlueprint newLayout)
         {
             _lastLayout = newLayout;
+        }
+
+        public Resource GetOutputResourceType()
+        {
+            if (_simulation == null && !_grid)
+                return null;
+
+            return _grid ? _grid.GetOutputResourceType() : _simulation?.GetOutputResourceType();
         }
     }
 }

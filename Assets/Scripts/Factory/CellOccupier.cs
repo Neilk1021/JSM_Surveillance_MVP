@@ -8,7 +8,7 @@ namespace JSM.Surveillance
     public abstract class CellOccupier : MonoBehaviour
     {
         private Vector2Int[] _positions;
-        private FactoryGrid _grid;
+        protected FactoryGrid _grid;
 
         public virtual Vector2Int Size => new Vector2Int(1, 1);
         
@@ -26,12 +26,6 @@ namespace JSM.Surveillance
         {
             return _pqPositions.IsEmpty() ? new Vector2Int(-1, -1) : _pqPositions.Peek();
         }
-
-        public void Clear()
-        {
-            Destroy(gameObject);
-        }
-
         protected void Initialize(List<Vector2Int> newPositions, FactoryGrid grid)
         {
             this._positions = newPositions.ToArray();
@@ -63,9 +57,11 @@ namespace JSM.Surveillance
             }
         }
         
-        protected void Remove()
+        protected virtual void Remove()
         {
+            Destroy(this);
             Destroy(gameObject);
+            _grid.Modified();
         }
         
         public virtual void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)

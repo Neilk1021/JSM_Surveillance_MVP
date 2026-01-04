@@ -31,7 +31,6 @@ namespace JSM.Surveillance
                 Gizmos.color = new Color(0.5f, 0.8f, 1f, 0.3f);
                 Gizmos.DrawCube(cellCenter, new Vector3(cellSize, cellSize, 0.1f));
             }
-        }
-
+        } 
     }
 }

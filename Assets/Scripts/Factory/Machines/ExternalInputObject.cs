@@ -24,9 +24,15 @@ namespace JSM.Surveillance
             _parentSource = source;
             _incomingSourceIndex = index;
             var incoming = _parentSource.IncomingSourceLinks[index];
-            
+            ReloadText();
+            _parentSource.OnIncomingSourcesChanged.AddListener(ReloadText);
+        }
+
+        public void ReloadText()
+        {
+            var incoming = _parentSource.IncomingSourceLinks[_incomingSourceIndex];
             if(debugLabel != null)
-                debugLabel.text = incoming != null ? $"{incoming.SourceName}" : "Nothing";
+                debugLabel.text = incoming != null ? $"{incoming.SourceName}\n[{incoming.GetOutputResourceType().ResourceName}]" : "No incoming\nsource";
         }
 
         public override MachineInstance BuildInstance()

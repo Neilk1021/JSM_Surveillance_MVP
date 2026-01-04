@@ -158,5 +158,18 @@ namespace JSM.Surveillance
             int excess = current.AddInput(previous.Output.resource, amnt);
             previous.AddOutput(previous.Output.resource, excess);
         }
+
+        public Resource GetOutputResourceType()
+        {
+            Debug.Log(_gridOutput?.EndPorts.Count);
+            return _gridOutput?.EndPorts
+                .Select(x => x.Connection?.Start switch
+                {
+                    ProcessorInstance pO => pO.Recipe.OutputVolume.resource,
+                    InputMachineInstance iO     => iO.Source.resource,
+                    _                    => null
+                })
+                .FirstOrDefault(resource => resource != null);
+        }
     }
 }

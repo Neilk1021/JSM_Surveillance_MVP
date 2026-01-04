@@ -48,6 +48,14 @@ namespace JSM.Surveillance
             }
         }
 
+        protected override void Remove()
+        {
+            _endMachine = null;
+            _startMachine = null;
+            
+            base.Remove();
+        }
+        
         public void InitializeConnection(ProcessorPortObject start, ProcessorPortObject end, FactoryGrid grid, List<Vector2Int> path)
         {
             base.Initialize(path, grid);
@@ -61,6 +69,10 @@ namespace JSM.Surveillance
             _startMachine = start.Type == NodeType.Start ? start.Owner : end.Owner;
             
             _renderer.PlaceConnection();
+            if (start.Type == NodeType.End)
+            {
+                _renderer.FlipDirection();
+            }
         }
 
 

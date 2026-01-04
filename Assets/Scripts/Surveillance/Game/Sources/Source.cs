@@ -8,6 +8,7 @@ using JSM.Surveillance.Util;
 using Surveillance.Game;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace JSM.Surveillance.Game
 {
@@ -16,6 +17,7 @@ namespace JSM.Surveillance.Game
         [SerializeField] protected string sourceName;
         [SerializeField] private int maxIncomingSourceLinks = 0;
         [SerializeField] private LinkRenderer linkRendererPrefab;
+        [SerializeField] private SourceUI sourceUI;
 
         private LinkRenderer _linkRenderer;
         private protected MapCellManager MapCellManager;
@@ -26,11 +28,14 @@ namespace JSM.Surveillance.Game
         
         public SourceData Data => _data;
         public string SourceName => sourceName;
-        [SerializeField] private SourceUI sourceUI;
-        public readonly UnityEvent OnModified = new UnityEvent();
         public int MaxIncomingSourceLinks => maxIncomingSourceLinks;
-        public Source[] IncomingSourceLinks => _incomingSources; 
-
+        public Source[] IncomingSourceLinks => _incomingSources;
+        public Source NextSource => _nextSource;
+        
+        public readonly UnityEvent OnModified = new UnityEvent();
+        public readonly UnityEvent OnIncomingSourcesChanged = new UnityEvent();
+        
+        
         public virtual void Init(MapCellManager manager, SourceData data)
         {
             _incomingSources = new Source[maxIncomingSourceLinks];
@@ -38,6 +43,7 @@ namespace JSM.Surveillance.Game
             _data = data;
             MapCellManager = manager;
             Placed = false;
+            OnModified.AddListener(ReloadNextSource);
         }
 
         private void Update()
@@ -92,8 +98,8 @@ namespace JSM.Surveillance.Game
             for (int i = 0; i < _incomingSources.Length; i++)
             {
                 if (_incomingSources[i] != null) continue;
-
                 _incomingSources[i] = source;
+                OnIncomingSourcesChanged?.Invoke();
                 return true;
             }
 
@@ -134,28 +140,9 @@ namespace JSM.Surveillance.Game
             return sourceUIComponent;
         }
 
-        public virtual int GetPeopleInRange(float radius = 2)
-        {
-            int pop = 0;
-            var faces = MapCellManager.GetFacesAroundPoint(transform.position,4);
-            foreach (var face in faces)
-            {
-                pop += (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, MapCellManager.GetFacePoints(face)) * (float)MapCellManager.GetPopulationInFace(face));
-            }
-            return pop;
-        }
-
-        public virtual Dictionary<HEFace, float> GetFacesInRange(float radius = 2)
-        {
-            int pop = 0;
-            Dictionary<HEFace, float> facesPct = new Dictionary<HEFace, float>();
-            var faces = MapCellManager.GetFacesAroundPoint(transform.position,3);
-            foreach (var face in faces)
-            {
-                facesPct[face] = (GeometryUtils.CalculateCirclePolygonOverlapPct(transform.position, radius, MapCellManager.GetFacePoints(face)));
-            }
-            return facesPct; 
-        } 
+        public abstract int GetPeopleInRange();
+        public abstract Dictionary<HEFace, float> GetFacesInRange();
+        
         
         private void OnMouseDown()
         {
@@ -232,25 +219,36 @@ namespace JSM.Surveillance.Game
                     break;
                 }
             }
-
+            
             if (!destSource)
             {
-                if (!_nextSource)
+                if (_nextSource)
                 {
-                    Destroy(_linkRenderer.gameObject);
-                    yield break;
+                    _nextSource.RemoveIncomingSource(this);
                 }
+
+                _nextSource = null;
+                if(_linkRenderer)
+                    Destroy(_linkRenderer.gameObject);
                 
-                _linkRenderer.SetEnd(_nextSource.transform.position);
+                OnModified?.Invoke();
                yield break; 
             }
 
             if (LinkToSource(destSource))
             {
                 _linkRenderer.SetEnd(destSource.transform.position);
+                OnModified?.Invoke();
                 yield break;
             }
             Destroy(_linkRenderer.gameObject);
+        }
+
+        public abstract int GetRawResourceRate();
+
+        private void ReloadNextSource()
+        {
+            _nextSource?.Modified();
         }
     }
 }

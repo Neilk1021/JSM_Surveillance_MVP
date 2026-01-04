@@ -83,5 +83,16 @@ namespace JSM.Surveillance.Game
             }
             _cells[faceKey].Rendering.SetAlpha(faceValue);
         }
+
+        public float GetResourceRatioInFace(HEFace face, Resource resource)
+        {
+            return resource.ResourceCategory switch
+            {
+                ResourceCategory.Consumer => face.Data.ratio.consumer,
+                ResourceCategory.Corp => face.Data.ratio.corporate,
+                ResourceCategory.Govt => face.Data.ratio.government,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
     }
 }

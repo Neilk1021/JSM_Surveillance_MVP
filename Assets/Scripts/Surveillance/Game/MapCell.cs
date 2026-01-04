@@ -46,7 +46,7 @@ namespace JSM.Surveillance.Game
         public void Init(HEFace face) {
             this.face = face;
             face.EnsureSOFromJson();
-            data = face.data;
+            data = face.Data;
             center = GetMeshCenter(GetComponent<MeshFilter>());
         }
 
@@ -55,9 +55,9 @@ namespace JSM.Surveillance.Game
             face.EnsureSOFromJson();
             return new CellData()
             {
-                DailyPopulation = face.data.dailyPopulation, 
-                RiskFactor = face.data.riskFactor,
-                Ratio =  face.data.ratio
+                DailyPopulation = face.Data.dailyPopulation, 
+                RiskFactor = face.Data.riskFactor,
+                Ratio =  face.Data.ratio
             };
         }
         
@@ -79,7 +79,7 @@ namespace JSM.Surveillance.Game
                 return;
             }
             face.EnsureSOFromJson();
-            data = face.data;
+            data = face.Data;
             
             if (data.companyId == "") {
                 return;

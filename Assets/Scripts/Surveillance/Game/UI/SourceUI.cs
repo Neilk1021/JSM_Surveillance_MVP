@@ -35,9 +35,9 @@ namespace JSM.Surveillance.UI
             nameText.text = $"{_source.Data.ShopInfo.name}";
             descriptionText.text = $"{_source.Data.ShopInfo.desc}";
             
-            //TODO replace this with an actual check to see what its producing
-            producingText.text = $"Producing: [Nothing] Must Modify";
-            linkedToText.text = $"Sending to: [Nothing] Selling Data";
+            var output = _source.GetOutputResourceType();
+            producingText.text = output? $"Producing: [{output.ResourceName}]" : $"Producing: [Nothing] Must Modify";
+            linkedToText.text = _source.NextSource? $"Sending to: [{_source.NextSource.SourceName}]" : $"Sending to: [Nothing] Selling Data";
         }
 
         public Source GetSource()

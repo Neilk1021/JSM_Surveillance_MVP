@@ -36,7 +36,17 @@ namespace JSM.Surveillance.Surveillance
         [NonSerialized] public readonly Dictionary<string, string> meta = new();
         public List<int> loop = new();
         public float area;
-        [NonSerialized] public HEFaceGameData data; 
+        [NonSerialized] HEFaceGameData _data;
+        public HEFaceGameData Data
+        {
+            get
+            {
+                EnsureSOFromJson();
+                return _data;
+            }
+            set => _data = value;
+        }
+
         [SerializeField, HideInInspector] public string _dataJson;
 
         
@@ -53,28 +63,24 @@ namespace JSM.Surveillance.Surveillance
 
         public override int GetHashCode()
         {
-            
             return halfEdge;
         }
 
         
         public void SyncDataJsonFromSO()
         {
-            if (data != null)
-                _dataJson = JsonUtility.ToJson(data);
-            else
-                _dataJson = null;
+            _dataJson = _data != null ? JsonUtility.ToJson(_data) : null;
         }
 
         // Call this after loading the graph
         public void EnsureSOFromJson()
         {
-            if (data == null)
+            if (_data == null)
             {
-                data = ScriptableObject.CreateInstance<HEFaceGameData>();
+                _data = ScriptableObject.CreateInstance<HEFaceGameData>();
 
                 if (!string.IsNullOrEmpty(_dataJson))
-                    JsonUtility.FromJsonOverwrite(_dataJson, data);
+                    JsonUtility.FromJsonOverwrite(_dataJson, _data);
             }
         }
     }

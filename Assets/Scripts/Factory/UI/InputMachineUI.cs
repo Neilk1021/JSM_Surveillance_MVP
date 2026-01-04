@@ -18,7 +18,7 @@ namespace JSM.Surveillance.UI
             }
 
             machineNameText.text = _machineObject.Source.SourceName;
-            producingText.text = $"<b>Produces:</b>\nDEBUG, need to figure out how to calc first";
+            producingText.text = $"<b>Produces:</b>\n {_machineObject.Source.GetRawResourceRate()}x {_machineObject.Source.resource.ResourceCategory} / HR";
         }
 
     }

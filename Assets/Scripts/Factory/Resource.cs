@@ -4,6 +4,13 @@ using UnityEngine;
 
 namespace JSM.Surveillance
 {
+    public enum ResourceCategory
+    {
+        Consumer,
+        Corp,
+        Govt
+    }
+    
     [CreateAssetMenu(fileName = "NewResource", menuName = "JSM/Surveillance/Resource")]
     public class Resource : ScriptableObject
     {
@@ -11,11 +18,15 @@ namespace JSM.Surveillance
         [SerializeField] private string resourceName;
         [SerializeField] private Sprite sprite;
         [SerializeField] private int value;
-
+        [SerializeField] private ResourceCategory resourceCategory;
+        
         public int Value => value;
         public string Guid => guid;
         public string ResourceName => resourceName;
         public Sprite Sprite => sprite;
+
+        public ResourceCategory ResourceCategory => resourceCategory;
+        
         private void OnValidate()
         {
             if (string.IsNullOrEmpty(guid))
