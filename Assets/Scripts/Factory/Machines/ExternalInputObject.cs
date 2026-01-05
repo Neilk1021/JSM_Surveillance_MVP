@@ -32,7 +32,7 @@ namespace JSM.Surveillance
         {
             var incoming = _parentSource.IncomingSourceLinks[_incomingSourceIndex];
             if(debugLabel != null)
-                debugLabel.text = incoming != null ? $"{incoming.SourceName}\n[{incoming.GetOutputResourceType().ResourceName}]" : "No incoming\nsource";
+                debugLabel.text = incoming != null ? $"{incoming.SourceName}\n[{incoming.GetOutputResourceType()?.ResourceName}]" : "No incoming\nsource";
         }
 
         public override MachineInstance BuildInstance()

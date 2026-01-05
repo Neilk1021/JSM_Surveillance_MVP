@@ -14,6 +14,7 @@ namespace JSM.Surveillance.UI
         [SerializeField] private TextMeshProUGUI linkedToText;
         
         [SerializeField] private TextMeshProUGUI populationText;
+        [SerializeField] private Canvas canvas;
         
         private Source _source;
 
@@ -27,6 +28,7 @@ namespace JSM.Surveillance.UI
             if (Camera.main != null) transform.rotation = Camera.main.transform.rotation;
             ItemPreviewer.LoadPreview(source.Data.ShopInfo.itemModelPrefab);
             ReloadUI();
+            canvas.worldCamera = GameObject.FindGameObjectWithTag("UICam").GetComponent<Camera>();
         }
 
         private void ReloadUI()

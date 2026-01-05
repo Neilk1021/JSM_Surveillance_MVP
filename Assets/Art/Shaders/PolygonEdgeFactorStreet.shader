@@ -9,7 +9,7 @@ Shader "Unlit/PolygonEdgeFactorStreet"
 
         [Header(Border Settings)]
         _BorderColor ("Border Color", Color) = (0.015,0.15,0.20,1)
-        _BorderSize ("Border Size (World Units)", Range(0.0, 2.0)) = 0.03
+        _BorderSize ("Border Size (World Units)", Range(0.0, 2.0)) = 0.0425
     }
     SubShader
     {

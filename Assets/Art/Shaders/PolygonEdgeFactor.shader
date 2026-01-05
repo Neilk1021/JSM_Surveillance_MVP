@@ -9,7 +9,7 @@ Shader "Unlit/PolygonEdgeFactor"
 
         [Header(Border Settings)]
         _BorderColor ("Border Color", Color) = (0.05,0.25,0.35,1)
-        _BorderSize ("Border Size (World Units)", Range(0.0, 2.0)) = 0.05
+        _BorderSize ("Border Size (World Units)", Range(0.0, 2.0)) = 0.06
     }
     SubShader
     {

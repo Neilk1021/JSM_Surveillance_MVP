@@ -77,9 +77,9 @@ namespace JSM.Surveillance.Game
                         mapCell.ResetColor();
                         break;
                     case MapMode.Population:
-                        color = mapCell.Cell.IsStreet ? populationGradient.Evaluate((float)data.DailyPopulation/maxPop) : new Color(0.02f, 0.45f, 0.05f);
+                        color = mapCell.Cell.IsStreet ? populationGradient.Evaluate((float)data.DailyPopulation/maxPop) : new Color(0.02f, 0.3f, 0.05f);
                         mapCell.SetColor(!mapCell.Cell.IsStreet ? buildingColor : color, color);
-                        mapCell.SetBorderColor(new Color(0.05f,0.5f,0.1f));
+                        mapCell.SetBorderColor(new Color(0.05f,0.4f,0.1f));
                         break;
                     case MapMode.Risk:
                         color = mapCell.Cell.IsStreet ? riskGradient.Evaluate(data.RiskFactor) : new Color(0.45f, 0.05f, 0.02f);
@@ -94,7 +94,7 @@ namespace JSM.Surveillance.Game
                     case MapMode.Corp:
                         color = mapCell.Cell.IsStreet ? corpGradient.Evaluate(data.Ratio.corporate) : new Color(0.2f, 0.5f, 0.5f);
                         mapCell.SetColor(!mapCell.Cell.IsStreet ? buildingColor : color, color);
-                        mapCell.SetBorderColor(new Color(0.3f,0.6f,0.6f));
+                        mapCell.SetBorderColor(new Color(0.15f,0.4f,0.4f));
                         break;
                     case MapMode.Govt:
                         color = mapCell.Cell.IsStreet ? govtGradient.Evaluate(data.Ratio.government) : new Color(0.5f, 0.05f, 0.5f);

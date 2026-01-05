@@ -133,7 +133,48 @@ namespace JSM.Surveillance.Game
         /// <returns>Current mouse position.</returns>
         public Vector3 GetMouseCurrentPosition()
         {
-            Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+            if (!EfficientResScaler.instance || !_camera.targetTexture)
+                return GetMouseCurrentPositionOld();
+            
+            var displayRect = EfficientResScaler.instance.DisplayUI.rectTransform;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                displayRect, 
+                Input.mousePosition, 
+                EfficientResScaler.instance.rtCam, // Use null if Canvas is Screen Space - Overlay
+                out var localPoint
+            );
+
+            Vector2 viewportPoint = new Vector2(
+                (localPoint.x / displayRect.rect.width) + 0.5f,
+                (localPoint.y / displayRect.rect.height) + 0.5f
+            );
+
+            Ray ray = _camera.ViewportPointToRay(viewportPoint);
+
+            RaycastHit[] results = new RaycastHit[32];
+            int size = Physics.RaycastNonAlloc(ray, results, 100);
+
+            for (int i = 0; i < size; ++i)
+            {
+                if (results[i].transform.CompareTag("MapCell"))
+                {
+                    return results[i].point;
+                }
+            }
+
+            return Vector3.negativeInfinity;
+        }
+
+        private Vector3 GetMouseCurrentPositionOld()
+        {
+            float ratio = 1;
+            if (_camera.targetTexture)
+            {
+                ratio = (float)Screen.currentResolution.width / _camera.targetTexture.width;
+            }
+
+            Ray ray = _camera.ScreenPointToRay(Input.mousePosition / ratio);
             RaycastHit[] results = new RaycastHit[32];
             var size = Physics.RaycastNonAlloc(ray, results, 100);
 

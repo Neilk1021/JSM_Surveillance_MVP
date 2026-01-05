@@ -18,7 +18,7 @@ namespace JSM.Surveillance.Game
     }
     
     [RequireComponent(typeof(MapCellRendering))]
-    public class MapCell : MonoBehaviour
+    public class MapCell : MonoBehaviour, IPointerDownHandler
     {
         private MapCellManager _manager;
         [SerializeField] private HEFace face;
@@ -138,6 +138,11 @@ namespace JSM.Surveillance.Game
             {
                 return;
             }
+            _manager.CloseUIPreview();
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
             _manager.CloseUIPreview();
         }
     }

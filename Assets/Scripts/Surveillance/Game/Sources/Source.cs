@@ -8,11 +8,12 @@ using JSM.Surveillance.Util;
 using Surveillance.Game;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 namespace JSM.Surveillance.Game
 {
-    public abstract partial class Source : MonoBehaviour
+    public abstract partial class Source : MonoBehaviour, IPointerDownHandler
     {
         [SerializeField] protected string sourceName;
         [SerializeField] private int maxIncomingSourceLinks = 0;
@@ -106,6 +107,7 @@ namespace JSM.Surveillance.Game
             return false;
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         protected virtual void MoveSource()
         {
             if(Placed) return;
@@ -249,6 +251,11 @@ namespace JSM.Surveillance.Game
         private void ReloadNextSource()
         {
             _nextSource?.Modified();
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+           OnMouseDown(); 
         }
     }
 }

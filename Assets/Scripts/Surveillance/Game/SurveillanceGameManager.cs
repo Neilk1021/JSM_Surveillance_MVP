@@ -78,7 +78,9 @@ namespace JSM.Surveillance
                 throw new ArgumentException("No sources in the scene!");
             }
 
+
             return _sources 
+                .Where(x => x)
                 .Where(x=> Vector2.Distance(pos,x.transform.position) < threshold)
                 .OrderBy(x=> Vector2.Distance(pos, x.transform.position))
                 .FirstOrDefault();        
