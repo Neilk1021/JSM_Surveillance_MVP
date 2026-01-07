@@ -12,11 +12,20 @@ namespace JSM.Surveillance
         private int _peopleInRange;
         public SourceData Data => _sourceData;
         public Source Source => _source;
+        private int _currentTicks = 0;
         
         
         public override void ProcessTicks(int deltaTicks = 1)
         {
-            AddOutput(_source.resource, _peopleInRange);
+            var ticksPerHr = SurveillanceGameManager.instance.Simulator.TicksPerHR;
+            _currentTicks += deltaTicks;
+
+            if (_currentTicks < ticksPerHr) return;
+            
+            int mult = _currentTicks / ticksPerHr;
+            _currentTicks %= ticksPerHr;
+                
+            AddOutput(_source.resource, mult * _peopleInRange);
         }
         
         public InputMachineInstance(Source newSource, int inventorySize) : base(inventorySize)

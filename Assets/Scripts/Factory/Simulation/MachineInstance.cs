@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -18,6 +19,8 @@ namespace JSM.Surveillance
         
         public Dictionary<Resource, int> Inputs => InputResources;
         public ResourceVolume Output => OutputResources;
+
+        public virtual event Action<Resource> OnResourceProduced;  
         
         public MachineInstance(int inventorySize)
         {

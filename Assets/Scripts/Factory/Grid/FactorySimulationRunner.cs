@@ -6,36 +6,34 @@ namespace JSM.Surveillance
 {
     public class FactorySimulationRunner : MonoBehaviour
     {
-        [SerializeField] private Source _source;
-        [SerializeField] private float secondsPerTick = 1/5f;
-
-
-        private float _timeSinceLastTick = 0;
         private FactoryGridSimulation _simulation;
-
-        private bool _run = false;
+        private Simulator _simulator;
+        
 
         private void Awake()
         {
-            _source = GetComponent<Source>();
+            _simulator = SurveillanceGameManager.instance.Simulator;
         }
 
-        public void Run()
+        private void OnEnable()
         {
-            _run = true;
+            _simulator ??= SurveillanceGameManager.instance.Simulator;
+            _simulator.OnTick+= RunTick;
+        }
+
+        private void OnDisable()
+        {
+            if (_simulator == null) return;
+            
+            _simulator.OnTick -= RunTick;
+        }
+
+
+        private void RunTick(int ticks)
+        {
+            _simulation?.RunTick(ticks);
         }
         
-        private void Update()
-        {
-            if(!_run) return;
-            _timeSinceLastTick += Time.deltaTime;
-            if (_timeSinceLastTick > secondsPerTick)
-            {
-                _simulation?.RunTick();
-                _timeSinceLastTick = 0;
-            }
-        }
-
         public void Load(FactoryGridSimulation simulation)
         {
             _simulation = simulation;

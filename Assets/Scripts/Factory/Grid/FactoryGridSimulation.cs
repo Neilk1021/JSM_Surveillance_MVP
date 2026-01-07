@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using JSM.Surveillance.Game;
 using Unity.VisualScripting;
@@ -14,7 +15,9 @@ namespace JSM.Surveillance
         private readonly Source _source;
 
         private readonly List<ExternalInputInstance> _externalInputs;
-
+        public event Action<Resource> ResourceMade;
+        
+        
         public FactoryGridSimulation(IEnumerable<MachineObject> machineObjects, Source source)
         {
             _source = source;
@@ -52,14 +55,26 @@ namespace JSM.Surveillance
             }
 
             _machines = lookup.Select(x=>x.Value).ToArray();
+            foreach (var machine in _machines)
+            {
+                machine.OnResourceProduced += ResourceMade;
+            }
+        }
+        
+        ~FactoryGridSimulation()
+        {
+            foreach (var machine in _machines)
+            {
+                machine.OnResourceProduced -= ResourceMade;
+            }
         }
 
-        public void RunTick()
+        public void RunTick(int ticks = 1)
         {
             ReloadMachineResources();
             foreach (var machine in _machines)
             {
-                machine.ProcessTicks();
+                machine.ProcessTicks(ticks);
             }
         }
         
@@ -161,7 +176,6 @@ namespace JSM.Surveillance
 
         public Resource GetOutputResourceType()
         {
-            Debug.Log(_gridOutput?.EndPorts.Count);
             return _gridOutput?.EndPorts
                 .Select(x => x.Connection?.Start switch
                 {
@@ -171,5 +185,6 @@ namespace JSM.Surveillance
                 })
                 .FirstOrDefault(resource => resource != null);
         }
+
     }
 }

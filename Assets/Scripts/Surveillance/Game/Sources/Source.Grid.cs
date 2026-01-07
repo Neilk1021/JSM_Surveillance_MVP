@@ -21,6 +21,9 @@ namespace JSM.Surveillance.Game
 
         private ResourceVolume _storedResourceVolume;
 
+        public event Action<int> OnMoneyEarned;
+        public event Action<Resource> OnResourceMade; 
+
         protected virtual void Awake()
         {
             _factorySimulationRunner = GetComponent<FactorySimulationRunner>();
@@ -52,9 +55,11 @@ namespace JSM.Surveillance.Game
         private void SellOutput()
         {
             if(_storedResourceVolume.resource == null) return;
-            
+
+            var vol = TakeResources();
+            OnMoneyEarned?.Invoke(vol.amount * vol.resource.Value);
             SurveillanceGameManager.instance.
-                MoneyManager.ChangeMoneyBy(_storedResourceVolume.amount * _storedResourceVolume.resource.Value);
+                MoneyManager.ChangeMoneyBy(vol.amount * vol.resource.Value);
         }
 
         public ResourceVolume TakeResources()
@@ -85,8 +90,8 @@ namespace JSM.Surveillance.Game
 
             machine.OutputResources.Clear();
 
-            if (_nextSource == null)
-            {
+            OnResourceMade?.Invoke(_storedResourceVolume.resource);
+            if (_nextSource == null) {
                 SellOutput();
             }
         }
@@ -94,15 +99,11 @@ namespace JSM.Surveillance.Game
         public void SetSimulation(FactoryGridSimulation buildSimulator)
         {
             _simulation = buildSimulator;
+            _simulation.ResourceMade += OnResourceMade;
+            _factorySimulationRunner?.Load(_simulation);
             OnModified?.Invoke();
         }
-
-        public void RunSimulator()
-        {
-            _factorySimulationRunner.Load(_simulation);
-            _factorySimulationRunner.Run();
-        }
-
+        
         public void SetLastLayout(FactoryBlueprint newLayout)
         {
             _lastLayout = newLayout;
@@ -115,5 +116,8 @@ namespace JSM.Surveillance.Game
 
             return _grid ? _grid.GetOutputResourceType() : _simulation?.GetOutputResourceType();
         }
+        
+        
+        
     }
 }

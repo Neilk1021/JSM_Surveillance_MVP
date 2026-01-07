@@ -8,16 +8,19 @@ using UnityEngine.Events;
 
 namespace JSM.Surveillance
 {
+    [RequireComponent(typeof(Simulator))]
     [RequireComponent(typeof(MoneyManager))]
     public class SurveillanceGameManager : MonoBehaviour
     {
         private MapCellManager _mapCellManager;
         public static SurveillanceGameManager instance { get; private set; }
         private MoneyManager _moneyManager;
+        private Simulator _simData;
         
         [Tooltip("Used in case source doesn't have grid.")]
         [SerializeField]private FactoryGrid defaultSourceGrid;
 
+        public Simulator Simulator => _simData;
         public MoneyManager MoneyManager => _moneyManager;
         public FactoryGrid DefaultSourceGrid => defaultSourceGrid;
         private readonly List<Source> _sources = new List<Source>();
@@ -30,6 +33,7 @@ namespace JSM.Surveillance
             }
 
             instance = this;
+            _simData = GetComponent<Simulator>();
             _moneyManager = GetComponent<MoneyManager>();
             _mapCellManager = FindObjectOfType<MapCellManager>();
         }

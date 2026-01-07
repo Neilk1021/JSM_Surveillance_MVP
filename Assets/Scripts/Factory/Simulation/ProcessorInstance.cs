@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace JSM.Surveillance
 {
@@ -18,6 +19,7 @@ namespace JSM.Surveillance
         public Recipe Recipe { get; }
         public bool IsRunning { get; } = false;
 
+        public override event Action<Resource> OnResourceProduced;
         
         public override void ProcessTicks(int deltaTicks = 1)
         {
@@ -29,22 +31,18 @@ namespace JSM.Surveillance
                 _processing = true;
                 ticks = 0;
                 
-                Debug.Log($"On this tick I started processing!");
             }
-            if (_processing)
-            {
-                ticks += (int)(deltaTicks * _data.Speed);
 
-                if (!(ticks >= Recipe.Ticks)) {
-                    Debug.Log($"On this tick, ticks were lower than needed to make!");
-                    return;
-                }
-                
-                Debug.Log($"On this tick I produced 1 AA.");
-                ProduceOutputs();
-                _processing = false;
-                ticks = 0;
+            if (!_processing) return;
+            
+            ticks += (int)(deltaTicks * _data.Speed);
+            if (!(ticks >= Recipe.Ticks)) {
+                return;
             }
+                
+            ProduceOutputs();
+            _processing = false;
+            ticks = 0;
         }
 
         private bool InputAmountSatisfied()
@@ -73,6 +71,7 @@ namespace JSM.Surveillance
                 OutputResources.amount = 0;
             }
             
+            OnResourceProduced?.Invoke(OutputResources.resource);
             OutputResources.amount += Recipe.OutputVolume.amount;
         }
 

@@ -57,7 +57,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BG_Visibilty: 0.75
+    - _BG_Visibilty: 0.41
     - _EnableExternalAlpha: 0
     - _QueueControl: 0
     - _QueueOffset: 0
