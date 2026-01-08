@@ -90,6 +90,8 @@ namespace JSM.Surveillance.Game
 
             machine.OutputResources.Clear();
 
+            if(_storedResourceVolume.amount == 0) return;
+            
             OnResourceMade?.Invoke(_storedResourceVolume.resource);
             if (_nextSource == null) {
                 SellOutput();
