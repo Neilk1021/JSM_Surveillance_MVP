@@ -22,12 +22,34 @@ namespace JSM.Surveillance.Game
         private ResourceVolume _storedResourceVolume;
 
         public event Action<int> OnMoneyEarned;
-        public event Action<Resource> OnResourceMade; 
+        public event Action<Resource> OnResourceMade;
+
+        public static bool Editable => !SurveillanceGameManager.instance.Simulator.Running;
 
         protected virtual void Awake()
         {
             _factorySimulationRunner = GetComponent<FactorySimulationRunner>();
             gridPrefab ??= SurveillanceGameManager.instance.DefaultSourceGrid;
+        }
+
+        private void OnEnable()
+        {
+            SurveillanceGameManager.instance.Simulator.OnStart += ReloadSim;
+        }
+
+        private void OnDisable()
+        {
+            SurveillanceGameManager.instance.Simulator.OnStart -= ReloadSim;
+
+        }
+
+        
+        private void ReloadSim()
+        {
+            if (_grid != null)
+            {
+                SetSimulation(_grid.BuildSimulator());
+            }
         }
         
         public void SpawnGrid()

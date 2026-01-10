@@ -8,7 +8,6 @@ namespace JSM.Surveillance
     {
         private FactoryGridSimulation _simulation;
         private Simulator _simulator;
-        
 
         private void Awake()
         {

@@ -6,6 +6,7 @@ namespace JSM.Surveillance
 {
     public enum ResourceCategory
     {
+        Basic,
         Consumer,
         Corp,
         Govt

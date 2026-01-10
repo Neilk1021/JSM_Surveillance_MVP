@@ -22,6 +22,7 @@ namespace JSM.Surveillance.UI
                 var r = Instantiate(recipeSelectionPrefab, contentTransform);
                 r.Load(recipe, this);
             }
+
         }
 
         private void DestroyAllChildren()

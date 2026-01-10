@@ -13,6 +13,8 @@ public class Simulator : MonoBehaviour
     
     private float _timeSinceLastTick = 0;
     private bool _run = false;
+
+    public bool Running => _run;
     
     public int TotalTicks => (int)Mathf.Ceil(simulationDurationHRs * ticksPerHR);
     private int _totalTicks;
@@ -22,6 +24,7 @@ public class Simulator : MonoBehaviour
     public float SecondsPerTick => secondsPerTick;
 
     public event Action<int> OnTick;
+    public event Action OnStart;
     public readonly UnityEvent<float> OnTickProgress = new UnityEvent<float>();
     public int TicksPerHR => ticksPerHR;
 
@@ -30,6 +33,8 @@ public class Simulator : MonoBehaviour
         _currentTicks = 0;
         _totalTicks = TotalTicks;
         _run = true;
+        
+        OnStart?.Invoke();
     }
 
     private void Stop()
@@ -52,4 +57,5 @@ public class Simulator : MonoBehaviour
         
         if(_currentTicks >= _totalTicks) Stop();
     }
+
 }

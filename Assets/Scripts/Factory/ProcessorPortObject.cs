@@ -43,6 +43,8 @@ namespace JSM.Surveillance
 
         private void OnMouseDown()
         {
+            if(!FactoryGrid.Editable)return;
+            
             if (owner.Grid.ConnectionManager != null)
             {
                 owner.Grid.ConnectionManager.OnNodeClicked(this);

@@ -24,6 +24,7 @@ namespace JSM.Surveillance
 
         protected override void OnMouseDown()
         {
+            
             if (Placed) {
                 Grid.UIManager.SwitchUI(this);
             }

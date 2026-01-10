@@ -1,6 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace JSM.Surveillance.UI
 {
@@ -10,6 +11,9 @@ namespace JSM.Surveillance.UI
         [SerializeField] private TextMeshProUGUI machineRequirementsText;
         
         [SerializeField] private ChangeRecipeUI changeRecipeUI;
+        [SerializeField] private Button changeRecipeButton;
+        [SerializeField] private Button moveButton;
+        [SerializeField] private Button sellButton;
         
         private ProcessorObject _machine;
         public override void Initialize(CellOccupier occupier, UIManager manager)
@@ -80,6 +84,9 @@ namespace JSM.Surveillance.UI
             machineProducingText.text = BuildProducingString(_machine.Recipe);
             machineRequirementsText.text = BuildRequirementsString(_machine.Recipe);
 
+            changeRecipeButton.enabled = FactoryGrid.Editable;
+            moveButton.enabled = FactoryGrid.Editable;
+            sellButton.enabled = FactoryGrid.Editable;
         }
     }
 }

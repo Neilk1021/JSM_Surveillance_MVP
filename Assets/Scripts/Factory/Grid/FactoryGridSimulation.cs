@@ -69,6 +69,7 @@ namespace JSM.Surveillance
             }
         }
 
+
         public void RunTick(int ticks = 1)
         {
             ReloadMachineResources();

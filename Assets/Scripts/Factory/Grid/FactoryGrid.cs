@@ -30,8 +30,8 @@ namespace JSM.Surveillance
 
         [Header("External Inputs")] [SerializeField]
         private List<ExternalInputMachinePlacement> externalMachinePlacements;
-        
-        
+
+        public static bool Editable => !SurveillanceGameManager.instance.Simulator.Running;
         private Vector2Int _hoveredCell = new Vector2Int(-1, -1);
 
         [SerializeField] private MachineBank machineBank;
@@ -55,17 +55,12 @@ namespace JSM.Surveillance
         public ConnectionManager ConnectionManager => _connectionManager;
         public readonly UnityEvent OnModify = new();
 
-
         private void Awake()
         {
             _uiManager = GetComponent<UIManager>();
             _connectionManager = GetComponentInChildren<ConnectionManager>();
             _camera = GetComponentInParent<Camera>();
             _camera ??= Camera.main;
-        }
-
-        private void Start()
-        {
         }
 
         public void Initialize(FactoryBlueprint blueprint = null)
@@ -181,6 +176,7 @@ namespace JSM.Surveillance
 
         public bool PlaceCellOccupierAtCurrentPosition(CellOccupier cellOccupier)
         {
+            if (!Editable) return false;
             return PlaceCellOccupier(cellOccupier, GetOccupierPositions(cellOccupier).Select(x=>GetGridPosition(x)).ToList());
         }
 

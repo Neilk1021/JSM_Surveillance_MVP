@@ -44,6 +44,8 @@ namespace JSM.Surveillance.UI
 
         public void Buy(ProcessorObject processorPrefab)
         {
+            if(!FactoryGrid.Editable) return;
+            
             if (!SurveillanceGameManager.instance.MoneyManager.ChangeMoneyBy(-processorPrefab.Data.UpfrontCost)) {
                 return;
             }

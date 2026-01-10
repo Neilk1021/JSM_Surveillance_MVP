@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using JSM.Surveillance.Game;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace JSM.Surveillance.UI
 {
@@ -15,6 +17,9 @@ namespace JSM.Surveillance.UI
         
         [SerializeField] private TextMeshProUGUI populationText;
         [SerializeField] private Canvas canvas;
+
+        [SerializeField] private Button linkButton;
+        [SerializeField] private Button sellButton;
         
         private Source _source;
 
@@ -31,14 +36,27 @@ namespace JSM.Surveillance.UI
             canvas.worldCamera = GameObject.FindGameObjectWithTag("UICam").GetComponent<Camera>();
         }
 
+        private void OnEnable()
+        {
+            SurveillanceGameManager.instance.Simulator.OnStart += ReloadUI;
+        }
+
+        private void OnDisable()
+        {
+            SurveillanceGameManager.instance.Simulator.OnStart -= ReloadUI;
+        }
+
         private void ReloadUI()
         {
             populationText.text = $"Daily people watched: {_source.GetPeopleInRange()}";
             nameText.text = $"{_source.Data.ShopInfo.name}";
             descriptionText.text = $"{_source.Data.ShopInfo.desc}";
+
+            linkButton.enabled = Source.Editable;
+            sellButton.enabled = Source.Editable;
             
             var output = _source.GetOutputResourceType();
-            producingText.text = output? $"Producing: [{output.ResourceName}]" : $"Producing: [Nothing] Must Modify";
+            producingText.text = output? $"Producing: [{output.ResourceName}] - ¥{output.Value}" : $"Producing: [Nothing] Must Modify";
             linkedToText.text = _source.NextSource? $"Sending to: [{_source.NextSource.SourceName}]" : $"Sending to: [Nothing] Selling Data";
         }
 

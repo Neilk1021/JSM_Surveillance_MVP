@@ -39,6 +39,8 @@ namespace JSM.Surveillance
         private void Update()
         {
             _renderer.Render(_status);
+            
+            if(!FactoryGrid.Editable) return;
             if (_status == CellOccupierStatus.Hovering)
             {
                 if (Input.GetMouseButtonDown(0) && !Grid.UIManager.IsUIOpen())

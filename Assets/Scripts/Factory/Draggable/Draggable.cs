@@ -85,8 +85,8 @@ namespace JSM.Surveillance
                         Vector2 mousePos = Grid.GetMouseWorldPos2D();
                         transform.position = new Vector3(mousePos.x, mousePos.y, transform.position.z);
                     }
-                    
-                    
+
+                    //TODO allow cancels
                     return Input.GetMouseButtonDown(0);
                 });
                 Placed = Grid.PlaceCellOccupierAtCurrentPosition(this);
