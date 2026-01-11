@@ -12,17 +12,18 @@ namespace JSM.Surveillance
         [Range(1,10)]
         [SerializeField] private int width, height;
         [Header("Preview Visuals")]
-        [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private Color validColor, invalidColor;
+        [SerializeField] protected SpriteRenderer spriteRenderer;
+        [SerializeField] protected Color validColor, invalidColor;
         
         public override Vector2Int Size => new Vector2Int(width, height);
-        
+
+      
         protected bool Placed = false;
-        private SortingGroup _sortingGroup;
+        protected SortingGroup SortingGroup;
 
         protected virtual void Awake()
         {
-            _sortingGroup = GetComponent<SortingGroup>();
+            SortingGroup = GetComponent<SortingGroup>();
         }
 
         protected virtual void OnMouseDown()
@@ -35,6 +36,14 @@ namespace JSM.Surveillance
             Placed = true;
         }
 
+        public virtual void Rotate()
+        {
+            Rotation += 90;
+            Rotation %= 360;
+
+            transform.eulerAngles += new Vector3(0, 0, 90);
+        }
+ 
         // private void Update()
         // {
         //     if (!_isDragging || Placed) return;
@@ -59,16 +68,16 @@ namespace JSM.Surveillance
         {
             StopAllCoroutines();
             Placed = false;
-            _sortingGroup.sortingOrder += SurveillanceWindow.GlobalSortOrder;
+            SortingGroup.sortingOrder += SurveillanceWindow.GlobalSortOrder;
             StartCoroutine(FollowMouseUntilPlace());
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        IEnumerator FollowMouseUntilPlace()
+        protected virtual IEnumerator FollowMouseUntilPlace()
         {
             Color startingColor = spriteRenderer.color;
             yield return null;
-            _sortingGroup.sortAtRoot = true;
+            SortingGroup.sortAtRoot = true;
             while (!Placed)
             {
                 yield return new WaitUntil(() =>
@@ -77,7 +86,16 @@ namespace JSM.Surveillance
                     {
                         spriteRenderer.color =  (Grid.IsCellOccupierValid(this) ? validColor : invalidColor);
                         var gridPos = Grid.GetGridPosition(Grid.GetMouseWorldPos3D());
-                        transform.position = Grid.GetWorldPosition(gridPos);
+
+                        Vector2Int rotatedSize = Rotation % 180 == 0 ? Size : new Vector2Int(Size.y, Size.x);
+                        
+                        Vector3 offset = new Vector2(
+                            rotatedSize.x  % 2 == 0 ? 0 : Grid.CellSize / 2.0f,
+                            rotatedSize.y % 2 == 0 ? 0 : Grid.CellSize / 2.0f
+                            );
+                        
+                        transform.position = Grid.GetWorldPosition(gridPos) + offset;
+                        
                     }
                     else
                     {
@@ -86,15 +104,22 @@ namespace JSM.Surveillance
                         transform.position = new Vector3(mousePos.x, mousePos.y, transform.position.z);
                     }
 
+                    if (Input.GetKeyDown(KeyCode.R))
+                    {
+                        Rotate();
+                    }
+
                     //TODO allow cancels
                     return Input.GetMouseButtonDown(0);
                 });
                 Placed = Grid.PlaceCellOccupierAtCurrentPosition(this);
+
+                
                 yield return new WaitForEndOfFrame();
             }
 
             spriteRenderer.color = startingColor;
-            _sortingGroup.sortAtRoot = false;
+            SortingGroup.sortAtRoot = false;
         }
     }
 }

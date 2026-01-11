@@ -177,10 +177,11 @@ namespace JSM.Surveillance
 
         public Resource GetOutputResourceType()
         {
+            
             return _gridOutput?.EndPorts
                 .Select(x => x.Connection?.Start switch
                 {
-                    ProcessorInstance pO => pO.Recipe.OutputVolume.resource,
+                    ProcessorInstance pO => pO.Recipe != null ? pO.Recipe.OutputVolume.resource : null,
                     InputMachineInstance iO     => iO.Source.resource,
                     _                    => null
                 })

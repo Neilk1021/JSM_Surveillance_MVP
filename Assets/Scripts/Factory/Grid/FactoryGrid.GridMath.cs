@@ -16,6 +16,7 @@ namespace JSM.Surveillance
         public float CellSize => cellSize;
         public int Width => gridWidth; 
         public int Height => gridHeight;
+
         
         public Vector3 GetWorldPosition(Vector2Int gridPosition)
         {
@@ -77,16 +78,16 @@ namespace JSM.Surveillance
         private List<Vector2> GetOccupierPositions(CellOccupier occupier)
         {
             List<Vector2> positions = new List<Vector2>();
-
-            int width = occupier.Size.x;
-            int height = occupier.Size.y;
+            
+            int width = occupier.Rotation % 180 == 0 ?  occupier.Size.x : occupier.Size.y;
+            int height = occupier.Rotation % 180 == 0 ?  occupier.Size.y : occupier.Size.x;
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j <  height; j++)
                 {
                     Vector2 newPos = new Vector2(
                         occupier.transform.position.x + (cellSize * (Mathf.FloorToInt(-width / 2) + i)),
-                        occupier.transform.position.y + (cellSize * (Mathf.FloorToInt(-width / 2) + j))
+                        occupier.transform.position.y + (cellSize * (Mathf.FloorToInt(-height / 2) + j))
                     );
                     
                     positions.Add(newPos);

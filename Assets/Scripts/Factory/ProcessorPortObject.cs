@@ -26,8 +26,28 @@ namespace JSM.Surveillance
         private int _subcellX;
         private int _subcellY;
 
-        public Vector2Int SubcellPosition => new Vector2Int(_subcellX, _subcellY);
-        
+        public Vector2Int SubcellPosition
+        {
+            get
+            {
+                int x = _subcellX;
+                int y = _subcellY;
+                int w = owner.Size.x - 1;
+                int h = owner.Size.y - 1;
+
+                int angle = Mathf.RoundToInt(owner.Rotation) % 360;
+                if (angle < 0) angle += 360;
+
+                return angle switch
+                {
+                    90  => new Vector2Int(-y + h, x),      
+                    180 => new Vector2Int(-x + w, -y + h), 
+                    270 => new Vector2Int(y, -x + w),      
+                    _   => new Vector2Int(x, y)           
+                };
+            }
+        }
+
         public MachineObject Owner => owner;
         public NodeType Type => type;
         public int NodeIndex => nodeIndex;

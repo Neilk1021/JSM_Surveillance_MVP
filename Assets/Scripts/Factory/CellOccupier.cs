@@ -9,6 +9,7 @@ namespace JSM.Surveillance
     {
         private Vector2Int[] _positions;
         protected FactoryGrid _grid;
+        public int Rotation { get; protected set; } = 0;
 
         public virtual Vector2Int Size => new Vector2Int(1, 1);
         

@@ -41,6 +41,7 @@ namespace JSM.Surveillance.UI
             if(_previewInstance != null) return;
 
             _previewInstance = Instantiate(previewUIPrefab, transform);
+            _previewInstance.transform.parent = _shopUI.transform;
             _previewInstance.LoadInformation(_processorObject);
             
         }

@@ -56,7 +56,9 @@ namespace JSM.Surveillance
             
             Vector2Int rootPos =  occupier.GetRootPosition();
             Vector2Int startingCell = startPortObject.SubcellPosition + rootPos;
-
+            
+            Debug.Log($"{rootPos}, {startingCell}");
+            
             if (!grid.IsCellEmpty(startingCell)) {
                 yield break; 
             }

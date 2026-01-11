@@ -44,6 +44,8 @@ namespace JSM.Surveillance.UI
 
         private void BoundCamera()
         {
+            
+            if(_camera == null) return;
             Vector3[] worldCorners = new Vector3[4];
             _rectTransform.GetWorldCorners(worldCorners);
             worldCorners = worldCorners.Select(x => _camera.WorldToViewportPoint(x)).ToArray();
