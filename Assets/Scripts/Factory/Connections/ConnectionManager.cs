@@ -27,7 +27,7 @@ namespace JSM.Surveillance
 
         public void OnNodeClicked(ProcessorPortObject portObject)
         {
-            Debug.Log($"Node clicked: {portObject.Type} on processor {portObject.Owner.name}");
+            //Debug.Log($"Node clicked: {portObject.Type} on processor {portObject.Owner.name}");
 
             // Check if node already has a connection, if so, should remove connection?
 
@@ -38,12 +38,25 @@ namespace JSM.Surveillance
             StartCoroutine(MakeConnection(portObject));
         }
 
+        //todo fix so that it can handle more than 1 input
         public void PlaceConnection(ConnectionEdge edge)
         {
+            var iPorts = grid.GetPortsAtCell(edge.fromPos);
+            var oPorts = grid.GetPortsAtCell(edge.toPos);
+
+            ProcessorPortObject inPort = iPorts[0];
+            ProcessorPortObject outPort = oPorts[0]; 
+            
+            if (iPorts == oPorts)
+            {
+                inPort = iPorts.FirstOrDefault(x => x.Owner.GetRootPosition() == edge.toRootPos);
+                outPort = iPorts.FirstOrDefault(x => x.Owner.GetRootPosition() == edge.fromRootPos);
+            }
+            
             grid.PlaceConnection(
                 connectionObjectPrefab, 
-                grid.GetPortAtCell(edge.fromPos),
-                grid.GetPortAtCell(edge.toPos),
+                inPort,
+                outPort,
                 edge.positions.ToList()
             );
         }
@@ -57,8 +70,6 @@ namespace JSM.Surveillance
             Vector2Int rootPos =  occupier.GetRootPosition();
             Vector2Int startingCell = startPortObject.SubcellPosition + rootPos;
             
-            Debug.Log($"{rootPos}, {startingCell}");
-            
             if (!grid.IsCellEmpty(startingCell)) {
                 yield break; 
             }
@@ -69,6 +80,7 @@ namespace JSM.Surveillance
             
             ProcessorPortObject endPortObject = null;
             var connectionPreview = Instantiate(connectionPreviewPreviewPrefab, transform);
+            endPortObject = RefreshPreview(startPortObject, connectionPositions, startingCell, connectionPreview);
             
             while (Input.GetMouseButton(0))
             {
@@ -109,7 +121,7 @@ namespace JSM.Surveillance
                 new Vector3(grid.CellSize / 2, grid.CellSize / 2, 0)
             ).ToList();
                     
-            var endPort = grid.GetPortAtCell(newPos);
+            var endPort = grid.GetPortsAtCell(newPos)?.FirstOrDefault(x => x.Type != startPortObject.Type);
             connectionPreview.UpdateConnectionPath(worldPos, startPortObject, endPort);
             return endPort;
         }

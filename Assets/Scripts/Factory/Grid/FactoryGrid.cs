@@ -38,7 +38,7 @@ namespace JSM.Surveillance
         
         //Allows multiple grids where we just switch between different grids as needed.
 
-        private readonly Dictionary<Vector2Int, ProcessorPortObject> _ports = new Dictionary<Vector2Int, ProcessorPortObject>(); 
+        private readonly Dictionary<Vector2Int, List<ProcessorPortObject>> _ports = new Dictionary<Vector2Int, List<ProcessorPortObject>>(); 
         
         private FactoryCell[,] _grid; 
         
@@ -210,11 +210,23 @@ namespace JSM.Surveillance
 
         public void RegisterPort(Vector2Int pos, ProcessorPortObject portObject )
         {
-            _ports.TryAdd(pos, portObject);
+            if (!_ports.ContainsKey(pos))
+            {
+                _ports.Add(pos, new List<ProcessorPortObject>());
+            }
+            
+            if(_ports[pos].Contains(portObject)) return;
+            _ports[pos].Add(portObject);
+            
         }
-        public void UnregisterPort(Vector2Int pos)
+        public void UnregisterPort(Vector2Int pos, ProcessorPortObject obj)
         {
-            _ports.Remove(pos);
+            if (!_ports.TryGetValue(pos, out var port))
+            {
+                return;
+            }
+            
+            port.Remove(obj);
         }
         
         public FactoryCell GetCell(int x, int y)
@@ -263,20 +275,19 @@ namespace JSM.Surveillance
                     positions = machineObject.Positions.ToList(),
                     prefabId = machineObject.GetPrefabId(), 
                     recipeId = machineObject is ProcessorObject pO && pO.Recipe != null ? pO.Recipe.Guid : "",
-                    localPos = machineObject.transform.localPosition
+                    localPos = machineObject.transform.localPosition,
+                    rotation = machineObject.Rotation
                 }).ToList();
 
             List<ConnectionEdge> connectionEdges = connectionObjects.Select(connectionObject => new ConnectionEdge()
             {
                 fromPos = connectionObject.StartPortObject.SubcellPosition +
-                          connectionObject.StartMachine.GetRootPosition(),
+                          connectionObject.StartPortObject.Owner.GetRootPosition(),
                 toPos = connectionObject.EndPortObject.SubcellPosition +
-                        connectionObject.EndMachine.GetRootPosition(),
+                        connectionObject.EndPortObject.Owner.GetRootPosition(),
 
-                outputPortIndex =
-                    connectionObject.StartMachine.GetOutputPortIndex(connectionObject.StartPortObject),
-                inputPortIndex = connectionObject.EndMachine.GetInputPortIndex(connectionObject.EndPortObject),
-
+                fromRootPos = connectionObject.StartPortObject.Owner.GetRootPosition(),
+                toRootPos = connectionObject.EndPortObject.Owner.GetRootPosition(),
                 positions = connectionObject.Positions
             }).ToList(); 
             
@@ -297,6 +308,7 @@ namespace JSM.Surveillance
                 }
                 
                 var machineObj = Instantiate(machinePrefab, transform);
+                machineObj.SetRotation(machine.rotation);
                 PlaceCellOccupier(machineObj, machine.positions);
                 machineObj.transform.localPosition = machine.localPos;
 

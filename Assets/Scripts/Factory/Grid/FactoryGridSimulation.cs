@@ -117,10 +117,14 @@ namespace JSM.Surveillance
                         }
 
                         break;
-                    case OutputMachineInstance:
-                        ++splitAmnt;
+                    case MergerInstance mergerInstance:
+                        if (mergerInstance.Output.resource == null || mergerInstance.Output.resource == currentMachine.Output.resource)
+                        {
+                            ++splitAmnt;
+                        }
                         break;
                     default:
+                        ++splitAmnt;
                         break;
                 }
             }
@@ -158,10 +162,20 @@ namespace JSM.Surveillance
                         FeedOutputResources(currentMachine, output, splitAmnt);
                         splitAmnt -= 1;
                         break;
+                    default:
+                        FeedOutputResources(currentMachine, machine, splitAmnt);
+                        splitAmnt -= 1;
+                        break;
                 }
             }
         }
 
+        private void FeedOutputResources(MachineInstance previous, MachineInstance outputMachine, int splitAmnt)
+        {
+            int amnt = previous.RemoveOutput(previous.Output.amount / splitAmnt);
+            outputMachine.AddInput(previous.Output.resource, amnt);
+        }
+        
         private void FeedOutputResources(MachineInstance previous, OutputMachineInstance outputMachine, int splitAmnt)
         {
             int amnt = previous.RemoveOutput(previous.Output.amount / splitAmnt);

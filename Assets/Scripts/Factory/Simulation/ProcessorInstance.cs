@@ -17,7 +17,6 @@ namespace JSM.Surveillance
         }
 
         public Recipe Recipe { get; }
-        public bool IsRunning { get; } = false;
 
         public override event Action<Resource> OnResourceProduced;
         

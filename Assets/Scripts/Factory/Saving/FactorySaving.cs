@@ -15,14 +15,16 @@ namespace JSM.Surveillance.Saving
         public string prefabId; 
         public string recipeId;
         public Vector3 localPos;
+        public int rotation;
     }
 
     [System.Serializable]
     public class ConnectionEdge
     {
         public Vector2Int fromPos;
-        public Vector2Int toPos; 
-        public int outputPortIndex;
+        public Vector2Int toPos;
+        public Vector2Int toRootPos;
+        public Vector2Int fromRootPos;
         public Vector2Int[] positions;
         public int inputPortIndex;
     }

@@ -50,7 +50,7 @@ namespace JSM.Surveillance
 
         public MachineObject Owner => owner;
         public NodeType Type => type;
-        public int NodeIndex => nodeIndex;
+        public int NodeIndex => type == NodeType.End ? owner.GetInputPortIndex(this) : owner.GetOutputPortIndex(this);
 
         private ConnectionObject _connectionObject;
         public ConnectionObject ConnectionObject => _connectionObject;

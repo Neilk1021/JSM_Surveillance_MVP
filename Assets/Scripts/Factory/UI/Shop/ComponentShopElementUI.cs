@@ -12,28 +12,41 @@ namespace JSM.Surveillance.UI
         [SerializeField] private TextMeshProUGUI costText;
         [SerializeField] private ComponentShopPreviewUI previewUIPrefab;
         
-        private ProcessorObject _processorObject;
+        private MachineObject _machineObject;
         private ComponentShopPreviewUI _previewInstance;
         private ComponentShopUI _shopUI;
 
-        public void Load(ProcessorObject processor, ComponentShopUI shop)
+        public void Load(MachineObject processor, ComponentShopUI shop)
         {
             _shopUI = shop;
             LoadProcessor(processor);
         }
         
-        private void LoadProcessor(ProcessorObject processorObject)
+        private void LoadProcessor(MachineObject processorObject)
         {
-            _processorObject = processorObject;
+            _machineObject = processorObject;
             RefreshUI();
         }
 
         private void RefreshUI()
         {
-            if(_processorObject == null) return;
-            
-            nameText.text = $"{_processorObject.Data.ShopInfo.name}";
-            costText.text = $"Cost: ${_processorObject.Data.UpfrontCost}";
+            if(_machineObject == null) return;
+
+            switch (_machineObject)
+            {
+                case ProcessorObject p0:
+                    nameText.text = $"{p0.Data.ShopInfo.name}";
+                    costText.text = $"Cost: ${p0.Data.UpfrontCost}";
+                    break;
+                case SplitterObject s0:
+                    nameText.text = $"{s0.Data.ShopInfo.name}";
+                    costText.text = $"Cost: ${s0.Data.UpfrontCost}";
+                    break;
+                case MergerObject m0:
+                    nameText.text = $"{m0.Data.ShopInfo.name}";
+                    costText.text = $"Cost: ${m0.Data.UpfrontCost}";
+                    break;
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -42,8 +55,11 @@ namespace JSM.Surveillance.UI
 
             _previewInstance = Instantiate(previewUIPrefab, transform);
             _previewInstance.transform.parent = _shopUI.transform;
-            _previewInstance.LoadInformation(_processorObject);
-            
+
+            if (_machineObject is ProcessorObject p0)
+            {
+                _previewInstance.LoadInformation(p0);
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -56,7 +72,7 @@ namespace JSM.Surveillance.UI
 
         public void Buy()
         {
-            _shopUI.Buy(_processorObject);
+            _shopUI.Buy(_machineObject);
         }
     }
 }

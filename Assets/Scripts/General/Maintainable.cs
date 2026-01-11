@@ -13,7 +13,9 @@ namespace JSM.Surveillance
         public GameObject itemModelPrefab;
     }
     
-    public abstract class Maintainable : ScriptableObject 
+    [CreateAssetMenu(fileName = "Generic", menuName = "JSM/Surveillance/Maintainable/Generic")]
+
+    public class Maintainable : ScriptableObject 
     {
         [SerializeField] protected int upfrontCost;
         [SerializeField] protected int dailyCost;

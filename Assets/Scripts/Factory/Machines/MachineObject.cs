@@ -65,7 +65,7 @@ namespace JSM.Surveillance
             foreach (var port in GetComponentsInChildren<ProcessorPortObject>())
             {
                 var connection = port.ConnectionObject;
-                Grid.UnregisterPort(port.SubcellPosition + GetRootPosition());
+                Grid.UnregisterPort(port.SubcellPosition + GetRootPosition(),port);
                 
                 if(connection == null) continue;
                 Destroy(connection.gameObject);
@@ -79,7 +79,7 @@ namespace JSM.Surveillance
             foreach (var port in GetComponentsInChildren<ProcessorPortObject>())
             {
                 var connection = port.ConnectionObject;
-                Grid.UnregisterPort(port.SubcellPosition + GetRootPosition());
+                Grid.UnregisterPort(port.SubcellPosition + GetRootPosition(), port);
                 if(connection == null) continue;
                 Destroy(connection.gameObject);
             }
@@ -156,5 +156,12 @@ namespace JSM.Surveillance
         {
             return _oPorts.IndexOf(port);
         }
+
+        public void SetRotation(int machineRotation)
+        {
+            Rotation = machineRotation;
+            transform.rotation = Quaternion.Euler(0, 0, machineRotation);
+        }
+        
     }
 }
