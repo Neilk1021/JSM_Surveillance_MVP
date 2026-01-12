@@ -112,7 +112,7 @@ namespace JSM.Surveillance.Game
         public override int GetPeopleInRange()
         {
             int pop = 0;
-            var faces = MapCellManager.GetFacesAroundPoint(transform.position,4);
+            var faces = MapCellManager.GetFacesAroundPoint(_areaView.Center,4);
             foreach (var face in faces)
             {
                 int cellPop = (int)(GeometryUtils.CalculateCirclePolygonOverlapPct(
@@ -130,7 +130,7 @@ namespace JSM.Surveillance.Game
         {
             int pop = 0;
             Dictionary<HEFace, float> facesPct = new Dictionary<HEFace, float>();
-            var faces = MapCellManager.GetFacesAroundPoint(transform.position,4).ToList();
+            var faces = MapCellManager.GetFacesAroundPoint(_areaView.Center,4).ToList();
             foreach (var face in faces)
             {
                 facesPct[face] = (GeometryUtils.CalculateCirclePolygonOverlapPct(

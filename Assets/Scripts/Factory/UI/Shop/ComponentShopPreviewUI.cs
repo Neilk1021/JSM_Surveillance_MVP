@@ -17,6 +17,16 @@ namespace JSM.Surveillance.UI
 
             //nameText.text = $"{machineObject.}";
         }
+        
+        
+        public void LoadInformation(MachineObject machineObject)
+        {
+            nameText.text = $"{machineObject.GetMachineName()}";
+            descText.text = $"{machineObject.GetMachineDesc()}";
+            costText.text = $"<i>Cost: ${machineObject.GetMachineCost()}</i>";
+
+            //nameText.text = $"{machineObject.}";
+        }
 
     }
 }

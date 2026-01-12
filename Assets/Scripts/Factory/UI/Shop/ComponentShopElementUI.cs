@@ -60,6 +60,10 @@ namespace JSM.Surveillance.UI
             {
                 _previewInstance.LoadInformation(p0);
             }
+            else
+            {
+                _previewInstance.LoadInformation(_machineObject);
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)

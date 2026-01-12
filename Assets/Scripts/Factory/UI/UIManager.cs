@@ -69,8 +69,6 @@ namespace JSM.Surveillance.UI
             return false;
         }
 
-  
-
         public void Close()
         {
             if (_currentUI == null) return;
@@ -79,5 +77,10 @@ namespace JSM.Surveillance.UI
             _currentData = null;
         }
 
+        public void SwitchUI(MachineObject machineObject)
+        {
+            if (IsCurrentMachine(machineObject)) return;
+            SetUI(defaultUI, machineObject);
+        }
     }
 }

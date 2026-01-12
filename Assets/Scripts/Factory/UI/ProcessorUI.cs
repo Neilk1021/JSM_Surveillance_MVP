@@ -61,13 +61,13 @@ namespace JSM.Surveillance.UI
             return output;
         }
 
-        public void Sell()
+        public override void Sell()
         {
             _machine.Sell();
             Close();
         }
 
-        public void Move()
+        public override void Move()
         {
             _machine.Move();
             Close();

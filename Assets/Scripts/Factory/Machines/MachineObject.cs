@@ -162,6 +162,20 @@ namespace JSM.Surveillance
             Rotation = machineRotation;
             transform.rotation = Quaternion.Euler(0, 0, machineRotation);
         }
-        
+
+        public virtual string GetMachineName()
+        {
+            return name;
+        }
+
+        public virtual int GetMachineCost()
+        {
+            return 0;
+        }
+
+        public virtual string GetMachineDesc()
+        {
+            return "";
+        }
     }
 }

@@ -7,13 +7,14 @@ using UnityEngine.UI;
 
 namespace JSM.Surveillance.UI
 {
-    public abstract class MachineInfoUI : FactoryUI, IPointerEnterHandler, IPointerExitHandler
+    public class MachineInfoUI : FactoryUI, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] protected TextMeshProUGUI machineNameText;
         [SerializeField] private Canvas canvas;
         
         private UIManager _uiManager;
         private bool _initialized = false;
+        private MachineObject _machineObj;
         private Camera Camera => _uiManager.WorldCamera;
 
         private void Start()
@@ -78,6 +79,12 @@ namespace JSM.Surveillance.UI
         public override void Initialize(CellOccupier occupier, UIManager manager)
         {
             canvas.sortingOrder += SurveillanceWindow.GlobalSortOrder+1;
+            if (occupier is MachineObject machineObject) {
+                _machineObj = machineObject;
+                machineNameText.text = $"{machineObject.GetMachineName()}";
+            }
+            
+            
             _uiManager = manager;
             BoundCamera();
         }
@@ -95,6 +102,19 @@ namespace JSM.Surveillance.UI
         public void SetInside(bool inside)
         {
             MouseInside = inside;
+        }
+        
+        
+        public virtual void Sell()
+        {
+            _machineObj.Sell();
+            Close();
+        }
+
+        public virtual void Move()
+        {
+            _machineObj.Move();
+            Close();
         }
     }
 }
