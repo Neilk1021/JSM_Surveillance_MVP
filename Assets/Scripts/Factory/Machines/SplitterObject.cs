@@ -26,7 +26,7 @@ namespace JSM.Surveillance
 
         public override MachineInstance BuildInstance()
         {
-            return new SplitterInstance(inventorySize, data);
+            return new SplitterInstance(inventorySize, data, GetRootPosition());
         }
 
         public override string GetMachineName()

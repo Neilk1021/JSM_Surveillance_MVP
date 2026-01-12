@@ -55,6 +55,8 @@ namespace JSM.Surveillance
         public ConnectionManager ConnectionManager => _connectionManager;
         public readonly UnityEvent OnModify = new();
 
+        public FactoryGridSimulation FactoryGridSimulation { get; private set; } = null;
+
         private void Awake()
         {
             _uiManager = GetComponent<UIManager>();
@@ -252,10 +254,9 @@ namespace JSM.Surveillance
 
         public void SaveGridToSource()
         {
-            //todo save position stuff
-
             Source.SetLastLayout(SaveCurrentLayout());
             Source.SetSimulation(BuildSimulator());
+            FactoryGridSimulation = Source.GetSimulation();
         }
 
         public void CloseGrid()
@@ -264,7 +265,7 @@ namespace JSM.Surveillance
             Destroy(gameObject);
         }
 
-        public FactoryBlueprint SaveCurrentLayout()
+        private FactoryBlueprint SaveCurrentLayout()
         {
             var machineObjects = GetComponentsInChildren<MachineObject>();
             var connectionObjects = GetComponentsInChildren<ConnectionObject>();

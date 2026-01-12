@@ -26,7 +26,7 @@ namespace JSM.Surveillance
 
         public override MachineInstance BuildInstance()
         {
-            return new MergerInstance(inventorySize, data);
+            return new MergerInstance(inventorySize, data,GetRootPosition());
         }
 
 

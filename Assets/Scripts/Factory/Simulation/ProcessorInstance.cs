@@ -10,7 +10,7 @@ namespace JSM.Surveillance
         private int ticks = 0;
         private bool _processing = false;
 
-        public ProcessorInstance(Recipe recipe, ProcessorData data, int inventorySize) : base(inventorySize)
+        public ProcessorInstance(Recipe recipe, ProcessorData data, int inventorySize, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
             _data = data;
             Recipe = recipe;

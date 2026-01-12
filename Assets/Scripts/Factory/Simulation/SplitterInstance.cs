@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
 
 namespace JSM.Surveillance
 {
     public class SplitterInstance : MachineInstance
     {
         private Maintainable _data;
-        public SplitterInstance(int inventorySize, Maintainable data) : base(inventorySize)
+        public SplitterInstance(int inventorySize, Maintainable data, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
             _data = data;
         }

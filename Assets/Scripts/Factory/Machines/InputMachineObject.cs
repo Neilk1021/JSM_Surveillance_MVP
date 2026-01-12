@@ -39,7 +39,7 @@ namespace JSM.Surveillance
 
         public override MachineInstance BuildInstance()
         {
-            return new InputMachineInstance(_source, inventorySize);
+            return new InputMachineInstance(_source, inventorySize, GetRootPosition());
         }
     }
 }

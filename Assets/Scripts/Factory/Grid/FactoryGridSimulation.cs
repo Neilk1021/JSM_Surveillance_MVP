@@ -14,6 +14,7 @@ namespace JSM.Surveillance
         private readonly MachineInstance[] _machines; 
         private readonly Source _source;
 
+        public readonly Dictionary<Guid, MachineInstance> MachineInstances;
         private readonly List<ExternalInputInstance> _externalInputs;
         public event Action<Resource> ResourceMade;
         
@@ -23,7 +24,7 @@ namespace JSM.Surveillance
             _source = source;
             _externalInputs = new List<ExternalInputInstance>();
             Dictionary<MachineObject, MachineInstance> lookup = machineObjects.ToDictionary(x=>x, x=>x.BuildInstance());
-
+            
             foreach (var machineObject in lookup)
             {
                 foreach (var startPort in machineObject.Key.OutputPorts)
@@ -53,12 +54,16 @@ namespace JSM.Surveillance
                         break;
                 }
             }
+            
 
             _machines = lookup.Select(x=>x.Value).ToArray();
             foreach (var machine in _machines)
             {
                 machine.OnResourceProduced += ResourceMade;
             }
+
+
+            MachineInstances = _machines.ToDictionary(x => x.Guid, x => x);
         }
         
         ~FactoryGridSimulation()

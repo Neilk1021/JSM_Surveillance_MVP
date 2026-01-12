@@ -48,7 +48,7 @@ namespace JSM.Surveillance.Game
         {
             if (_grid != null)
             {
-                SetSimulation(_grid.BuildSimulator());
+                _grid.SaveGridToSource();
             }
         }
         
@@ -140,8 +140,11 @@ namespace JSM.Surveillance.Game
 
             return _grid ? _grid.GetOutputResourceType() : _simulation?.GetOutputResourceType();
         }
-        
-        
-        
+
+
+        public FactoryGridSimulation GetSimulation()
+        {
+            return _simulation;
+        }
     }
 }

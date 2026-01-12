@@ -1,4 +1,5 @@
 ﻿using JSM.Surveillance.Game;
+using UnityEngine;
 
 namespace JSM.Surveillance
 {
@@ -17,7 +18,7 @@ namespace JSM.Surveillance
             AddOutput(vol.resource, vol.amount);
         }
         
-        public ExternalInputInstance(Source parent, int index , int inventorySize) : base(inventorySize)
+        public ExternalInputInstance(Source parent, int index , int inventorySize, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
             _incomingSourceIndex = index;
             _source = parent;

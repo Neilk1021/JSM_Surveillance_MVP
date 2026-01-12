@@ -7,6 +7,20 @@ namespace JSM.Surveillance
     [System.Serializable]
     public class MachineInstance
     {
+        public static Guid Vector2IntToGuid(Vector2Int position)
+        {
+            byte[] bytes = new byte[16];
+
+            byte[] xBytes = BitConverter.GetBytes(position.x);
+            byte[] yBytes = BitConverter.GetBytes(position.y);
+
+            Array.Copy(xBytes, 0, bytes, 0, 4);
+            Array.Copy(yBytes, 0, bytes, 4, 4);
+
+            return new Guid(bytes);
+        }
+
+        public readonly Guid Guid;
         private int _inventorySize; 
         protected readonly Dictionary<Resource, int> InputResources = new();
         protected ResourceVolume OutputResources;
@@ -22,8 +36,9 @@ namespace JSM.Surveillance
 
         public virtual event Action<Resource> OnResourceProduced;  
         
-        public MachineInstance(int inventorySize)
+        public MachineInstance(int inventorySize, Guid guid)
         {
+            Guid = guid;
             _inventorySize = inventorySize;
         }
 

@@ -173,6 +173,10 @@ namespace JSM.Surveillance
             return 0;
         }
 
+        public Guid GetGuid() {
+            return MachineInstance.Vector2IntToGuid(GetRootPosition());
+        }
+        
         public virtual string GetMachineDesc()
         {
             return "";

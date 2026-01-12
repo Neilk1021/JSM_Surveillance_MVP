@@ -28,7 +28,7 @@ namespace JSM.Surveillance
             AddOutput(_source.resource, mult * _peopleInRange);
         }
         
-        public InputMachineInstance(Source newSource, int inventorySize) : base(inventorySize)
+        public InputMachineInstance(Source newSource, int inventorySize, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
             _source = newSource;
             _sourceData = newSource.Data;

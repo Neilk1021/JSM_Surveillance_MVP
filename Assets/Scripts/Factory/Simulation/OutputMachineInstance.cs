@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace JSM.Surveillance
 {
@@ -7,7 +8,7 @@ namespace JSM.Surveillance
     {
         private readonly Dictionary<Resource, int> _storedOutput =new Dictionary<Resource, int>();
 
-        public OutputMachineInstance(int inventorySize) : base(inventorySize)
+        public OutputMachineInstance(int inventorySize, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
         }
 

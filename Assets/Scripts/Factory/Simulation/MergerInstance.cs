@@ -1,9 +1,11 @@
-﻿namespace JSM.Surveillance
+﻿using UnityEngine;
+
+namespace JSM.Surveillance
 {
     public class MergerInstance : MachineInstance
     {
         private Maintainable _data;
-        public MergerInstance(int inventorySize, Maintainable data) : base(inventorySize)
+        public MergerInstance(int inventorySize, Maintainable data, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
             _data = data;
         }

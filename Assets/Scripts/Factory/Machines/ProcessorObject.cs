@@ -46,7 +46,7 @@ namespace JSM.Surveillance
 
         public override MachineInstance BuildInstance()
         {
-            return new ProcessorInstance(selectedRecipe, data, inventorySize);
+            return new ProcessorInstance(selectedRecipe, data, inventorySize, GetRootPosition());
         }
 
         public void LoadRecipeById(string machineRecipeId)
