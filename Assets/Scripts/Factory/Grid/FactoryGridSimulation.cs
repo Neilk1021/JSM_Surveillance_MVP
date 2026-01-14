@@ -207,5 +207,12 @@ namespace JSM.Surveillance
                 .FirstOrDefault(resource => resource != null);
         }
 
+        public void Restart()
+        {
+            foreach (var machine in _machines)
+            {
+                machine.Clear();
+            }
+        }
     }
 }

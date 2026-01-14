@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 namespace JSM.Surveillance
 {
-    public abstract class MachineObject : Draggable
+    public abstract class MachineObject : Draggable, ISerializationCallbackReceiver
     {
         [Header("GUID")]
         [FormerlySerializedAs("_guid")] [SerializeField] private string guid;
@@ -15,6 +15,8 @@ namespace JSM.Surveillance
         private readonly List<ProcessorPortObject> _iPorts = new();
         private readonly List<ProcessorPortObject> _oPorts = new();
 
+
+        public int InventorySize => inventorySize;
         public IReadOnlyList<ProcessorPortObject> InputPorts => _iPorts;
         public IReadOnlyList<ProcessorPortObject> OutputPorts => _oPorts;
 
@@ -180,6 +182,18 @@ namespace JSM.Surveillance
         public virtual string GetMachineDesc()
         {
             return "";
+        }
+
+        public void OnBeforeSerialize()
+        {
+            if (string.IsNullOrEmpty(guid))
+            {
+                guid = System.Guid.NewGuid().ToString();
+            }
+        }
+        public void OnAfterDeserialize()
+        {
+            return;
         }
     }
 }

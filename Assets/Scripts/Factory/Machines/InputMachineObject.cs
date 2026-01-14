@@ -17,7 +17,7 @@ namespace JSM.Surveillance
 
         protected override void Start()
         {
-            _peopleInRange = _source.GetPeopleInRange();
+            _peopleInRange = _source.GetRawResourceRate();
             inputText.text = $"{_source.SourceName}\n[{_source.resource.name}]";
             base.Start();
         }

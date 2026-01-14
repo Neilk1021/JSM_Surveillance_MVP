@@ -48,7 +48,7 @@ namespace JSM.Surveillance.UI
 
         private void ReloadUI()
         {
-            populationText.text = $"Daily people watched: {_source.GetPeopleInRange()}";
+            populationText.text = $"Hourly people watched: {_source.GetRawResourceRate()}";
             nameText.text = $"{_source.Data.ShopInfo.name}";
             descriptionText.text = $"{_source.Data.ShopInfo.desc}";
 

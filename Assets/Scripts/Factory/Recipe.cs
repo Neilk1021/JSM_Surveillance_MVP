@@ -32,5 +32,10 @@ namespace JSM.Surveillance
             if (string.IsNullOrEmpty(guid))
                 guid = System.Guid.NewGuid().ToString();
         }
+
+        public int RequiredAmount(Resource resource)
+        {
+            return inputVolumes.FirstOrDefault(x => x.resource == resource).amount;
+        }
     }
 }

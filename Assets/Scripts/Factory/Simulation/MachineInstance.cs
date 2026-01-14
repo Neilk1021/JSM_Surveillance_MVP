@@ -69,6 +69,7 @@ namespace JSM.Surveillance
         { 
             int val = Mathf.Min(amnt, OutputResources.amount);
             OutputResources.amount -= val;
+            
             return val;
         }
 
@@ -98,5 +99,10 @@ namespace JSM.Surveillance
         }
 
 
+        public void Clear()
+        {
+            OutputResources = new ResourceVolume();
+            InputResources.Clear();
+        }
     }
 }

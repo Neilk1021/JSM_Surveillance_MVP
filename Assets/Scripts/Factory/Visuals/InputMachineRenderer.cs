@@ -1,12 +1,15 @@
 ﻿using System;
+using JSM.Surveillance.UI;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace JSM.Surveillance.Visuals
 {
     [RequireComponent(typeof(InputMachineObject))]
     public class InputMachineRenderer : MonoBehaviour
     {
-        [SerializeField] private SpriteRenderer debugSprite;
+        [SerializeField] private ItemFillAmntUI itemFillUI;
         private InputMachineObject _machineObject;
         private FactoryGrid _grid;
         
@@ -18,6 +21,7 @@ namespace JSM.Surveillance.Visuals
 
         private void Start() {
             _grid = _machineObject.Grid;
+            itemFillUI.UpdateSlider(0, _machineObject.InventorySize);
         }
 
         
@@ -25,8 +29,14 @@ namespace JSM.Surveillance.Visuals
             if(FactoryGrid.Editable) return;
             if(_grid.FactoryGridSimulation == null) return;
 
-            if(_grid.FactoryGridSimulation.MachineInstances.TryGetValue(_machineObject.GetGuid(), out var machineInstance)) {
-                debugSprite.color = machineInstance.Output.amount != 0 ? Color.green : Color.red;
+            if (_grid.FactoryGridSimulation.MachineInstances
+                .TryGetValue(_machineObject.GetGuid(), out var machineInstance))
+            {
+                itemFillUI.UpdateSlider(
+                    machineInstance.Output.amount, 
+                    _machineObject.InventorySize, 
+                    machineInstance.Output.resource?.ResourceName 
+                    );
             }
         }
         

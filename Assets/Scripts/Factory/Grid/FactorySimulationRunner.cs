@@ -18,6 +18,7 @@ namespace JSM.Surveillance
         {
             _simulator ??= SurveillanceGameManager.instance.Simulator;
             _simulator.OnTick+= RunTick;
+            _simulator.OnStart += Restart;
         }
 
         private void OnDisable()
@@ -25,9 +26,14 @@ namespace JSM.Surveillance
             if (_simulator == null) return;
             
             _simulator.OnTick -= RunTick;
+            _simulator.OnStart -= Restart;
         }
 
-
+        public void Restart()
+        {
+            _simulation.Restart();
+        }
+        
         private void RunTick(int ticks)
         {
             _simulation?.RunTick(ticks);

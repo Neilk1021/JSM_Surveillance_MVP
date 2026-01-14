@@ -32,7 +32,7 @@ namespace JSM.Surveillance
         {
             _source = newSource;
             _sourceData = newSource.Data;
-            _peopleInRange = _source.GetPeopleInRange();
+            _peopleInRange = _source.GetRawResourceRate();
         }
     }
 }

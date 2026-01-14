@@ -15,6 +15,7 @@ namespace JSM.Surveillance
             if(!prev) return;
 
             var vol = prev.TakeResources();
+            
             AddOutput(vol.resource, vol.amount);
         }
         
