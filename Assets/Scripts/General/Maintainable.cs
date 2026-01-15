@@ -9,6 +9,7 @@ namespace JSM.Surveillance
     public class ShopInfo 
     {
         public string name;
+        [TextArea(minLines:5, maxLines:10)]
         public string desc; 
         public GameObject itemModelPrefab;
     }

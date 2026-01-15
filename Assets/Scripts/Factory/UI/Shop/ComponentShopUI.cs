@@ -9,7 +9,7 @@ namespace JSM.Surveillance.UI
     public class ComponentShopUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private ComponentShopElementUI componentUIElementPrefab;
-        [SerializeField] private List<MachineObject> buyableProcessors;
+        [SerializeField] private ShopBank bank;
         [Tooltip("The transform that all the UI prefabs should be spawned under.")]
         [SerializeField] private Transform contentView;
 
@@ -23,7 +23,7 @@ namespace JSM.Surveillance.UI
 
         private void Start()
         {
-            foreach (var processor in buyableProcessors)
+            foreach (var processor in bank.BuyableProcessors)
             {
                 var element = Instantiate(componentUIElementPrefab, contentView);
                 element.Load(processor, this);
