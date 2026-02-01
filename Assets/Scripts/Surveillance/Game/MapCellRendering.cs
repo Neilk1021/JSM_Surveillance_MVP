@@ -110,16 +110,16 @@ namespace JSM.Surveillance.UI
 
         public void SetMode(MapMode mode)
         {
-            if (mode == MapMode.Placement)
+            switch (mode)
             {
-                _meshRenderer.material.SetColor(CenterColor, new Color(0, 0, 0, 1));
+                case MapMode.Placement:
+                    _meshRenderer.material.SetColor(CenterColor, new Color(0, 0, 0, 1));
+                    break;
+                case MapMode.Normal:
+                    _meshRenderer.material.SetColor(CenterColor,new Color(0, 0, 0.02f, 1));
+                    break;
             }
 
-            if (mode == MapMode.Normal)
-            {
-                _meshRenderer.material.SetColor(CenterColor,new Color(0, 0, 0.02f, 1)); 
-            }
-            
             _renderingMode = mode;
         }
         
