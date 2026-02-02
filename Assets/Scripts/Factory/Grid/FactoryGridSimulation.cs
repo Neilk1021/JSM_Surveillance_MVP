@@ -234,6 +234,8 @@ namespace JSM.Surveillance
                 throw new ArgumentException($"{state} is not of type SimulationSaveData.");
             }
             
+            //TODO read the simSaveData
+            
             throw new NotImplementedException();
         }
     }
