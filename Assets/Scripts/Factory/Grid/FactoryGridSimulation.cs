@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using JSM.Surveillance.Game;
+using JSM.Surveillance.Saving;
 using Unity.VisualScripting;
 using UnityEngine;
+using JSM.Surviellance.Saving;
 
 namespace JSM.Surveillance
 {
-    public class FactoryGridSimulation 
+    
+    public class FactoryGridSimulation : ISavable
     {
         private readonly InputMachineInstance _gridInput;
         private OutputMachineInstance _gridOutput;
@@ -17,7 +20,11 @@ namespace JSM.Surveillance
         public readonly Dictionary<Guid, MachineInstance> MachineInstances;
         private readonly List<ExternalInputInstance> _externalInputs;
         public event Action<Resource> ResourceMade;
-        
+
+        public FactoryGridSimulation(Source source)
+        {
+            _source = source;
+        }
         
         public FactoryGridSimulation(IEnumerable<MachineObject> machineObjects, Source source)
         {
@@ -213,6 +220,23 @@ namespace JSM.Surveillance
             {
                 machine.Clear();
             }
+        }
+
+        public object CaptureState()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadState(object state)
+        {
+            if (state is not SimulationSaveData simSaveData)
+            {
+                throw new ArgumentException($"{state} is not of type SimulationSaveData.");
+            }
+            
+            //TODO TESTING 
+            
+            throw new NotImplementedException();
         }
     }
 }
