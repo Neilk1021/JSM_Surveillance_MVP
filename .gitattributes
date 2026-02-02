@@ -27,21 +27,6 @@
 *.blend filter=lfs diff=lfs merge=lfs -text
 *.obj filter=lfs diff=lfs merge=lfs -text
 
-### FMOD Unity Integration ###
-# Never ignore DLLs in the FMOD subfolder, so make sure that the 
-# FMOD-folder is in the correct path.
-\![Aa]ssets/Plugins/FMOD/**/*.dll
-
-# Don't ignore images and gizmos used by FMOD in the Unity Editor
-\![Aa}ssets/Gizmos/FMOD/*
-\![Aa}ssets/Editor Default Resources/FMOD/*
-
-# Ignore the Cache-file since it is updated locally either way
-\![Aa]ssets/**/FMODStudioCache.asset
-\![Aa]ssets/**/FMODStudioCache.asset.meta
-\![Aa]ssets/Plugins/FMOD/Cache.meta
-\![Aa]ssets/Plugins/FMOD/Cache/Editor.meta
-
 # ETC
 *.a filter=lfs diff=lfs merge=lfs -text
 *.exr filter=lfs diff=lfs merge=lfs -text

@@ -233,7 +233,6 @@ namespace JSM.Surveillance
             {
                 throw new ArgumentException($"{state} is not of type SimulationSaveData.");
             }
-
             
             throw new NotImplementedException();
         }
