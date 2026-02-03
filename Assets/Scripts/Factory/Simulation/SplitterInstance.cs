@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using JSM.Surveillance.Saving;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -34,6 +35,12 @@ namespace JSM.Surveillance
                 OutputResources.amount = inputResource.Value;
                 break;
             }
+        }
+
+        public override MachineStateDto BuildMachineDTO()
+        {
+            //TODO implement
+            throw new NotImplementedException();
         }
     }
 }

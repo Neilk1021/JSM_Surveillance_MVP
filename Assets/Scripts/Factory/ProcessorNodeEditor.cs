@@ -1,5 +1,5 @@
 ﻿using UnityEditor;
-
+#if UNITY_EDITOR
 namespace JSM.Surveillance
 {
     [CustomEditor(typeof(ProcessorPortObject))]
@@ -36,3 +36,4 @@ namespace JSM.Surveillance
         }
     }
 }
+#endif

@@ -1,26 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using JSM.Surveillance.Surveillance;
-using UnityEditor;
-using UnityEditor.UIElements;
-using UnityEngine;
-using UnityEngine.UIElements;
-
+﻿
 
 
 namespace JSM.Surveillance.Surveillance
 {
-    using UnityEditor;
     using UnityEngine;
-    public class HEFaceGameData : ScriptableObject
-    {
-        public int dailyPopulation;
-        public float riskFactor = 0;
-        public bool isStreet = true;
-        public InformationRatio ratio;
-        public string companyId;
-    }
-    
+    #if UNITY_EDITOR
+    using UnityEditor;
     public class HEFaceEditor : PopupWindowContent
     {
     private Vector2 _size = new Vector2(260, 245);
@@ -83,6 +68,15 @@ namespace JSM.Surveillance.Surveillance
 
             _so.ApplyModifiedProperties();
         }
+    }
+    #endif 
+    public class HEFaceGameData : ScriptableObject
+    {
+        public int dailyPopulation;
+        public float riskFactor = 0;
+        public bool isStreet = true;
+        public InformationRatio ratio;
+        public string companyId;
     }
 
 }

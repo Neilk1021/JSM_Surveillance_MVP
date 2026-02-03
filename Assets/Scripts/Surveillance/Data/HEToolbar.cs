@@ -1,4 +1,5 @@
-﻿namespace JSM.Surveillance.Surveillance
+﻿#if UNITY_EDITOR
+namespace JSM.Surveillance.Surveillance
 {
     using UnityEditor.UIElements;
     using UnityEngine.UIElements;
@@ -78,3 +79,4 @@
         }
     }
 }
+#endif

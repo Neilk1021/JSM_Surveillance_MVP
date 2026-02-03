@@ -1,4 +1,6 @@
-﻿using JSM.Surveillance.Game;
+﻿using System;
+using JSM.Surveillance.Game;
+using JSM.Surveillance.Saving;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -18,7 +20,13 @@ namespace JSM.Surveillance
             
             AddOutput(vol.resource, vol.amount);
         }
-        
+
+        public override MachineStateDto BuildMachineDTO()
+        {
+            //TODO implement
+            throw new System.NotImplementedException();
+        }
+
         public ExternalInputInstance(Source parent, int index , int inventorySize, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
             _incomingSourceIndex = index;

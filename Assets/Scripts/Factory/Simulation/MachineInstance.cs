@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using JSM.Surveillance.Saving;
 using UnityEngine;
 
 namespace JSM.Surveillance
 {
     [System.Serializable]
-    public class MachineInstance
+    public abstract class MachineInstance
     {
         public static Guid Vector2IntToGuid(Vector2Int position)
         {
@@ -41,6 +42,8 @@ namespace JSM.Surveillance
             Guid = guid;
             _inventorySize = inventorySize;
         }
+
+        public int InventorySize => _inventorySize;
 
         /// <summary>
         /// Adds an input resource and a given amount.
@@ -104,5 +107,7 @@ namespace JSM.Surveillance
             OutputResources = new ResourceVolume();
             InputResources.Clear();
         }
+
+        public abstract MachineStateDto BuildMachineDTO();
     }
 }

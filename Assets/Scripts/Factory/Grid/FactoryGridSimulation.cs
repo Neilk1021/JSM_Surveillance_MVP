@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JSM.Surveillance.Game;
 using JSM.Surveillance.Saving;
 using Unity.VisualScripting;
@@ -12,12 +13,12 @@ namespace JSM.Surveillance
     
     public class FactoryGridSimulation : ISavable
     {
-        private readonly InputMachineInstance _gridInput;
+        private InputMachineInstance _gridInput;
         private OutputMachineInstance _gridOutput;
-        private readonly MachineInstance[] _machines; 
+        private MachineInstance[] _machines; 
         private readonly Source _source;
 
-        public readonly Dictionary<Guid, MachineInstance> MachineInstances;
+        public Dictionary<Guid, MachineInstance> MachineInstances { get; private set; }
         private readonly List<ExternalInputInstance> _externalInputs;
         public event Action<Resource> ResourceMade;
 
@@ -203,7 +204,6 @@ namespace JSM.Surveillance
 
         public Resource GetOutputResourceType()
         {
-            
             return _gridOutput?.EndPorts
                 .Select(x => x.Connection?.Start switch
                 {
@@ -224,19 +224,77 @@ namespace JSM.Surveillance
 
         public object CaptureState()
         {
+            List<MachineStateDto> machineStateDtos = _machines.Select(x => x.BuildMachineDTO()).ToList();
+            //TODO implement
             throw new NotImplementedException();
         }
 
-        public void LoadState(object state)
+        public async Task LoadState(object state)
         {
             if (state is not SimulationSaveData simSaveData)
             {
                 throw new ArgumentException($"{state} is not of type SimulationSaveData.");
             }
+
+            ClearSim();
             
-            //TODO read the simSaveData
             
-            throw new NotImplementedException();
+            _machines = await LoadMachines(simSaveData);
+            
+            Dictionary<Guid, MachineInstance> lookup = new ();
+            for (var i = 0; i < _machines.Length; ++i) {
+                lookup.Add(simSaveData.MachineStates[i].Id, _machines[i]);
+                switch (_machines[i])
+                {
+                    case InputMachineInstance imInstance:
+                        _gridInput = imInstance;
+                        break;
+                    case OutputMachineInstance omInstance:
+                        _gridOutput = omInstance;
+                        break;
+                    case ExternalInputInstance eimInstance:
+                        _externalInputs.Add(eimInstance);
+                        break;
+                }
+            }
+
+            foreach (var connectionData in simSaveData.Connections)
+            {
+                var start = connectionData.StartMachineID;
+                var end = connectionData.EndMachineID;
+
+                var connection = new ConnectionInstance(lookup[start], lookup[end]);
+                var oP = new ProcessorPort(lookup[start], connection,NodeType.Start);
+                var iP = new ProcessorPort(lookup[end], connection, NodeType.End);
+                
+                lookup[start].AddOutputPort(oP);
+                lookup[end].AddInputPort(iP);
+            }
+            
+            foreach (var machine in _machines)
+            {
+                machine.OnResourceProduced += ResourceMade;
+            }
+
+            MachineInstances = _machines.ToDictionary(x => x.Guid, x => x);
+        }
+
+        private void ClearSim()
+        {
+            _machines = null;
+            MachineInstances.Clear();
+            _externalInputs.Clear();
+            _gridInput = null;
+            _gridOutput = null;
+        }
+
+        private async Task<MachineInstance[]> LoadMachines(SimulationSaveData saveData)
+        {
+            IEnumerable<Task<MachineInstance>> tasks = saveData.MachineStates
+                .Select(x => x.BuildMachineInstance());
+
+            MachineInstance[] machines = await Task.WhenAll(tasks);
+            return machines;
         }
     }
 }

@@ -1,11 +1,11 @@
+
+#if UNITY_EDITOR
+
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using JSM.Surveillance.Data;
 using JSM.Surveillance.Surveillance;
 using UnityEditor;
 using UnityEngine;
-using UnityEditor.Overlays;
 using UnityEngine.UIElements;
 
 public static class PaintingToolbar
@@ -153,3 +153,4 @@ public static class PaintingToolbar
     
     
 }
+#endif

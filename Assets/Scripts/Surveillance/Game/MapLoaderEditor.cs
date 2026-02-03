@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-
+#if UNITY_EDITOR
 namespace Surveillance.Game
 {
     [CustomEditor(typeof(MapLoader))]
@@ -19,3 +19,4 @@ namespace Surveillance.Game
         }
     }
 }
+#endif

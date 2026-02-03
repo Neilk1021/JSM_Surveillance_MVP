@@ -1,4 +1,6 @@
-﻿using JSM.Surveillance.Data;
+﻿
+#if UNITY_EDITOR
+using JSM.Surveillance.Data;
 using UnityEngine.Events;
 
 namespace JSM.Surveillance.Surveillance
@@ -225,3 +227,4 @@ namespace JSM.Surveillance.Surveillance
     }
 
 }
+#endif

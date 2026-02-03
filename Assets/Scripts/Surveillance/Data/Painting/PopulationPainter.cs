@@ -1,7 +1,9 @@
-﻿using System;
+﻿
+#if UNITY_EDITOR
+
+using System;
 using System.Collections.Generic;
 using JSM.Surveillance.Surveillance;
-
 namespace JSM.Surveillance.Data
 {
     using UnityEditor;
@@ -109,3 +111,4 @@ namespace JSM.Surveillance.Data
     }
 
 }
+#endif

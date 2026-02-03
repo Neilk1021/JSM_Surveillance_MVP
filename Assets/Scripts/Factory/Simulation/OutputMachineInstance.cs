@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JSM.Surveillance.Saving;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -18,6 +19,12 @@ namespace JSM.Surveillance
         {
             _storedOutput.TryAdd(resource, 0);
             _storedOutput[resource] += amnt;
+        }
+
+        public override MachineStateDto BuildMachineDTO()
+        {
+            //TODO implement
+            throw new System.NotImplementedException();
         }
     }
 }

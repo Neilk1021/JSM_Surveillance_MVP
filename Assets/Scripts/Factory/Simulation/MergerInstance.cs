@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JSM.Surveillance.Saving;
+using UnityEngine;
 
 namespace JSM.Surveillance
 {
@@ -22,7 +23,6 @@ namespace JSM.Surveillance
                     return;
                 }
                 
-                
                 if(OutputResources.amount >= 0 ) return;
             }
             
@@ -34,6 +34,11 @@ namespace JSM.Surveillance
                 break;
             }
         }
-        
+
+        public override MachineStateDto BuildMachineDTO()
+        {
+            //TODO implement
+            throw new System.NotImplementedException();
+        }
     }
 }

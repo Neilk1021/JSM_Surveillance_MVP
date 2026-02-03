@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using SFB;
-
+#if UNITY_EDITOR
 public class HEEditorWindowUITK : EditorWindow
 {
     [MenuItem("Tools/Half-Edge/UITK Graph")]
@@ -479,3 +479,4 @@ public class GraphDrawElement : VisualElement
         
     }
 }
+#endif
