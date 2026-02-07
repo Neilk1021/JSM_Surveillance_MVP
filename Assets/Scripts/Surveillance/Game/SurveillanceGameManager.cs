@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JSM.Surveillance.Game;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,7 +24,7 @@ namespace JSM.Surveillance
         public Simulator Simulator => _simData;
         public MoneyManager MoneyManager => _moneyManager;
         public FactoryGrid DefaultSourceGrid => defaultSourceGrid;
-        private readonly List<Source> _sources = new List<Source>();
+        private List<Source> _sources = new List<Source>();
 
         private void Awake() {
             if (instance != null)
@@ -100,6 +101,46 @@ namespace JSM.Surveillance
                 .Where(x=> Vector2.Distance(pos,x.transform.position) < threshold)
                 .OrderBy(x=> Vector2.Distance(pos, x.transform.position))
                 .FirstOrDefault();        
+        }
+
+        public static void ClearBoard()
+        {
+            var sourcesToClear = instance._sources;
+            instance._sources = new List<Source>();
+
+            instance.ClearSourcesBackground(sourcesToClear);
+        }
+
+        private void ClearSourcesBackground(List<Source> sources)
+        {
+            StartCoroutine(ClearSourcesBackgroundC(sources));
+        }
+        
+        private IEnumerator ClearSourcesBackgroundC(List<Source> sources, int batchSize = 10)
+        {
+            foreach(var s in sources) s.gameObject.SetActive(false);
+
+            for (int i = 0; i < sources.Count; i++)
+            {
+                var s = sources[i];
+                if (s && s.gameObject)
+                {
+                    Destroy(s.gameObject);
+                }
+
+                if (i > 0 && i % batchSize == 0) 
+                    yield return null;
+            }
+        }
+
+        public static int GetMoney()
+        {
+            return instance._moneyManager.Money;
+        }
+
+        public static void SetMoney(int money)
+        {
+            instance._moneyManager.SetMoney(money);
         }
     }
 }

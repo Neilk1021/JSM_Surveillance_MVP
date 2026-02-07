@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using JSM.Surveillance;
 using JSM.Surveillance.Game;
@@ -61,6 +62,7 @@ namespace JSM.Surviellance.Saving
                 // Write Header
                 writer.Write(1); // Version
                 writer.Write(sources.Length);
+                writer.Write(SurveillanceGameManager.GetMoney());
 
                 foreach (var source in sources)
                 {
@@ -81,6 +83,9 @@ namespace JSM.Surviellance.Saving
             {
                 int version = reader.ReadInt32();
                 int sourceCount = reader.ReadInt32();
+                int money = reader.ReadInt32();
+
+                SurveillanceGameManager.SetMoney(money);
 
                 List<SourceDTO> dtos = new List<SourceDTO>();
                 for (int i = 0; i < sourceCount; i++)
@@ -108,6 +113,8 @@ namespace JSM.Surviellance.Saving
                     dtos.Add(dto);
                 }
 
+
+                SurveillanceGameManager.ClearBoard();
                 await ExecuteLoadPasses(dtos);
             }
         }
@@ -115,6 +122,7 @@ namespace JSM.Surviellance.Saving
 
         private async Task ExecuteLoadPasses(List<SourceDTO> dtos)
         {
+            
             Dictionary<Guid, Source> sourceLookup = await SpawnPass(dtos);
             await RehydratePass(dtos, sourceLookup);
             Debug.Log("Load Complete!");
@@ -124,23 +132,22 @@ namespace JSM.Surviellance.Saving
         {
             var lookup = new Dictionary<Guid, Source>();
 
+            var sourceDataList = new List<(AsyncOperationHandle<SourceData> task, SourceDTO dto)>();
+            
             foreach (var dto in dtos)
             {
-                
-                var pData = Addressables.LoadAssetAsync<SourceData>(dto.sourceDataPath);
-                await pData.Task;
-                if (pData.Status != AsyncOperationStatus.Succeeded) {
-                    continue;
-                }
-
-                Source newSource = SurveillanceGameManager.SpawnSourceImmediate(pData.Result);
-                
-                
-                await newSource.LoadState(dto);
-                lookup.Add(newSource.GetGuid(), newSource);
-                
+                sourceDataList.Add((Addressables.LoadAssetAsync<SourceData>(dto.sourceDataPath), dto));
             }
 
+            await Task.WhenAll(sourceDataList.Select(x => x.task.Task).ToList());
+
+            foreach (var tuple in sourceDataList.Where(x=> x.task.Status == AsyncOperationStatus.Succeeded))
+            {
+                Source newSource = SurveillanceGameManager.SpawnSourceImmediate(tuple.task.Result);
+                await newSource.LoadState(tuple.dto);
+                lookup.Add(newSource.GetGuid(), newSource);
+            }
+            
             return lookup;
         }
 
