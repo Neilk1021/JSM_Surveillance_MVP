@@ -45,16 +45,28 @@ namespace JSM.Surveillance
             {
                 return false;
             }
+
+            SpawnSource(data);
             
-            _sources.Add(SpawnSource(data));
             return true;
         }
+        public static Source SpawnSourceImmediate(SourceData data)
+        {
+            var obj = Instantiate(data.Source.gameObject);
+            var spawnSource = obj.GetComponent<Source>();
+            spawnSource.Init(FindObjectOfType<MapCellManager>(), data, true);
+            instance._sources.Add(spawnSource);
+            return spawnSource;
+        }
 
-        private static Source SpawnSource(SourceData data)
+
+        
+        public static Source SpawnSource(SourceData data)
         {
             var obj = Instantiate(data.Source.gameObject);
             var spawnSource = obj.GetComponent<Source>();
             spawnSource.Init(FindObjectOfType<MapCellManager>(), data);
+            instance._sources.Add(spawnSource);
             return spawnSource;
         }
 

@@ -18,18 +18,23 @@ namespace JSM.Surveillance
         private MachineInstance[] _machines; 
         private readonly Source _source;
 
+        private List<ConnectionData> _connectionData;
+
         public Dictionary<Guid, MachineInstance> MachineInstances { get; private set; }
-        private readonly List<ExternalInputInstance> _externalInputs;
+        private readonly List<ExternalInputInstance> _externalInputs = new ();
         public event Action<Resource> ResourceMade;
 
         public FactoryGridSimulation(Source source)
         {
             _source = source;
+            _externalInputs = new();
+            MachineInstances = new Dictionary<Guid, MachineInstance>();
         }
         
         public FactoryGridSimulation(IEnumerable<MachineObject> machineObjects, Source source)
         {
             _source = source;
+            _connectionData = new List<ConnectionData>();
             _externalInputs = new List<ExternalInputInstance>();
             Dictionary<MachineObject, MachineInstance> lookup = machineObjects.ToDictionary(x=>x, x=>x.BuildInstance());
             
@@ -44,6 +49,12 @@ namespace JSM.Surveillance
                     var connection = new ConnectionInstance(machineObject.Value, lookup[endMachine]);
                     var oP = new ProcessorPort(machineObject.Value, connection, startPort.Type);
                     var iP = new ProcessorPort(lookup[endMachine], connection, startPort.Type == NodeType.Start ? NodeType.End : NodeType.Start);
+                    
+                    _connectionData.Add(new ConnectionData()
+                    {
+                        StartMachineID = machineObject.Value.Guid, 
+                        EndMachineID = lookup[endMachine].Guid
+                    });
                     
                     machineObject.Value.AddOutputPort(oP);
                     lookup[endMachine].AddInputPort(iP);
@@ -225,8 +236,8 @@ namespace JSM.Surveillance
         public object CaptureState()
         {
             List<MachineStateDto> machineStateDtos = _machines.Select(x => x.BuildMachineDTO()).ToList();
-            //TODO implement
-            throw new NotImplementedException();
+            return new SimulationSaveData(machineStateDtos, _connectionData);
+  
         }
 
         public async Task LoadState(object state)
@@ -236,9 +247,12 @@ namespace JSM.Surveillance
                 throw new ArgumentException($"{state} is not of type SimulationSaveData.");
             }
 
+            if (!simSaveData.Rehydrated)
+            {
+                throw new ArgumentException("Tried to load sim save data without linking dependencies");
+            }
+            
             ClearSim();
-            
-            
             _machines = await LoadMachines(simSaveData);
             
             Dictionary<Guid, MachineInstance> lookup = new ();
@@ -260,15 +274,22 @@ namespace JSM.Surveillance
 
             foreach (var connectionData in simSaveData.Connections)
             {
-                var start = connectionData.StartMachineID;
-                var end = connectionData.EndMachineID;
+                if (lookup.TryGetValue(connectionData.StartMachineID, out var startNode) && 
+                    lookup.TryGetValue(connectionData.EndMachineID, out var endNode))
+                {
+                    var start = connectionData.StartMachineID;
+                    var end = connectionData.EndMachineID;
+                    var connection = new ConnectionInstance(startNode, endNode);
+                    var oP = new ProcessorPort(lookup[start], connection,NodeType.Start);
+                    var iP = new ProcessorPort(lookup[end], connection, NodeType.End);
+                    
+                    lookup[start].AddOutputPort(oP);
+                    lookup[end].AddInputPort(iP);
 
-                var connection = new ConnectionInstance(lookup[start], lookup[end]);
-                var oP = new ProcessorPort(lookup[start], connection,NodeType.Start);
-                var iP = new ProcessorPort(lookup[end], connection, NodeType.End);
-                
-                lookup[start].AddOutputPort(oP);
-                lookup[end].AddInputPort(iP);
+                }
+                else {
+                    Debug.LogWarning("Skipping broken connection in save file.");
+                }
             }
             
             foreach (var machine in _machines)
@@ -284,6 +305,7 @@ namespace JSM.Surveillance
             _machines = null;
             MachineInstances.Clear();
             _externalInputs.Clear();
+            
             _gridInput = null;
             _gridOutput = null;
         }

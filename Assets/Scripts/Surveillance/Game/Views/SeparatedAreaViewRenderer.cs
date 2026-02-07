@@ -28,13 +28,22 @@ namespace JSM.Surveillance.Game
         private void Start()
         {
             _meshFilter.mesh = _view.GetMesh();
-            listnerCenterObj = Instantiate(listenerCenterPrefab);
+            listnerCenterObj ??= Instantiate(listenerCenterPrefab);
             _lineRenderer.positionCount = 2;
         }
 
         public void RefreshMesh(Vector3 center)
         {
             if(center.Equals(Vector3.negativeInfinity))return;
+            
+            _meshFilter ??= GetComponent<MeshFilter>();
+            _view ??= GetComponent<SeparatedAreaView>();
+            _lineRenderer ??= GetComponent<LineRenderer>();
+
+            if (listnerCenterObj == null) {
+                listnerCenterObj = Instantiate(listenerCenterPrefab);
+                _lineRenderer.positionCount = 2;
+            }
             
             listnerCenterObj.transform.position = new Vector3(center.x, center.y,transform.position.z);
             _meshFilter.mesh = _view.GetMesh();

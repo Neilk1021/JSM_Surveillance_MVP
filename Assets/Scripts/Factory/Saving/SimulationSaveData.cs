@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using JSM.Surveillance.Game;
 using JSM.Surviellance.Saving;
 using UnityEngine;
 
@@ -11,8 +12,19 @@ namespace JSM.Surveillance.Saving
     public class SimulationSaveData
     {
         public readonly List<MachineStateDto> MachineStates = new List<MachineStateDto>();
-        public readonly List<ConnectionData> Connections = new List<ConnectionData>(); 
+        public readonly List<ConnectionData> Connections = new List<ConnectionData>();
+
+        public bool Rehydrated = false;
         
+        public SimulationSaveData(){}
+        
+        
+        public SimulationSaveData(List<MachineStateDto> machineStateDtos, List<ConnectionData> connectionData)
+        {
+            MachineStates = machineStateDtos;
+            Connections = connectionData;
+        }
+
         public void Write(BinaryWriter writer)
         {
             try
@@ -45,7 +57,7 @@ namespace JSM.Surveillance.Saving
         {
             MachineStates.Clear();
             Connections.Clear();
-
+            Rehydrated = false;
             try
             {
                 int machineStates = reader.ReadInt32();
@@ -67,6 +79,7 @@ namespace JSM.Surveillance.Saving
                         EndMachineID = new Guid(endingGuid)
                     });
                 }
+                
             }
             catch (EndOfStreamException e)
             {
@@ -84,6 +97,16 @@ namespace JSM.Surveillance.Saving
             }
         }
 
+        public void RehydrateSourceReferences(Dictionary<Guid, Source> sourceLookup) {
+            foreach (var machineState in MachineStates) {
+                if (machineState is ISourceDependent sourceDependent) {
+                    sourceDependent.RehydrateSourceReferences(sourceLookup);
+                }
+            }
+
+            Rehydrated = true;
+        }
+
         private MachineStateDto BuildMachine(BinaryReader reader)
         {
             DtoType type = (DtoType)reader.ReadByte();
@@ -93,6 +116,22 @@ namespace JSM.Surveillance.Saving
                     var processor = new ProcessorInstanceDTO();
                     processor.Read(reader);
                     return processor;
+                case DtoType.MergerInstance:
+                    var merger = new MergerInstanceDTO();
+                    merger.Read(reader);
+                    return merger;
+                case DtoType.OutputInstance:
+                    var output = new OutputInstanceDTO();
+                    output.Read(reader);
+                    return output;
+                case DtoType.InputInstance:
+                    var input = new InputInstanceDTO();
+                    input.Read(reader);
+                    return input;
+                case DtoType.ExternalInput:
+                    var externalInput = new ExternalInstanceDTO();
+                    externalInput.Read(reader);
+                    return externalInput;
                 default:
                     throw new ArgumentException("Tried to instantiate non valid Machine on file load");
                     break;
@@ -110,7 +149,12 @@ namespace JSM.Surveillance.Saving
     {
         Base = 0,
         ProcessorInstance = 1,
-        //continue as we add more
+        MergerInstance = 2,
+        OutputInstance = 3,
+        
+        //cont
+        InputInstance = 4,
+        ExternalInput = 5
     }
     
     public abstract class MachineStateDto

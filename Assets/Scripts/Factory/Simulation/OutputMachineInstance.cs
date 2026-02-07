@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JSM.Surveillance.Saving;
 using UnityEngine;
 
@@ -12,6 +13,10 @@ namespace JSM.Surveillance
         public OutputMachineInstance(int inventorySize, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
         }
+        
+        public OutputMachineInstance(int inventorySize, Guid guid) : base(inventorySize, guid)
+        {
+        }
 
         public  Dictionary<Resource, int> OutputResources => _storedOutput; 
 
@@ -23,8 +28,7 @@ namespace JSM.Surveillance
 
         public override MachineStateDto BuildMachineDTO()
         {
-            //TODO implement
-            throw new System.NotImplementedException();
+            return new OutputInstanceDTO(this);
         }
     }
 }

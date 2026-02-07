@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace JSM.Surveillance
 {
     
@@ -16,8 +18,9 @@ namespace JSM.Surveillance
     
     [CreateAssetMenu(fileName = "Generic", menuName = "JSM/Surveillance/Maintainable/Generic")]
 
-    public class Maintainable : ScriptableObject 
+    public class Maintainable : ScriptableObject, ISerializationCallbackReceiver
     {
+        public string AssetGuid { get; private set; }
         [SerializeField] protected int upfrontCost;
         [SerializeField] protected int dailyCost;
 
@@ -28,5 +31,16 @@ namespace JSM.Surveillance
         [SerializeField] private ShopInfo shopInfo;
 
         public ShopInfo ShopInfo => shopInfo;
+        public void OnBeforeSerialize()
+        {
+            #if UNITY_EDITOR
+                string path = AssetDatabase.GetAssetPath(this);
+                AssetGuid = AssetDatabase.AssetPathToGUID(path);
+            #endif
+
+        }
+        public void OnAfterDeserialize()
+        {
+        }
     }
 }

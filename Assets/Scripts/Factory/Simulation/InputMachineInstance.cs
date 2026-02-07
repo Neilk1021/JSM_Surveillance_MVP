@@ -1,11 +1,12 @@
-﻿using JSM.Surveillance.Game;
+﻿using System;
+using JSM.Surveillance.Game;
 using JSM.Surveillance.Saving;
 using UnityEngine;
 
 namespace JSM.Surveillance
 {
     [System.Serializable]
-    public class InputMachineInstance : MachineInstance
+    public partial class InputMachineInstance : MachineInstance
     {
         private readonly SourceData _sourceData;
         private readonly Source _source;
@@ -29,12 +30,14 @@ namespace JSM.Surveillance
             AddOutput(_source.resource, mult * _peopleInRange);
         }
 
-        public override MachineStateDto BuildMachineDTO()
-        {
-            //TODO implement
-            throw new System.NotImplementedException();
-        }
 
+        public InputMachineInstance(Source newSource, int inventorySize, Guid guid) : base(inventorySize, guid)
+        {
+            _source = newSource;
+            _sourceData = newSource.Data;
+            _peopleInRange = _source.GetRawResourceRate();
+        }
+        
         public InputMachineInstance(Source newSource, int inventorySize, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
             _source = newSource;

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JSM.Surveillance.Surveillance;
 using JSM.Surveillance.Util;
 using UnityEngine;
@@ -21,14 +22,22 @@ namespace JSM.Surveillance.Game
         {
             _areaView = GetComponent<SeparatedAreaView>();
         }
-        
-        
-        public override void Init(MapCellManager manager, SourceData data)
+
+
+        private void OnDestroy() {
+            _micCount--;
+        }
+
+        public override void Init(MapCellManager manager, SourceData data, bool immediatePlace = false)
         {
             base.Init(manager, data);
             _micCount++;
             sourceName += $" {_micCount}";
-            MapCellManager.SetMapMode(MapMode.Corp);
+            
+            if (!immediatePlace)
+            {
+                MapCellManager.SetMapMode(MapMode.Corp);
+            }
         }
         
         protected override void MoveSource()
@@ -84,17 +93,7 @@ namespace JSM.Surveillance.Game
                 if ((mousePos - lastMousePos).magnitude > 0.1f)
                 {
                     lastMousePos = mousePos;
-                    _areaView.SetCenter(mousePos);
-
-                    float rad = Mathf.Atan2(mousePos.y - transform.position.y, mousePos.x - transform.position.x);
-                    micModel.rotation = Quaternion.Euler(micModel.eulerAngles.x, micModel.eulerAngles.y, -rad * Mathf.Rad2Deg-90);
-                    
-                    
-                    var faces = GetFacesInRange();
-                    foreach (var face in faces)
-                    {
-                        MapCellManager.SetFacePlacementPct(face.Key,face.Value);
-                    }
+                    UpdateCenterPosition(mousePos, renderer);
                 }
                 
                 
@@ -108,7 +107,23 @@ namespace JSM.Surveillance.Game
 
             MapCellManager.SetMapMode(MapMode.Normal);
         }
-        
+
+        private void UpdateCenterPosition(Vector3 mousePos, SeparatedAreaViewRenderer renderer)
+        {
+            renderer.RefreshMesh(mousePos);
+            _areaView.SetCenter(mousePos);
+
+            float rad = Mathf.Atan2(mousePos.y - transform.position.y, mousePos.x - transform.position.x);
+            micModel.rotation = Quaternion.Euler(micModel.eulerAngles.x, micModel.eulerAngles.y, -rad * Mathf.Rad2Deg-90);
+                    
+                    
+            var faces = GetFacesInRange();
+            foreach (var face in faces)
+            {
+                MapCellManager.SetFacePlacementPct(face.Key,face.Value);
+            }
+        }
+
         public override int GetPeopleInRange()
         {
             int pop = 0;
@@ -168,6 +183,34 @@ namespace JSM.Surveillance.Game
                 pop += cellPop;
             }
             return (int)pop;
+        }
+        
+        
+        public override SourceDTO CaptureState()
+        {
+            var x = base.CaptureState();
+            return new SourceDTO.MicDTO(x) {
+                CenterPos = _areaView.Center
+            };
+        }
+        
+        public override async Task LoadState(SourceDTO sourceDto)
+        {
+            _micCount++;
+            base.LoadState(sourceDto);
+            
+            _areaView = GetComponent<SeparatedAreaView>();
+            if (sourceDto is not SourceDTO.MicDTO micDto)
+            {
+                return;
+            }
+            
+            vert = MapCellManager.GetVertexClosetTo(transform.position, 2);
+            vert.SetSource(this);
+            
+            UpdateCenterPosition(micDto.CenterPos, GetComponent<SeparatedAreaViewRenderer>());
+            base.Place(transform.position);
+            MapCellManager.SetMapMode(MapMode.Normal);
         }
     }
 }

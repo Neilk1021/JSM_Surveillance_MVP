@@ -7,9 +7,8 @@ namespace JSM.Surviellance.Saving
     {
         public object CaptureState();
 
-        public async Task LoadState(object state)
-        {
-        }
+        public Task LoadState(object state);
+
     }
 
     public class SaveFailedException : Exception

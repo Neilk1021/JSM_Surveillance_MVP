@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using JSM.Surveillance.Surveillance;
 using JSM.Surveillance.Util;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace JSM.Surveillance.Game
 {
@@ -22,13 +24,13 @@ namespace JSM.Surveillance.Game
         }
 
 
-        public override void Init(MapCellManager manager, SourceData data)
+        public override void Init(MapCellManager manager, SourceData data, bool placeImmediate = false)
         {
             base.Init(manager, data);
             _cameraCount++;
             sourceName += $" {_cameraCount}";
             
-            MapCellManager.SetMapMode(MapMode.Population);
+            if(placeImmediate == false) MapCellManager.SetMapMode(MapMode.Population);
         }
 
         protected override void MoveSource()
@@ -85,12 +87,7 @@ namespace JSM.Surveillance.Game
 
                 if (Quaternion.Angle(transform.rotation, newRot) > 0.1f)
                 {
-                    var faces = GetFacesInRange();
-                    foreach (var face in faces)
-                    {
-                        MapCellManager.SetFacePlacementPct(face.Key,face.Value);
-                    }
-                    transform.rotation = newRot;
+                    UpdatePlacementPct(newRot);
                 }
 
                 if (Input.GetMouseButtonDown(0))
@@ -103,7 +100,17 @@ namespace JSM.Surveillance.Game
 
             MapCellManager.SetMapMode(MapMode.Normal);
         }
-        
+
+        private void UpdatePlacementPct(Quaternion newRot)
+        {
+            var faces = GetFacesInRange();
+            foreach (var face in faces)
+            {
+                MapCellManager.SetFacePlacementPct(face.Key,face.Value);
+            }
+            transform.rotation = newRot;
+        }
+
         public override int GetPeopleInRange()
         {
             int pop = 0;
@@ -157,5 +164,36 @@ namespace JSM.Surveillance.Game
         {
             return GetPeopleInRange();
         }
+        
+        
+        public override SourceDTO CaptureState()
+        {
+            var x = base.CaptureState();
+            return new SourceDTO.CameraDTO(x) {
+                Angle = transform.rotation.eulerAngles.z
+            };
+        }
+        
+        public override async Task LoadState(SourceDTO sourceDto)
+        {
+            base.LoadState(sourceDto);
+            
+            _fovView = GetComponent<FovView>();
+            if (sourceDto is not SourceDTO.CameraDTO cameraDto){
+                return;
+            }
+
+            Quaternion newRot = Quaternion.Euler(
+                transform.rotation.eulerAngles.x,
+                transform.rotation.eulerAngles.y,
+                cameraDto.Angle);
+            
+            vert = MapCellManager.GetVertexClosetTo(transform.position, 3);
+            vert.SetSource(this);
+
+            base.Place(transform.position);
+            transform.rotation = newRot;
+        }
+        
     }
 }

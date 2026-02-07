@@ -1,16 +1,20 @@
-﻿using JSM.Surveillance.Saving;
+﻿using System;
+using JSM.Surveillance.Saving;
 using UnityEngine;
 
 namespace JSM.Surveillance
 {
-    public class MergerInstance : MachineInstance
+    public partial class MergerInstance : MachineInstance
     {
         private Maintainable _data;
         public MergerInstance(int inventorySize, Maintainable data, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
             _data = data;
         }
-        
+
+        public MergerInstance(int inventorySize, Guid guid, Maintainable data) : base(inventorySize, guid) {
+            _data = data;
+        }
         
         public override void ProcessTicks(int deltaTicks = 1)
         {
@@ -35,10 +39,6 @@ namespace JSM.Surveillance
             }
         }
 
-        public override MachineStateDto BuildMachineDTO()
-        {
-            //TODO implement
-            throw new System.NotImplementedException();
-        }
+
     }
 }
