@@ -39,18 +39,6 @@ namespace JSM.Surveillance
             _mapCellManager = FindObjectOfType<MapCellManager>();
         }
         
-        public bool BuySource(SourceData data)
-        {
-            CheckSourceDataValidity(data);
-            if (!_moneyManager.ChangeMoneyBy(-data.UpfrontCost))
-            {
-                return false;
-            }
-
-            SpawnSource(data);
-            
-            return true;
-        }
         public static Source SpawnSourceImmediate(SourceData data)
         {
             var obj = Instantiate(data.Source.gameObject);
@@ -69,17 +57,6 @@ namespace JSM.Surveillance
             spawnSource.Init(FindObjectOfType<MapCellManager>(), data);
             instance._sources.Add(spawnSource);
             return spawnSource;
-        }
-
-        private static void CheckSourceDataValidity(SourceData data)
-        {
-            if (data == null) {
-                throw new ArgumentException("Data was not provided.");
-            }
-
-            if (data.Source == null) {
-                throw new ArgumentException("Data has no source");
-            }
         }
 
         public void SellSource(Source source)
@@ -141,6 +118,11 @@ namespace JSM.Surveillance
         public static void SetMoney(int money)
         {
             instance._moneyManager.SetMoney(money);
+        }
+
+        public static bool ChangeMoneyBy(int i)
+        {
+            return instance._moneyManager.ChangeMoneyBy(i);
         }
     }
 }

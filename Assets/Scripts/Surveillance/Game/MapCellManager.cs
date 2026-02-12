@@ -25,6 +25,7 @@ namespace JSM.Surveillance.Game
             _mapCellDataManager = GetComponent<MapCellDataManager>();
         }
 
+        
         public int GetPopulationInFace(HEFace face)
         {
             if (!_cells.ContainsKey(face))

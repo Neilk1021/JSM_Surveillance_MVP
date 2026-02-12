@@ -25,7 +25,7 @@ namespace JSM.Surveillance.Game
 
         private LinkRenderer _linkRenderer;
         private protected MapCellManager MapCellManager;
-        private protected bool Placed = false;
+        //private protected PlacementStatus Placed = PlacementStatus.AwaitingPlacement; 
         private SourceData _data;
         private Source _nextSource = null;
         private Source[] _incomingSources;
@@ -38,7 +38,9 @@ namespace JSM.Surveillance.Game
         
         public readonly UnityEvent OnModified = new UnityEvent();
         public readonly UnityEvent OnIncomingSourcesChanged = new UnityEvent();
-        
+
+        protected bool placed = false; 
+        protected TaskCompletionSource<bool> placedProcess = new TaskCompletionSource<bool>(); 
         
         public virtual void Init(MapCellManager manager, SourceData data, bool placeImmediate = false)
         {
@@ -46,71 +48,49 @@ namespace JSM.Surveillance.Game
             sourceName = data.ShopInfo.name;
             _data = data;
             MapCellManager = manager;
-            Placed = false;
             _guid = Guid.NewGuid();
             OnModified.AddListener(ReloadNextSource);
         }
 
         private void Update()
         {
-            MoveSource();
-            CheckIfPlaced();
+            if (!placed)
+            {
+                MoveSource();
+                CheckIfPlaced();
+            }
         }
 
+        
+        public Task<bool> PlacementProcess()
+        {
+            placedProcess = new TaskCompletionSource<bool>();
+            placed = false;
+            return placedProcess.Task;
+        }
+        
         protected virtual void CheckIfPlaced()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
+            if (Input.GetMouseButtonDown(0)) {
                 Place(transform.position);
             }
-        }
 
-        public bool LinkToSource(Source dest)
-        {
-            if (!dest.AddIncomingSource(this)) return false;
-            
-            if (_nextSource != null)
+            if (Input.GetMouseButton(1))
             {
-                _nextSource.RemoveIncomingSource(this);
+                CancelPlacement();
             }
             
-            _nextSource = dest;
-            return true;
         }
 
-        private bool RemoveIncomingSource(Source source)
+        private void CancelPlacement()
         {
-            for (int i = 0; i < _incomingSources.Length; i++)
-            {
-                if (_incomingSources[i] != source) continue;
-                
-                _incomingSources[i] = null;
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool AddIncomingSource(Source source)
-        {
-            if (_incomingSources.Contains(source)) return false;
-            
-            for (int i = 0; i < _incomingSources.Length; i++)
-            {
-                if (_incomingSources[i] != null) continue;
-                _incomingSources[i] = source;
-                OnIncomingSourcesChanged?.Invoke();
-                return true;
-            }
-
-            return false;
+            if(placedProcess == null) return;
+            placedProcess.TrySetResult(false);
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
         protected virtual void MoveSource()
         {
-            if(Placed) return;
-
             Vector3 currentPos = MapCellManager.GetMouseCurrentPosition();
             if(currentPos.Equals(Vector3.negativeInfinity)) return;
             
@@ -119,14 +99,14 @@ namespace JSM.Surveillance.Game
 
         public virtual void Place(Vector2 pos)
         {
-            Placed = true;
-    
+            placed = true;
+            placedProcess?.TrySetResult(true);
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
         }
 
         public SourceUI CreateUI()
         {
-            if (!Placed) {
+            if (!placed) {
                 return null;
             }
             
@@ -144,11 +124,6 @@ namespace JSM.Surveillance.Game
         public abstract int GetPeopleInRange();
         public abstract Dictionary<HEFace, float> GetFacesInRange();
         
-        
-        private void OnMouseDown()
-        {
-            MapCellManager.SwitchUIPreview(this);
-        }
 
         public void CloseUI()
         {
@@ -251,17 +226,61 @@ namespace JSM.Surveillance.Game
         {
             _nextSource?.Modified();
         }
+        
+        private bool LinkToSource(Source dest)
+        {
+            if (!dest.AddIncomingSource(this)) return false;
+
+            if (_nextSource != null) _nextSource.RemoveIncomingSource(this);
+
+            _nextSource = dest;
+            return true;
+        }
+
+        private bool RemoveIncomingSource(Source source)
+        {
+            for (var i = 0; i < _incomingSources.Length; i++)
+            {
+                if (_incomingSources[i] != source) continue;
+
+                _incomingSources[i] = null;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool AddIncomingSource(Source source)
+        {
+            if (_incomingSources.Contains(source)) return false;
+
+            for (var i = 0; i < _incomingSources.Length; i++)
+            {
+                if (_incomingSources[i] != null) continue;
+                _incomingSources[i] = source;
+                OnIncomingSourcesChanged?.Invoke();
+                return true;
+            }
+
+            return false;
+        }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-           OnMouseDown(); 
+            OnMouseDown();
+        }
+        
+        private void OnMouseDown()
+        {
+            MapCellManager.SwitchUIPreview(this);
         }
 
         public Guid GetGuid()
         {
             return _guid;
         }
-
+        //RELOAD BULLSHIT BELOW
+        
         public virtual SourceDTO CaptureState()
         {
             SimulationSaveData sim = (SimulationSaveData)_simulation?.CaptureState();
@@ -339,5 +358,7 @@ namespace JSM.Surveillance.Game
                 SetSimulation(sim);
             }
         }
+
+
     }
 }

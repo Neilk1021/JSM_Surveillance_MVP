@@ -35,8 +35,6 @@ namespace JSM.Surveillance.Game
 
         protected override void MoveSource()
         {
-            if(Placed) return;
-
             var mousePos = MapCellManager.GetMouseCurrentPosition();
             if(mousePos.Equals(Vector3.negativeInfinity)) return;
             
@@ -56,7 +54,7 @@ namespace JSM.Surveillance.Game
 
         protected override void CheckIfPlaced()
         {
-            if (!Placed && Input.GetMouseButtonDown(0) && vert is not null)
+            if (Input.GetMouseButtonDown(0) && vert is not null)
             {
                 if (vert.GetSource() != null) {
                     return;

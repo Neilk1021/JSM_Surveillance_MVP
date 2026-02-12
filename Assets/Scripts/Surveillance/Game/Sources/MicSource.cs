@@ -42,8 +42,6 @@ namespace JSM.Surveillance.Game
         
         protected override void MoveSource()
         {
-            if(Placed) return;
-
             var mousePos = MapCellManager.GetMouseCurrentPosition();
             if(mousePos.Equals(Vector3.negativeInfinity)) return;
 
@@ -64,7 +62,7 @@ namespace JSM.Surveillance.Game
 
         protected override void CheckIfPlaced()
         {
-            if (!Placed && Input.GetMouseButtonDown(0) && vert is not null)
+            if (Input.GetMouseButtonDown(0) && vert is not null)
             {
                 if (vert.GetSource() != null) {
                     return;
@@ -111,7 +109,6 @@ namespace JSM.Surveillance.Game
         private void UpdateCenterPosition(Vector3 mousePos, SeparatedAreaViewRenderer renderer)
         {
             renderer.RefreshMesh(mousePos);
-            _areaView.SetCenter(mousePos);
 
             float rad = Mathf.Atan2(mousePos.y - transform.position.y, mousePos.x - transform.position.x);
             micModel.rotation = Quaternion.Euler(micModel.eulerAngles.x, micModel.eulerAngles.y, -rad * Mathf.Rad2Deg-90);
