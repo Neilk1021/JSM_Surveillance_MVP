@@ -32,9 +32,23 @@ namespace JSM.Surveillance.Game
             _lineRenderer.positionCount = 2;
         }
 
+
+        public bool IsVectorValid(Vector3 center)
+        {
+            if (center.Equals(Vector3.negativeInfinity)) return false;
+            
+            if (float.IsNaN(center.x) || float.IsNaN(center.y) || float.IsNaN(center.z))
+            {
+                return false;
+            }
+
+            return true;
+        }
         public void RefreshMesh(Vector3 center)
         {
-            if(center.Equals(Vector3.negativeInfinity))return;
+            if(!IsVectorValid(center)) return;
+            
+            _view.SetCenter(center);
             
             _meshFilter ??= GetComponent<MeshFilter>();
             _view ??= GetComponent<SeparatedAreaView>();

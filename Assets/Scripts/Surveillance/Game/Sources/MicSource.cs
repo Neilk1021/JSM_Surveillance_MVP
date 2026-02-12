@@ -109,7 +109,6 @@ namespace JSM.Surveillance.Game
         private void UpdateCenterPosition(Vector3 mousePos, SeparatedAreaViewRenderer renderer)
         {
             renderer.RefreshMesh(mousePos);
-            _areaView.SetCenter(mousePos);
 
             float rad = Mathf.Atan2(mousePos.y - transform.position.y, mousePos.x - transform.position.x);
             micModel.rotation = Quaternion.Euler(micModel.eulerAngles.x, micModel.eulerAngles.y, -rad * Mathf.Rad2Deg-90);
