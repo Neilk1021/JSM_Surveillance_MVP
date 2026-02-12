@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace JSM.Surveillance.Saving
@@ -9,7 +10,8 @@ namespace JSM.Surveillance.Saving
     {
         public List<MachineNode> machines = new();
         public List<ConnectionEdge> connections = new();
-
+        public int TotalCost { get; set; }
+        
         public void Write(BinaryWriter writer)
         {
             writer.Write(machines.Count);
@@ -102,6 +104,7 @@ namespace JSM.Surveillance.Saving
                 connections.Add(conn);
             }
         }
+
     }
 
     [System.Serializable]

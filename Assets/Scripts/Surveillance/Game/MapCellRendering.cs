@@ -2,6 +2,7 @@
 using JSM.Surveillance.Game;
 using JSM.Surveillance.Surveillance;
 using Surveillance.Game;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -23,7 +24,8 @@ namespace JSM.Surveillance.UI
         private HEFace face;
 
         private MapMode _renderingMode = MapMode.Normal;
-        
+
+        [HideInInspector] [SerializeField] private TextMeshPro _text;
         [HideInInspector] [SerializeField] private List<Vector2> vertices;
         [HideInInspector] [SerializeField] private Vector4[] points;
         [HideInInspector] [SerializeField] private float maxDist;
@@ -44,6 +46,9 @@ namespace JSM.Surveillance.UI
         public MapCell Cell => _cell;
 
         private Color _currentColor;
+        private float _lastAlpha = -1;
+
+        private const string _color = "#99DD88"; 
 
         public void SetFace(HEFace newFace, Material newLit)
         {
@@ -99,6 +104,7 @@ namespace JSM.Surveillance.UI
             lit.SetVectorArray(Points, points);
             lit.SetFloat(MaxDist, maxDist);
             lit.SetFloat(GradientPower,0.01f);
+            
         }
         
         #if UNITY_EDITOR
@@ -110,13 +116,18 @@ namespace JSM.Surveillance.UI
 
         public void SetMode(MapMode mode)
         {
+            _lastAlpha = -1;
             switch (mode)
             {
                 case MapMode.Placement:
                     _meshRenderer.material.SetColor(CenterColor, new Color(0, 0, 0, 1));
                     break;
                 case MapMode.Normal:
+                    if(_text is not null) _text.text = "";
                     _meshRenderer.material.SetColor(CenterColor,new Color(0, 0, 0.02f, 1));
+                    break;
+                case MapMode.Population:
+                    if(_text is not null) _text.text = $"<color={_color}>{_cell.GetData().DailyPopulation}</color>";
                     break;
             }
 
@@ -159,9 +170,22 @@ namespace JSM.Surveillance.UI
         public void SetAlpha(float faceValue)
         {
             if(!_cell.IsStreet)return;
+            if(Mathf.Abs(faceValue - _lastAlpha) < 0.01f){ return; }
             
             Color color = Color.Lerp(_currentColor, Color.green, faceValue);
+
+            int ppl = _cell.GetData().DailyPopulation;
+            if (_text is not null) {
+                _text.text = (int)(ppl * faceValue) > 0 ? $"<color={_color}>+{(int)(ppl * faceValue)}</color>" : $"";
+            }
+
+            _lastAlpha = faceValue;
             _meshRenderer.material.SetColor(CenterColor, color);
+        }
+
+        public void SetTextObject(TextMeshPro text)
+        {
+            _text = text;
         }
     }
 }

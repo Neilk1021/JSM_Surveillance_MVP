@@ -271,7 +271,7 @@ namespace JSM.Surveillance
             Destroy(gameObject);
         }
 
-        private FactoryBlueprint SaveCurrentLayout()
+        public FactoryBlueprint SaveCurrentLayout()
         {
             var machineObjects = GetComponentsInChildren<MachineObject>();
             var connectionObjects = GetComponentsInChildren<ConnectionObject>();
@@ -301,7 +301,8 @@ namespace JSM.Surveillance
             return new FactoryBlueprint()
             {
                 machines = machineNodes,
-                connections =  connectionEdges
+                connections =  connectionEdges,
+                TotalCost = machineObjects.Sum(x=>x.GetMachineCost())
             };
         }
 

@@ -52,25 +52,14 @@ namespace JSM.Surveillance.Game
             transform.position = new  Vector3(currentPos.x, currentPos.y, transform.position.z);
         }
 
-        protected override void CheckIfPlaced()
-        {
-            if (Input.GetMouseButtonDown(0) && vert is not null)
-            {
-                if (vert.GetSource() != null) {
-                    return;
-                }
-                
-                Place(transform.position);
-                vert.SetSource(this);
-            }
-        }
-
 
         IEnumerator SetRotation()
         {
             Vector3 initialMousePosition = Input.mousePosition;
             float initialZRotation = transform.rotation.eulerAngles.z;
 
+            MapCellManager.SetAllFacePlacementPct(0);
+            UpdatePlacementPct(transform.rotation);
             yield return new WaitForFixedUpdate();
             
             while (true)
@@ -87,7 +76,7 @@ namespace JSM.Surveillance.Game
                 {
                     UpdatePlacementPct(newRot);
                 }
-
+                
                 if (Input.GetMouseButtonDown(0))
                 {
                     break;
@@ -148,6 +137,11 @@ namespace JSM.Surveillance.Game
         
         public override void Place(Vector2 pos)
         {
+            if (vert is null) return;
+            if (vert.GetSource() != null) {
+                return;
+            }
+            vert.SetSource(this);
             StartCoroutine(nameof(SetRotation));
             base.Place(pos);
         }

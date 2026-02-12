@@ -39,8 +39,8 @@ namespace JSM.Surveillance.Game
         public readonly UnityEvent OnModified = new UnityEvent();
         public readonly UnityEvent OnIncomingSourcesChanged = new UnityEvent();
 
-        protected bool placed = false; 
-        protected TaskCompletionSource<bool> placedProcess = new TaskCompletionSource<bool>(); 
+        private bool _placed = false;
+        private TaskCompletionSource<bool> _placedProcess = new TaskCompletionSource<bool>(); 
         
         public virtual void Init(MapCellManager manager, SourceData data, bool placeImmediate = false)
         {
@@ -54,7 +54,7 @@ namespace JSM.Surveillance.Game
 
         private void Update()
         {
-            if (!placed)
+            if (!_placed)
             {
                 MoveSource();
                 CheckIfPlaced();
@@ -64,9 +64,9 @@ namespace JSM.Surveillance.Game
         
         public Task<bool> PlacementProcess()
         {
-            placedProcess = new TaskCompletionSource<bool>();
-            placed = false;
-            return placedProcess.Task;
+            _placedProcess = new TaskCompletionSource<bool>();
+            _placed = false;
+            return _placedProcess.Task;
         }
         
         protected virtual void CheckIfPlaced()
@@ -75,8 +75,7 @@ namespace JSM.Surveillance.Game
                 Place(transform.position);
             }
 
-            if (Input.GetMouseButton(1))
-            {
+            if (Input.GetMouseButtonDown(1)) {
                 CancelPlacement();
             }
             
@@ -84,8 +83,8 @@ namespace JSM.Surveillance.Game
 
         private void CancelPlacement()
         {
-            if(placedProcess == null) return;
-            placedProcess.TrySetResult(false);
+            if(_placedProcess == null) return;
+            _placedProcess.TrySetResult(false);
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
@@ -99,14 +98,14 @@ namespace JSM.Surveillance.Game
 
         public virtual void Place(Vector2 pos)
         {
-            placed = true;
-            placedProcess?.TrySetResult(true);
+            _placed = true;
+            _placedProcess?.TrySetResult(true);
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
         }
 
         public SourceUI CreateUI()
         {
-            if (!placed) {
+            if (!_placed) {
                 return null;
             }
             
@@ -146,6 +145,7 @@ namespace JSM.Surveillance.Game
             }
             
             if(_grid != null) Destroy(_grid.gameObject);
+            MapCellManager?.SetMapMode(MapMode.Normal);
             Destroy(gameObject);
         }
 

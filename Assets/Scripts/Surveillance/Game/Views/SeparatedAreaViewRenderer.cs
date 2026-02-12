@@ -28,7 +28,7 @@ namespace JSM.Surveillance.Game
         private void Start()
         {
             _meshFilter.mesh = _view.GetMesh();
-            listnerCenterObj ??= Instantiate(listenerCenterPrefab);
+            listnerCenterObj ??= Instantiate(listenerCenterPrefab, transform);
             _lineRenderer.positionCount = 2;
         }
 

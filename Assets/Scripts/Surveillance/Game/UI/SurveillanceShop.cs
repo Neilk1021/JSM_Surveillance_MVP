@@ -35,7 +35,7 @@ namespace JSM.Surveillance.UI
         }
 
 
-        public async void BuyProcess(SourceData data)
+        private async Task BuyProcess(SourceData data)
         {
             _buying = true;
             Source source = SurveillanceGameManager.SpawnSource(data);

@@ -3,6 +3,7 @@ using System.Linq;
 using JSM.Surveillance.Game;
 using JSM.Surveillance.Surveillance;
 using JSM.Surveillance.UI;
+using TMPro;
 using UnityEngine;
 
 namespace Surveillance.Game
@@ -10,6 +11,7 @@ namespace Surveillance.Game
 
     public class MapLoader : MonoBehaviour
     {
+        [SerializeField] private TextMeshPro textPrefab;
         [SerializeField] private GameObject vertexPrefab;
         [SerializeField] private TextAsset map;
 
@@ -67,6 +69,8 @@ namespace Surveillance.Game
             return mesh;
         }
 
+
+
         private GameObject CreateCell(HEFace face, Mesh mesh, List<Vector2> verts2D)
         {
             var go = new GameObject("Filled Face Shader");
@@ -94,6 +98,15 @@ namespace Surveillance.Game
             
             go.AddComponent<MeshCollider>();
             go.tag = "MapCell";
+
+            if (face.Data.isStreet)
+            {
+                var text = Instantiate(textPrefab, go.transform);
+                text.transform.position = centroid;
+                cell.SetTextObject(text);
+            }
+            
+
             return go;
         }
 
@@ -164,6 +177,7 @@ namespace Surveillance.Game
                     parent = transform
                 }
             };
+            
 
             List<MapCellRendering> renderers = new List<MapCellRendering>();
             for (int i = 1; i < data.faces.Count; i++)

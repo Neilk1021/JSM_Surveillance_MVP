@@ -95,5 +95,13 @@ namespace JSM.Surveillance.Game
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
+
+        public void SetAllFacePlacementPct(float i)
+        {
+            foreach (var cell in _cells.Values)
+            {
+                cell.Rendering.SetAlpha(i);
+            }
+        }
     }
 }

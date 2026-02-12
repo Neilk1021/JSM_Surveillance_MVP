@@ -49,6 +49,10 @@ namespace JSM.Surveillance
             return new ProcessorInstance(selectedRecipe, data, inventorySize, GetRootPosition());
         }
 
+        public override int GetMachineCost() {
+            return data.UpfrontCost;
+        }
+
         public void LoadRecipeById(string machineRecipeId)
         {
             selectedRecipe = availableRecipes.GetRecipeById(machineRecipeId);

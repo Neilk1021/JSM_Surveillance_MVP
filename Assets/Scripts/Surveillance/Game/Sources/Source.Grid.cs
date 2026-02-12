@@ -42,7 +42,6 @@ namespace JSM.Surveillance.Game
             SurveillanceGameManager.instance.Simulator.OnStart -= ReloadSim;
 
         }
-
         
         private void ReloadSim()
         {
@@ -142,6 +141,17 @@ namespace JSM.Surveillance.Game
         }
 
 
+        public int GetBlueprintCost() {
+            if (_lastLayout != null) return _lastLayout.TotalCost;
+                
+            if (_grid == null) {
+                return 0;
+            }
+
+            _lastLayout = _grid.SaveCurrentLayout();
+            return _lastLayout.TotalCost;
+        }
+        
         public FactoryGridSimulation GetSimulation()
         {
             return _simulation;

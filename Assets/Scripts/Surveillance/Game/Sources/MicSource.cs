@@ -60,19 +60,6 @@ namespace JSM.Surveillance.Game
             transform.position = new  Vector3(currentPos.x, currentPos.y, transform.position.z);
         }
 
-        protected override void CheckIfPlaced()
-        {
-            if (Input.GetMouseButtonDown(0) && vert is not null)
-            {
-                if (vert.GetSource() != null) {
-                    return;
-                }
-                
-                Place(transform.position);
-                vert.SetSource(this);
-            }
-        }
-
         IEnumerator SetPosition()
         {
             //throw new NotImplementedException("NEED TO SET LIMITS ON TS");
@@ -156,6 +143,12 @@ namespace JSM.Surveillance.Game
         
         public override void Place(Vector2 pos)
         {
+            StartCoroutine(nameof(SetPosition));
+            if (vert is null) return;
+            if (vert.GetSource() != null) {
+                return;
+            }
+            vert.SetSource(this);
             StartCoroutine(nameof(SetPosition));
             base.Place(pos);
         }

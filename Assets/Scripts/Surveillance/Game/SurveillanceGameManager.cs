@@ -62,7 +62,7 @@ namespace JSM.Surveillance
         public void SellSource(Source source)
         {
             _moneyManager.ChangeMoneyBy(source.Data.UpfrontCost);
-            
+            _moneyManager.ChangeMoneyBy(source.GetBlueprintCost());
             source.Destroy();
         }
 

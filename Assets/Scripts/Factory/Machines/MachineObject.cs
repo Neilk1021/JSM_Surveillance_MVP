@@ -168,8 +168,7 @@ namespace JSM.Surveillance
             return name;
         }
 
-        public virtual int GetMachineCost()
-        {
+        public virtual int GetMachineCost() {
             return 0;
         }
 
