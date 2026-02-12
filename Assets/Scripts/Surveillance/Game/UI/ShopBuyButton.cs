@@ -9,16 +9,22 @@ namespace  JSM.Surveillance.UI
 {
     public class ShopBuyButton : MonoBehaviour
     {
+        [SerializeField] private SurveillanceShop surveillanceShop;
+        
         [SerializeField] private Maintainable itemToBuy;
         [SerializeField] private GameObject itemPreviewUIPrefab;
         [SerializeField] private Vector2 previewOffset = new Vector2(-300,0);
         private GameObject itemPreviewUI = null;
-        
+
+        private void Awake()
+        {
+            surveillanceShop = GetComponentInParent<SurveillanceShop>();
+        }
+
         public void Buy()
         {
-            if (itemToBuy.GetType() == typeof(SourceData))
-            {
-                SurveillanceGameManager.instance?.BuySource((SourceData)itemToBuy);
+            if (itemToBuy is SourceData sourceData) {
+                surveillanceShop.BuySource(sourceData);
             }
         }
         
