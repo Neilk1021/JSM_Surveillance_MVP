@@ -65,7 +65,7 @@ namespace JSM.Surveillance
             _camera ??= Camera.main;
         }
 
-        public void Initialize(FactoryBlueprint blueprint = null)
+        public void Initialize(FactoryBlueprint blueprint = null, FactoryGridSimulation simulation = null)
         {
             _uiManager ??= GetComponent<UIManager>();
             _connectionManager ??= GetComponentInChildren<ConnectionManager>();
@@ -76,7 +76,11 @@ namespace JSM.Surveillance
             InitializeInputOutput();
             InitializeExternalMachines();
             
-            if(blueprint == null) return;
+            if(blueprint == null) 
+                return;
+            
+            if(simulation != null)
+                FactoryGridSimulation = simulation;
             
             LoadFactoryLayout(blueprint);
             OnModify?.Invoke();
@@ -261,7 +265,9 @@ namespace JSM.Surveillance
 
         public void CloseGrid()
         {
-            SaveGridToSource();
+            if(FactoryGrid.Editable)
+                SaveGridToSource();
+            
             Destroy(gameObject);
         }
 

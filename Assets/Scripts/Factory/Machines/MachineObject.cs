@@ -22,8 +22,6 @@ namespace JSM.Surveillance
 
         public string Guid => guid;
 
-
-        
         public override void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)
         {
             base.Place(newPositions, worldPos, grid);

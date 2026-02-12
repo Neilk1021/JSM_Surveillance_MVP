@@ -31,7 +31,7 @@ namespace JSM.Surveillance
 
         public void Restart()
         {
-            _simulation.Restart();
+            _simulation?.Restart();
         }
         
         private void RunTick(int ticks)
