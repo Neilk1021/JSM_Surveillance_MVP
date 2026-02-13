@@ -8,9 +8,12 @@ namespace Surveillance.TechTree
     {
         public RectTransform container;
         public Image linePrefab;
-
-        public void Draw(Dictionary<int, TechNodeUI> nodes)
+        [HideInInspector] [SerializeField] private Transform _linesRoot; 
+        
+        
+        public Transform Draw(Dictionary<int, TechNodeUI> nodes)
         {
+            VerifyLinesRoot();
             foreach (var kvp in nodes)
             {
                 var node = kvp.Value;
@@ -25,11 +28,21 @@ namespace Surveillance.TechTree
                             node.transform as RectTransform);
                 }
             }
+
+            return _linesRoot;
+        }
+
+        private void VerifyLinesRoot()
+        {
+            if(_linesRoot != null) DestroyImmediate(_linesRoot.gameObject);
+            _linesRoot = new GameObject("lines").transform;
+            _linesRoot.parent = container;
+            _linesRoot.localPosition = Vector3.zero;
         }
 
         void CreateLine(RectTransform a, RectTransform b)
         {
-            var line = Instantiate(linePrefab, container);
+            var line = Instantiate(linePrefab, _linesRoot);
             Vector2 dir = b.anchoredPosition - a.anchoredPosition;
             float dist = dir.magnitude;
 
@@ -37,6 +50,14 @@ namespace Surveillance.TechTree
             line.rectTransform.anchoredPosition = a.anchoredPosition + dir * 0.5f;
             line.rectTransform.rotation =
                 Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
+        }
+
+        public void Clear()
+        {
+            if (_linesRoot != null)
+            {
+                DestroyImmediate(_linesRoot.gameObject);
+            }
         }
     }
 }

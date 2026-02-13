@@ -17,7 +17,8 @@ namespace JSM.Surveillance
         }
 
     }
-    
+   
+    [System.Serializable]
     public class MergerInstanceDTO : MachineStateDto
     {
         private string _dataID;

@@ -16,8 +16,8 @@ namespace JSM.Surveillance
             return new ProcessorInstanceDTO(this);
         }
     }
-
-
+    
+    [System.Serializable]
     public class ProcessorInstanceDTO : MachineStateDto
     {
         private string _recipeID;

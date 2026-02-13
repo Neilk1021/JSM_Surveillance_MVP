@@ -18,10 +18,18 @@ namespace JSM.Surveillance
         }
     }
     
+    [Serializable]
     public class ExternalInstanceDTO : MachineStateDto, ISourceDependent
     {
-        private Guid _sourceId;
+        [SerializeField] 
+        private SerializableGuid _sourceId;
         private Source _source;
+        
+        public Guid SourceId 
+        {
+            get => _sourceId; // Implicitly converts to System.Guid
+            set => _sourceId = value; // Implicitly converts to SerializableGuid
+        }
 
         private int incomingSourceIndex; 
 
@@ -33,27 +41,27 @@ namespace JSM.Surveillance
             DtoType = DtoType.ExternalInput;
             incomingSourceIndex = externalMachineInstance.IncomingSourceIndex;
             _source = externalMachineInstance.Source;
-            _sourceId = externalMachineInstance.Source != null ? externalMachineInstance.Source.GetGuid() : Guid.Empty;
+            SourceId = externalMachineInstance.Source != null ? externalMachineInstance.Source.GetGuid() : Guid.Empty;
             
         }
 
         public override void Write(BinaryWriter writer)
         {
             base.Write(writer);
-            writer.Write(_sourceId.ToByteArray());
+            writer.Write(SourceId.ToByteArray());
             writer.Write(incomingSourceIndex);
         }
 
         public override void Read(BinaryReader reader)
         {
             base.Read(reader);
-            _sourceId = new Guid(reader.ReadBytes(16));
+            SourceId = new Guid(reader.ReadBytes(16));
             incomingSourceIndex = reader.ReadInt32();
         }
 
         public void RehydrateSourceReferences(Dictionary<Guid, Source> sl)
         {
-            if (_sourceId == Guid.Empty) {
+            if (SourceId == Guid.Empty) {
                 _source = null;
                 return;
             }

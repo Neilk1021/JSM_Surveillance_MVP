@@ -17,7 +17,13 @@ namespace JSM.Surveillance.Game
     public class SourceDTO
     {
         public SourceDTOType SourceDtoType = SourceDTOType.Normal;
-        public Guid Guid;
+        [SerializeField] private string _guidString;
+        public Guid Guid
+        {
+            get => Guid.TryParse(_guidString, out var g) ? g : Guid.Empty;
+            set => _guidString = value.ToString();
+        }
+        
         public string sourceName;
         public Vector3 position; 
         public SimulationSaveData Simulation;

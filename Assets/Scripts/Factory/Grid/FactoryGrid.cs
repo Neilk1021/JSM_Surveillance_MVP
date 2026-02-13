@@ -251,6 +251,7 @@ namespace JSM.Surveillance
 
         public FactoryCell this[int i, int i1] => _grid[i, i1];
 
+        
         public FactoryGridSimulation BuildSimulator()
         {
             return new FactoryGridSimulation(GetComponentsInChildren<MachineObject>(),Source);
@@ -354,5 +355,7 @@ namespace JSM.Surveillance
             yield return new WaitForEndOfFrame();
             OnModify?.Invoke();
         } 
+        
+        
     }
 }

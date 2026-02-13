@@ -122,7 +122,6 @@ namespace JSM.Surviellance.Saving
 
         private async Task ExecuteLoadPasses(List<SourceDTO> dtos)
         {
-            
             Dictionary<Guid, Source> sourceLookup = await SpawnPass(dtos);
             await RehydratePass(dtos, sourceLookup);
             Debug.Log("Load Complete!");

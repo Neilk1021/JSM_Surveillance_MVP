@@ -81,7 +81,6 @@ namespace JSM.Surveillance.UI
         public void SellSource()
         {
             if(_source.Grid != null && _source.Grid.MouseOverGrid()) return;
-            
             _source.CloseUI();
             SurveillanceGameManager.instance.SellSource(_source);
         }

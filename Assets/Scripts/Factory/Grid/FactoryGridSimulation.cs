@@ -93,7 +93,6 @@ namespace JSM.Surveillance
             }
         }
 
-
         public void RunTick(int ticks = 1)
         {
             ReloadMachineResources();
@@ -237,7 +236,6 @@ namespace JSM.Surveillance
         {
             List<MachineStateDto> machineStateDtos = _machines.Select(x => x.BuildMachineDTO()).ToList();
             return new SimulationSaveData(machineStateDtos, _connectionData);
-  
         }
 
         public async Task LoadState(object state)
@@ -246,59 +244,72 @@ namespace JSM.Surveillance
             {
                 throw new ArgumentException($"{state} is not of type SimulationSaveData.");
             }
-
+            
             if (!simSaveData.Rehydrated)
             {
+                Debug.LogError("Tried to load sim save data without linking sources");
                 throw new ArgumentException("Tried to load sim save data without linking dependencies");
             }
-            
-            ClearSim();
-            _machines = await LoadMachines(simSaveData);
-            
-            Dictionary<Guid, MachineInstance> lookup = new ();
-            for (var i = 0; i < _machines.Length; ++i) {
-                lookup.Add(simSaveData.MachineStates[i].Id, _machines[i]);
-                switch (_machines[i])
-                {
-                    case InputMachineInstance imInstance:
-                        _gridInput = imInstance;
-                        break;
-                    case OutputMachineInstance omInstance:
-                        _gridOutput = omInstance;
-                        break;
-                    case ExternalInputInstance eimInstance:
-                        _externalInputs.Add(eimInstance);
-                        break;
-                }
-            }
 
-            foreach (var connectionData in simSaveData.Connections)
+            try
             {
-                if (lookup.TryGetValue(connectionData.StartMachineID, out var startNode) && 
-                    lookup.TryGetValue(connectionData.EndMachineID, out var endNode))
+                ClearSim();
+                _machines = await LoadMachines(simSaveData);
+
+                Dictionary<Guid, MachineInstance> lookup = new();
+                for (var i = 0; i < _machines.Length; ++i)
                 {
-                    var start = connectionData.StartMachineID;
-                    var end = connectionData.EndMachineID;
-                    var connection = new ConnectionInstance(startNode, endNode);
-                    var oP = new ProcessorPort(lookup[start], connection,NodeType.Start);
-                    var iP = new ProcessorPort(lookup[end], connection, NodeType.End);
-                    
-                    lookup[start].AddOutputPort(oP);
-                    lookup[end].AddInputPort(iP);
+                    lookup.Add(simSaveData.MachineStates[i].Id, _machines[i]);
+                    switch (_machines[i])
+                    {
+                        case InputMachineInstance imInstance:
+                            _gridInput = imInstance;
+                            break;
+                        case OutputMachineInstance omInstance:
+                            _gridOutput = omInstance;
+                            break;
+                        case ExternalInputInstance eimInstance:
+                            _externalInputs.Add(eimInstance);
+                            break;
+                    }
+                }
 
+                foreach (var connectionData in simSaveData.Connections)
+                {
+                    if (lookup.TryGetValue(connectionData.StartMachineID, out var startNode) &&
+                        lookup.TryGetValue(connectionData.EndMachineID, out var endNode))
+                    {
+                        var start = connectionData.StartMachineID;
+                        var end = connectionData.EndMachineID;
+                        var connection = new ConnectionInstance(startNode, endNode);
+                        var oP = new ProcessorPort(lookup[start], connection, NodeType.Start);
+                        var iP = new ProcessorPort(lookup[end], connection, NodeType.End);
+
+                        lookup[start].AddOutputPort(oP);
+                        lookup[end].AddInputPort(iP);
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Skipping broken connection in save file.");
+                    }
                 }
-                else {
-                    Debug.LogWarning("Skipping broken connection in save file.");
+
+                foreach (var machine in _machines)
+                {
+                    machine.OnResourceProduced += ResourceMade;
                 }
+
+                MachineInstances = _machines.ToDictionary(x => x.Guid, x => x);
             }
-            
-            foreach (var machine in _machines)
+            catch (Exception e)
             {
-                machine.OnResourceProduced += ResourceMade;
+                Debug.LogError(e);
+                throw e;
             }
-
-            MachineInstances = _machines.ToDictionary(x => x.Guid, x => x);
         }
+        
+        
 
         private void ClearSim()
         {
@@ -310,13 +321,23 @@ namespace JSM.Surveillance
             _gridOutput = null;
         }
 
-        private async Task<MachineInstance[]> LoadMachines(SimulationSaveData saveData)
+        public async Task<MachineInstance[]> LoadMachines(SimulationSaveData saveData)
         {
-            IEnumerable<Task<MachineInstance>> tasks = saveData.MachineStates
-                .Select(x => x.BuildMachineInstance());
+            var tasks = saveData.MachineStates.Select(async state =>
+            {
+                try
+                {
+                    return await state.BuildMachineInstance();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to load machine {state.Id}: {e.Message}\n{e.StackTrace}");
+                    return null; // Return null so WhenAll doesn't explode
+                }
+            });
 
-            MachineInstance[] machines = await Task.WhenAll(tasks);
-            return machines;
+            MachineInstance[] results = await Task.WhenAll(tasks);
+            return results.Where(m => m != null).ToArray();
         }
     }
 }

@@ -8,11 +8,13 @@ using UnityEngine;
 
 namespace JSM.Surveillance.Saving
 {
-    
+    [System.Serializable]
     public class SimulationSaveData
     {
-        public readonly List<MachineStateDto> MachineStates = new List<MachineStateDto>();
-        public readonly List<ConnectionData> Connections = new List<ConnectionData>();
+        [SerializeReference]
+        public List<MachineStateDto> MachineStates = new List<MachineStateDto>();
+        [SerializeReference]
+        public List<ConnectionData> Connections = new List<ConnectionData>();
 
         public bool Rehydrated = false;
         
@@ -98,12 +100,19 @@ namespace JSM.Surveillance.Saving
         }
 
         public void RehydrateSourceReferences(Dictionary<Guid, Source> sourceLookup) {
-            foreach (var machineState in MachineStates) {
-                if (machineState is ISourceDependent sourceDependent) {
-                    sourceDependent.RehydrateSourceReferences(sourceLookup);
+            try
+            {
+                foreach (var machineState in MachineStates) {
+                    if (machineState is ISourceDependent sourceDependent) {
+                        sourceDependent.RehydrateSourceReferences(sourceLookup);
+                    }
                 }
             }
-
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                throw;
+            }
             Rehydrated = true;
         }
 
@@ -138,11 +147,29 @@ namespace JSM.Surveillance.Saving
             }
         }
     }
-
-    public class ConnectionData
+    [System.Serializable]
+    public class ConnectionData : ISerializationCallbackReceiver
     {
         public Guid StartMachineID;
         public Guid EndMachineID;
+
+        [SerializeField, HideInInspector] private string _startMachineIDStr;
+        [SerializeField, HideInInspector] private string _endMachineIDStr;
+
+        public void OnBeforeSerialize()
+        {
+            _startMachineIDStr = StartMachineID.ToString();
+            _endMachineIDStr = EndMachineID.ToString();
+        }
+
+        public void OnAfterDeserialize()
+        {
+            if (Guid.TryParse(_startMachineIDStr, out var startGuid))
+                StartMachineID = startGuid;
+        
+            if (Guid.TryParse(_endMachineIDStr, out var endGuid))
+                EndMachineID = endGuid;
+        }
     }
 
     public enum DtoType
@@ -156,11 +183,34 @@ namespace JSM.Surveillance.Saving
         InputInstance = 4,
         ExternalInput = 5
     }
-    
-    public abstract class MachineStateDto
+    [Serializable]
+    public struct SerializableGuid
     {
+        [SerializeField] private string value;
+
+        public SerializableGuid(Guid guid) => value = guid.ToString();
+
+        // This allows you to treat SerializableGuid exactly like a System.Guid
+        public static implicit operator Guid(SerializableGuid s) => 
+            string.IsNullOrEmpty(s.value) ? Guid.Empty : new Guid(s.value);
+    
+        public static implicit operator SerializableGuid(Guid g) => 
+            new SerializableGuid(g);
+    }
+    
+    [System.Serializable]
+    public class MachineStateDto
+    {
+        [SerializeField]
         protected DtoType DtoType { get; set; }
-        public Guid Id { get; private set; }
+        [SerializeField]
+        private string _id; 
+
+        public Guid Id 
+        {
+            get => Guid.Parse(_id);
+            private set => _id = value.ToString();
+        }
         protected int InventorySize { get; private set; }
 
         protected MachineStateDto() { }
@@ -187,7 +237,6 @@ namespace JSM.Surveillance.Saving
         {
             byte[] idBytes = reader.ReadBytes(16);
             Id = new Guid(idBytes);
-
             InventorySize = reader.ReadInt32();
         }
     }

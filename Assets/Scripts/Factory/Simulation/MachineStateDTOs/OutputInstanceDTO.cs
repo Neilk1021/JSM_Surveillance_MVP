@@ -5,6 +5,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace JSM.Surveillance
 {
+    [System.Serializable]
     public class OutputInstanceDTO : MachineStateDto
     {
         public OutputInstanceDTO() : base() {}

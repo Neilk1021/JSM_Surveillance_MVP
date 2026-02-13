@@ -37,7 +37,8 @@ namespace Surveillance.TechTree
             }
 
             LayoutNodes();
-            GetComponent<TechTreeLines>().Draw(spawnedNodes);
+            var linesRoot = GetComponent<TechTreeLines>().Draw(spawnedNodes);
+            linesRoot.SetSiblingIndex(0);
         }
 
         void LayoutNodes()
@@ -61,6 +62,7 @@ namespace Surveillance.TechTree
 
         public void ClearVisualChildren()
         {
+            GetComponent<TechTreeLines>().Clear();
             for (int i = transform.childCount - 1; i >= 0; i--)
             {
                 GameObject child = transform.GetChild(i).gameObject;

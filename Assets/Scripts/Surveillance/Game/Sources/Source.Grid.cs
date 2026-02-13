@@ -1,8 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using JSM.Surveillance.Saving;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace JSM.Surveillance.Game
 {
@@ -31,6 +38,7 @@ namespace JSM.Surveillance.Game
             _factorySimulationRunner = GetComponent<FactorySimulationRunner>();
             gridPrefab ??= SurveillanceGameManager.instance.DefaultSourceGrid;
         }
+
 
         private void OnEnable()
         {
@@ -142,14 +150,14 @@ namespace JSM.Surveillance.Game
 
 
         public int GetBlueprintCost() {
-            if (_lastLayout != null) return _lastLayout.TotalCost;
-                
-            if (_grid == null) {
-                return 0;
+            if (_grid != null) {
+                _lastLayout = _grid.SaveCurrentLayout();
+                return _lastLayout.TotalCost;
             }
+            
+            if (_lastLayout != null) return _lastLayout.TotalCost;
 
-            _lastLayout = _grid.SaveCurrentLayout();
-            return _lastLayout.TotalCost;
+            return 0; 
         }
         
         public FactoryGridSimulation GetSimulation()

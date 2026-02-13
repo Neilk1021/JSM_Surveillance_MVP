@@ -23,9 +23,17 @@ namespace JSM.Surveillance
         }
     }
     
+    [System.Serializable]
     public class InputInstanceDTO : MachineStateDto, ISourceDependent
     {
-        private Guid _sourceId;
+        [SerializeField] 
+        private SerializableGuid _sourceId;
+
+        public Guid SourceId 
+        {
+            get => _sourceId; // Implicitly converts to System.Guid
+            set => _sourceId = value; // Implicitly converts to SerializableGuid
+        }
         private Source _source;
 
         public InputInstanceDTO() : base() { }
@@ -40,18 +48,18 @@ namespace JSM.Surveillance
         public override void Write(BinaryWriter writer)
         {
             base.Write(writer);
-            writer.Write(_sourceId.ToByteArray());
+            writer.Write(SourceId.ToByteArray());
         }
 
         public override void Read(BinaryReader reader)
         {
             base.Read(reader);
-            _sourceId = new Guid(reader.ReadBytes(16));
+            SourceId = new Guid(reader.ReadBytes(16));
         }
 
         public void RehydrateSourceReferences(Dictionary<Guid, Source> sl)
         {
-            if (sl.TryGetValue(_sourceId, out var value)) {
+            if (sl.TryGetValue(SourceId, out var value)) {
                 _source = value; 
             }
             else {

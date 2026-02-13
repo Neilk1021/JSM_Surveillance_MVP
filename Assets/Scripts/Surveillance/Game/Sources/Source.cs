@@ -7,11 +7,12 @@ using JSM.Surveillance.Saving;
 using JSM.Surveillance.Surveillance;
 using JSM.Surveillance.UI;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.Serialization;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 
 namespace JSM.Surveillance.Game
 {
@@ -42,6 +43,8 @@ namespace JSM.Surveillance.Game
         private bool _placed = false;
         private TaskCompletionSource<bool> _placedProcess = new TaskCompletionSource<bool>(); 
         
+        [SerializeField] private LayoutObject defaultLayout;
+        
         public virtual void Init(MapCellManager manager, SourceData data, bool placeImmediate = false)
         {
             _incomingSources = new Source[maxIncomingSourceLinks];
@@ -50,6 +53,37 @@ namespace JSM.Surveillance.Game
             MapCellManager = manager;
             _guid = Guid.NewGuid();
             OnModified.AddListener(ReloadNextSource);
+        }
+
+        public async Task LoadDefault()
+        {
+            if(defaultLayout == null) return;
+            
+            foreach (var VARIABLE in defaultLayout.SourceDto.Simulation.MachineStates)
+            {
+                Debug.Log(VARIABLE.Id);
+            }
+            var sim = defaultLayout.SourceDto.Simulation;
+
+            try
+            {
+                Debug.Log(defaultLayout.SourceDto.Guid);
+                sim.RehydrateSourceReferences(new Dictionary<Guid, Source>()
+                    { { defaultLayout.SourceDto.Guid, this } });
+                var realSim = new FactoryGridSimulation(this);
+                await realSim.LoadState(sim);
+                SetSimulation(realSim);
+                _lastLayout = defaultLayout.SourceDto.lastLayout;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                throw e;
+            }
+
+
+            //throw new NotImplementedException("fuckign kill me");
+
         }
 
         private void Update()
@@ -61,6 +95,33 @@ namespace JSM.Surveillance.Game
             }
         }
 
+        
+        #if UNITY_EDITOR
+        [ContextMenu("Build Layout")]
+        void BuildLayout()
+        {
+            if (_lastLayout == null) {
+                if (_grid == null) {
+                    Debug.Log("Couldn't save Layout cuz nothing to save.");
+                    return;
+                }
+
+                _lastLayout = _grid.SaveCurrentLayout();
+            }
+            
+            LayoutObject asset = ScriptableObject.CreateInstance<LayoutObject>();
+            var dto = CaptureState();
+            asset.Init(dto);
+
+            string assetPath = "Assets/Prefab/DefaultLayouts/" + _data.name + "LayoutObject"+ ".asset";
+            AssetDatabase.CreateAsset(asset, assetPath); // Save as an asset file
+            AssetDatabase.SaveAssets(); // Ensure it's saved to disk
+            AssetDatabase.Refresh(); // Refresh the Project window
+
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = asset;
+        }
+        #endif
         
         public Task<bool> PlacementProcess()
         {
@@ -101,6 +162,7 @@ namespace JSM.Surveillance.Game
             _placed = true;
             _placedProcess?.TrySetResult(true);
             transform.position = new Vector3(pos.x, pos.y, transform.position.z);
+            LoadDefault();
         }
 
         public SourceUI CreateUI()
@@ -279,85 +341,7 @@ namespace JSM.Surveillance.Game
         {
             return _guid;
         }
-        //RELOAD BULLSHIT BELOW
-        
-        public virtual SourceDTO CaptureState()
-        {
-            SimulationSaveData sim = (SimulationSaveData)_simulation?.CaptureState();
-            Guid nextSourceGuid = (_nextSource != null) ? _nextSource._guid : Guid.Empty;
-            List<Guid> incomingGuids = new List<Guid>();
-            foreach (var source in _incomingSources)
-            {
-                if (source != null)
-                {
-                    incomingGuids.Add(source._guid);
-                }
-            }
-            
-            return new SourceDTO()
-            {
-                Guid = _guid,
-                Simulation = sim ,
-                lastLayout = _lastLayout,
-                sourceDataPath = _data.AssetGuid,
-                NextSource = nextSourceGuid,
-                IncomingSources = incomingGuids, 
-                position = transform.position,
-                sourceName = SourceName
-            };
-        }
-
-        public virtual async Task LoadState(SourceDTO sourceDto)
-        {
-            MapCellManager = FindObjectOfType<MapCellManager>();
-            
-            _incomingSources = new Source[maxIncomingSourceLinks];
-            _guid = sourceDto.Guid;
-            sourceName = sourceDto.sourceName;
-            transform.position = sourceDto.position;
-            
-            var pData = Addressables.LoadAssetAsync<SourceData>(sourceDto.sourceDataPath);
-            await pData.Task;
-            
-            if (pData.Status == AsyncOperationStatus.Succeeded ) {
-                _data = pData.Result;
-            }
-            else {
-                throw new ArgumentException($"Couldn't find source data at address {sourceDto.sourceDataPath}");
-            }
-
-            _lastLayout = sourceDto.lastLayout;
-            
-            OnModified.AddListener(ReloadNextSource);
-        }
-
-        public virtual async Task RehydrateState(SourceDTO dto, Dictionary<Guid, Source> allSources)
-        {
-            if (dto.NextSource != Guid.Empty && allSources.TryGetValue(dto.NextSource, out var next))
-            {
-                _linkRenderer = Instantiate(linkRendererPrefab, transform);
-                _linkRenderer.SetStart(transform.position);
-                this.LinkToSource(next);
-                _linkRenderer.SetEnd(next.transform.position);
-            }
-
-            foreach (var incGuid in dto.IncomingSources)
-            {
-                if (allSources.TryGetValue(incGuid, out var incoming))
-                {
-                    this.AddIncomingSource(incoming);
-                }
-            }
-
-            if (dto.Simulation != null)
-            {
-                dto.Simulation.RehydrateSourceReferences(allSources);
-                var sim = new FactoryGridSimulation(this);
-                await sim.LoadState(dto.Simulation);
-        
-                SetSimulation(sim);
-            }
-        }
+   
 
 
     }
