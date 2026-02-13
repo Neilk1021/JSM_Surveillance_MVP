@@ -10,6 +10,34 @@ namespace JSM.Surveillance.Game
 {
     public abstract partial class Source
     {
+        public async Task LoadDefault()
+        {
+            if(defaultLayout == null) return;
+            
+            foreach (var VARIABLE in defaultLayout.SourceDto.Simulation.MachineStates)
+            {
+                Debug.Log(VARIABLE.Id);
+            }
+            var sim = defaultLayout.SourceDto.Simulation;
+
+            try
+            {
+                Debug.Log(defaultLayout.SourceDto.Guid);
+                sim.RehydrateSourceReferences(new Dictionary<Guid, Source>()
+                    { { defaultLayout.SourceDto.Guid, this } });
+                var realSim = new FactoryGridSimulation(this);
+                await realSim.LoadState(sim);
+                SetSimulation(realSim);
+                _lastLayout = defaultLayout.SourceDto.lastLayout;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                throw e;
+            }
+        }
+
+        
         public virtual SourceDTO CaptureState()
         {
             SimulationSaveData sim = (SimulationSaveData)_simulation?.CaptureState();

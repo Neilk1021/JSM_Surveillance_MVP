@@ -55,37 +55,6 @@ namespace JSM.Surveillance.Game
             OnModified.AddListener(ReloadNextSource);
         }
 
-        public async Task LoadDefault()
-        {
-            if(defaultLayout == null) return;
-            
-            foreach (var VARIABLE in defaultLayout.SourceDto.Simulation.MachineStates)
-            {
-                Debug.Log(VARIABLE.Id);
-            }
-            var sim = defaultLayout.SourceDto.Simulation;
-
-            try
-            {
-                Debug.Log(defaultLayout.SourceDto.Guid);
-                sim.RehydrateSourceReferences(new Dictionary<Guid, Source>()
-                    { { defaultLayout.SourceDto.Guid, this } });
-                var realSim = new FactoryGridSimulation(this);
-                await realSim.LoadState(sim);
-                SetSimulation(realSim);
-                _lastLayout = defaultLayout.SourceDto.lastLayout;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-                throw e;
-            }
-
-
-            //throw new NotImplementedException("fuckign kill me");
-
-        }
-
         private void Update()
         {
             if (!_placed)
