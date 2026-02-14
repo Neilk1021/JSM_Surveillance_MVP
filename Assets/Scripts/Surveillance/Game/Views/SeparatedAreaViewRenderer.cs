@@ -13,6 +13,9 @@ namespace JSM.Surveillance.Game
         private SeparatedAreaView _view;
         private MeshFilter _meshFilter;
 
+        [SerializeField] private Gradient enabledGradient;
+        [SerializeField] private Gradient disabledGradient;
+        
         [SerializeField] private GameObject listenerCenterPrefab;
 
         private GameObject listnerCenterObj = null;
@@ -64,6 +67,11 @@ namespace JSM.Surveillance.Game
             
             _lineRenderer.SetPosition(0, transform.position);
             _lineRenderer.SetPosition(1, listnerCenterObj.transform.position);
+        }
+
+        public void SetEnabled(bool canPlace)
+        {
+            _lineRenderer.colorGradient = canPlace ? enabledGradient : disabledGradient;
         }
     }
 }

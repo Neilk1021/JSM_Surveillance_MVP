@@ -91,12 +91,13 @@ namespace Surveillance.Game
 
 
             var cell = go.AddComponent<MapCellRendering>();
+            go.AddComponent<MeshCollider>();
             go.AddComponent<MapCell>().Init(face);
             
             cell.SetShaderInfo(verts2D, points, maxDist, 0.01f);
             cell.SetFace(face, material);
             
-            go.AddComponent<MeshCollider>();
+  
             go.tag = "MapCell";
 
             if (face.Data.isStreet)

@@ -67,22 +67,36 @@ namespace JSM.Surveillance.Game
             Vector3 initialMousePosition = Input.mousePosition;
             float initialZRotation = transform.rotation.eulerAngles.z;
 
+
             var renderer = GetComponent<SeparatedAreaViewRenderer>();
             yield return new WaitForFixedUpdate();
             
+            var pos = transform.position; 
+            var vec = (Vector2)(initialMousePosition - pos);
+            
             var lastMousePos =  MapCellManager.GetMouseCurrentPosition();
+            bool canPlace = !Physics.Raycast(pos, vec.normalized, vec.magnitude);
+            
             while (true)
             {
                 var mousePos = MapCellManager.GetMouseCurrentPosition();
                 renderer.RefreshMesh(mousePos);
+                
                 if ((mousePos - lastMousePos).magnitude > 0.1f)
                 {
+                    vec = ((Vector2)mousePos - (Vector2)pos);
+                    
+                    var hits = Physics.Raycast(pos, vec.normalized, vec.magnitude);
+                    canPlace = !hits; 
+                    
+                    renderer.SetEnabled(canPlace);
+                    
                     lastMousePos = mousePos;
                     UpdateCenterPosition(mousePos, renderer);
                 }
                 
                 
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && canPlace)
                 {
                     break;
                 }

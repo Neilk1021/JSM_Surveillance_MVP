@@ -38,7 +38,6 @@ namespace JSM.Surveillance.Game
             }
         }
 
-
         /// <summary>
         /// Initializes a map cell based on a given face.
         /// </summary>
@@ -48,6 +47,13 @@ namespace JSM.Surveillance.Game
             face.EnsureSOFromJson();
             data = face.Data;
             center = GetMeshCenter(GetComponent<MeshFilter>());
+
+            if (!IsStreet)
+            {
+                var col = gameObject.AddComponent<MapCellCollider>();
+                col.Init(GetComponent<MeshFilter>(), GetComponent<MeshCollider>());
+                col.GenerateAndReplaceMeshCollider();
+            }
         }
 
         public CellData GetData()
