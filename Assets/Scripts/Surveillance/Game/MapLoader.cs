@@ -106,7 +106,6 @@ namespace Surveillance.Game
                 text.transform.position = centroid;
                 cell.SetTextObject(text);
             }
-            
 
             return go;
         }

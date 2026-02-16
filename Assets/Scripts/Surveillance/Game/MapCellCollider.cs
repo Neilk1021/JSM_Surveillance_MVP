@@ -5,9 +5,8 @@ using System.Linq;
 using JSM.Surveillance.Util;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Random = UnityEngine.Random;
 
-using System.Collections.Generic;
-using UnityEngine;
 
 public static class MeshExtensions
 {
@@ -55,7 +54,7 @@ public static class MeshExtensions
     }
 }
 
-public class MapCellCollider : MonoBehaviour, IPointerEnterHandler
+public class MapCellCollider : MonoBehaviour 
 {
     [SerializeField] private MeshFilter meshFilter;
     [SerializeField] private MeshCollider meshCollider;
@@ -80,7 +79,6 @@ public class MapCellCollider : MonoBehaviour, IPointerEnterHandler
             (tris[i], tris[i + 1]) = (tris[i + 1], tris[i]);
         }  
 
-        
         var replacement = Extrude2DShape.ExtrudeLoop(vertices, 0.5f, -0.25f, tris);
         replacement.WeldVertices();
 
@@ -113,12 +111,6 @@ public class MapCellCollider : MonoBehaviour, IPointerEnterHandler
                 transform.TransformDirection(mesh.normals[i]) * 0.2f);
         }
     } 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-       
-        Debug.Log("ENTERED BITCH");
-
-    }
 }
 
 
