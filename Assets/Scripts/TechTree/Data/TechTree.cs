@@ -10,7 +10,7 @@ namespace Surveillance.TechTree
         public int ID;
         public bool IsUnlocked = false;
         public string Description;
-        public IUnlockable[] Unlockables;
+        [SerializeReference] public IUnlockable[] Unlockables;
         public int[] ParentIDs;
     }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.Video;
 
 namespace JSM.Surveillance
 {
@@ -191,6 +192,11 @@ namespace JSM.Surveillance
         public void OnAfterDeserialize()
         {
             return;
+        }
+
+        public virtual VideoClip GetVideoClip()
+        {
+            return null;
         }
     }
 }

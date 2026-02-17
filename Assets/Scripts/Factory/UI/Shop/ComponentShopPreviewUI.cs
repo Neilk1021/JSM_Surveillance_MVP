@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace JSM.Surveillance.UI
 {
@@ -9,21 +10,42 @@ namespace JSM.Surveillance.UI
         [SerializeField] private TextMeshProUGUI descText;
         [SerializeField] private TextMeshProUGUI costText;
 
+        [SerializeField] private VideoPlayer videoPlayer;
+        
         public void LoadInformation(ProcessorObject processor)
         {
-            nameText.text = $"{processor.Data.ShopInfo.name}";
-            descText.text = $"{processor.Data.ShopInfo.desc}";
-            costText.text = $"<i>Cost: ${processor.Data.UpfrontCost}</i>";
+            if(nameText != null)
+                nameText.text = $"{processor.Data.ShopInfo.name}";
+            
+            if(descText != null)
+                descText.text = $"{processor.Data.ShopInfo.desc}";
+            
+            if(costText != null)
+                costText.text = $"{processor.Data.UpfrontCost} ¥";
+
+            if(videoPlayer != null)
+                videoPlayer.clip = processor.Data.ShopInfo.videoClip;
 
             //nameText.text = $"{machineObject.}";
         }
-        
-        
+
+
         public void LoadInformation(MachineObject machineObject)
         {
-            nameText.text = $"{machineObject.GetMachineName()}";
-            descText.text = $"{machineObject.GetMachineDesc()}";
-            costText.text = $"<i>Cost: ${machineObject.GetMachineCost()}</i>";
+            if (nameText != null)
+                nameText.text = $"{machineObject.GetMachineName()}";
+
+            if (descText != null)
+                descText.text = $"{machineObject.GetMachineDesc()}";
+
+
+            if (costText != null)
+                costText.text = $"${machineObject.GetMachineCost()} ¥";
+            
+            
+            if(videoPlayer != null)
+                videoPlayer.clip = machineObject.GetVideoClip();
+
 
             //nameText.text = $"{machineObject.}";
         }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Video;
 
 namespace JSM.Surveillance
 {
@@ -42,6 +43,11 @@ namespace JSM.Surveillance
         public override string GetMachineDesc()
         {
             return data.ShopInfo.desc;
+        }
+
+        public override VideoClip GetVideoClip()
+        {
+            return data.ShopInfo.videoClip;
         }
     }
 }

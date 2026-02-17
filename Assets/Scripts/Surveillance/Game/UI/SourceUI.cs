@@ -48,7 +48,7 @@ namespace JSM.Surveillance.UI
 
         private void ReloadUI()
         {
-            populationText.text = $"Hourly people watched: {_source.GetRawResourceRate()}";
+            populationText.text = $"{_source.GetRawResourceRate()}";
             nameText.text = $"{_source.Data.ShopInfo.name}";
             descriptionText.text = $"{_source.Data.ShopInfo.desc}";
 
@@ -56,8 +56,8 @@ namespace JSM.Surveillance.UI
             sellButton.enabled = Source.Editable;
             
             var output = _source.GetOutputResourceType();
-            producingText.text = output? $"Producing: [{output.ResourceName}] - ¥{output.Value}" : $"Producing: [Nothing] Must Modify";
-            linkedToText.text = _source.NextSource? $"Sending to: [{_source.NextSource.SourceName}]" : $"Sending to: [Nothing] Selling Data";
+            producingText.text = output? $"[{output.ResourceName}] - ¥{output.Value}" : $"Nothing";
+            linkedToText.text = _source.NextSource? $"{_source.NextSource.SourceName}" : $"Nothing [Selling]";
         }
 
         public Source GetSource()

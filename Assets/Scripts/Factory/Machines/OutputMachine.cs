@@ -9,5 +9,7 @@ namespace JSM.Surveillance
         {
             return new OutputMachineInstance(inventorySize, GetRootPosition());
         }
+        
+
     }
 }

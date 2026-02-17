@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,6 +15,7 @@ namespace JSM.Surveillance
         [TextArea(minLines:5, maxLines:10)]
         public string desc; 
         public GameObject itemModelPrefab;
+        public VideoClip videoClip;
     }
     
     [CreateAssetMenu(fileName = "Generic", menuName = "JSM/Surveillance/Maintainable/Generic")]

@@ -11,7 +11,7 @@ namespace JSM.Surveillance
         private readonly SourceData _sourceData;
         private readonly Source _source;
         
-        private int _peopleInRange;
+        private int _peopleInRange = -1;
         public SourceData Data => _sourceData;
         public Source Source => _source;
         private int _currentTicks = 0;
@@ -19,6 +19,11 @@ namespace JSM.Surveillance
         
         public override void ProcessTicks(int deltaTicks = 1)
         {
+            if (_peopleInRange == -1)
+            {
+                _peopleInRange = _source.GetRawResourceRate();
+            }
+            
             var ticksPerHr = SurveillanceGameManager.instance.Simulator.TicksPerHR;
             _currentTicks += deltaTicks;
 
@@ -35,14 +40,12 @@ namespace JSM.Surveillance
         {
             _source = newSource;
             _sourceData = newSource.Data;
-            _peopleInRange = _source.GetRawResourceRate();
         }
         
         public InputMachineInstance(Source newSource, int inventorySize, Vector2Int pos) : base(inventorySize, Vector2IntToGuid(pos))
         {
             _source = newSource;
             _sourceData = newSource.Data;
-            _peopleInRange = _source.GetRawResourceRate();
         }
     }
 }

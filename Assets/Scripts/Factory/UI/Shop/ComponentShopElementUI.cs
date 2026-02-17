@@ -16,9 +16,12 @@ namespace JSM.Surveillance.UI
         private ComponentShopPreviewUI _previewInstance;
         private ComponentShopUI _shopUI;
 
+        private RectTransform _shopRect;
+        
         public void Load(MachineObject processor, ComponentShopUI shop)
         {
             _shopUI = shop;
+            _shopRect = shop.GetComponent<RectTransform>();
             LoadProcessor(processor);
         }
         
@@ -64,7 +67,7 @@ namespace JSM.Surveillance.UI
 
             _previewInstance = Instantiate(previewUIPrefab, transform);
             _previewInstance.transform.parent = _shopUI.transform;
-
+            ClampRect();
             if (_machineObject is ProcessorObject p0)
             {
                 _previewInstance.LoadInformation(p0);
@@ -73,6 +76,20 @@ namespace JSM.Surveillance.UI
             {
                 _previewInstance.LoadInformation(_machineObject);
             }
+        }
+
+        private void ClampRect()
+        {
+            RectTransform previewRect = _previewInstance.GetComponent<RectTransform>();
+            Vector3 pos = previewRect.localPosition; 
+            
+            float containerHalfHeight = _shopRect.rect.height * 0.5f;
+            float childHalfHeight = previewRect.rect.height * 0.5f;
+
+            float maxY = containerHalfHeight - childHalfHeight;
+            
+            pos.y = Mathf.Clamp(pos.y, -maxY, maxY);
+            previewRect.localPosition = pos;
         }
 
         public void OnPointerExit(PointerEventData eventData)

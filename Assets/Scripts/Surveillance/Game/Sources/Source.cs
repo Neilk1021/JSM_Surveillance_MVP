@@ -16,14 +16,14 @@ using UnityEditor;
 
 namespace JSM.Surveillance.Game
 {
-    public abstract partial class Source : MonoBehaviour, IPointerDownHandler
+    public abstract partial class Source : MonoBehaviour, IPointerDownHandler 
     {
         private Guid _guid;
         [SerializeField] protected string sourceName;
         [SerializeField] private int maxIncomingSourceLinks = 0;
         [SerializeField] private LinkRenderer linkRendererPrefab;
         [SerializeField] private SourceUI sourceUI;
-
+        
         private LinkRenderer _linkRenderer;
         private protected MapCellManager MapCellManager;
         //private protected PlacementStatus Placed = PlacementStatus.AwaitingPlacement; 
@@ -36,7 +36,8 @@ namespace JSM.Surveillance.Game
         public int MaxIncomingSourceLinks => maxIncomingSourceLinks;
         public Source[] IncomingSourceLinks => _incomingSources;
         public Source NextSource => _nextSource;
-        
+        public bool IsPlaced => _placed; 
+
         public readonly UnityEvent OnModified = new UnityEvent();
         public readonly UnityEvent OnIncomingSourcesChanged = new UnityEvent();
 
@@ -310,8 +311,6 @@ namespace JSM.Surveillance.Game
         {
             return _guid;
         }
-   
-
 
     }
 }

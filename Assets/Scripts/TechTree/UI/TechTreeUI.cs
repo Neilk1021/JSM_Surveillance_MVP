@@ -21,7 +21,9 @@ namespace Surveillance.TechTree
             techTree.BuildLookup();
             Build();
         }
-
+        
+        
+        [ContextMenu("Build")]
         public void Build()
         {
             ClearVisualChildren();
