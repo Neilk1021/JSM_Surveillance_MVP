@@ -6,6 +6,12 @@ using UnityEngine.Tilemaps;
 
 namespace JSM.Surveillance
 {
+    [System.Serializable]
+    public struct BorderRadius
+    {
+        public float left, right, up, down;
+    }
+    
     [RequireComponent(typeof(FactoryGrid))]
     public class FactoryGridRenderer : MonoBehaviour
     {
@@ -16,10 +22,12 @@ namespace JSM.Surveillance
         [SerializeField] private Tile defaultTile;
 
         [Header("Resizing Constraitns")] [SerializeField]
-        private float borderRadius;
-        
+        private BorderRadius borderRadius; 
+
         [Header("Backgrounds")] [SerializeField]
-        private SpriteRenderer background;
+        private SpriteRenderer foreground;
+        
+        [SerializeField] private SpriteRenderer background;
 
         [Header("Canvas")] [SerializeField]
         [Range(0, 2)] private float headerSize;
@@ -57,16 +65,21 @@ namespace JSM.Surveillance
         {
             _grid ??= GetComponent<FactoryGrid>();
             var bTransform = background.transform;
+            var fTransform = foreground.transform;
             var size = new Vector3(_grid.Width, _grid.Height) * _grid.CellSize;
             bTransform.localScale =
                 size
-                + new Vector3(borderRadius, borderRadius);
+                + new Vector3(borderRadius.right + borderRadius.left, borderRadius.up + borderRadius.down);
 
-            bTransform.localPosition = size / 2;
+            fTransform.localScale = size;
+            
+            bTransform.localPosition = size / 2 + new Vector3(borderRadius.right - borderRadius.left,borderRadius.up - borderRadius.down,0)/2;
+            
+            fTransform.localPosition = size / 2;
             var bc = GetComponent<BoxCollider>();
             
-            bc.size = size + new Vector3(borderRadius, borderRadius, borderRadius);
-            bc.center = size / 2;
+            bc.size = size +new Vector3(borderRadius.right + borderRadius.left, borderRadius.up + borderRadius.down);
+            bc.center = size/2 + new Vector3(borderRadius.right - borderRadius.left,borderRadius.up - borderRadius.down,0)/2;
 
             ResizeCanvas(size);
 
@@ -79,7 +92,7 @@ namespace JSM.Surveillance
 
             rt.localScale = new Vector3(CanvasScale, CanvasScale, CanvasScale);
             
-            var gridSize = (size + new Vector3(borderRadius, borderRadius)) /  CanvasScale;
+            var gridSize = (size + new Vector3(borderRadius.right + borderRadius.left, borderRadius.up + borderRadius.down)) /  CanvasScale;
 
             var rightDelta = shopSize;
             var topDelta = headerSize;
@@ -90,15 +103,15 @@ namespace JSM.Surveillance
             var finalScale = gridSize + resizedDelta;
 
             rt.sizeDelta = finalScale; 
-            rt.localPosition = (size + upRightDelta) / 2;
+            rt.localPosition = (size + upRightDelta) / 2 + new Vector3(borderRadius.right - borderRadius.left,borderRadius.up - borderRadius.down,0)/2;;
 
             ShopUI.sizeDelta = new Vector2(shopSize / CanvasScale, finalScale.y);
             //TODO ACCOUNT FOR pivot position
-            ShopUI.localPosition = Vector3.zero;
+            ShopUI.anchoredPosition = Vector3.zero;
             
             HeaderUI.sizeDelta = new Vector2(finalScale.x, headerSize / CanvasScale);
             //TODO ACCOUNT FOR pivot position!
-            HeaderUI.localPosition = Vector3.zero;
+            HeaderUI.anchoredPosition = Vector3.zero;
 
 
         }

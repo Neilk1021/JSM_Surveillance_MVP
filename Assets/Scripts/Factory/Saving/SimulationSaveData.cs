@@ -211,7 +211,8 @@ namespace JSM.Surveillance.Saving
             get => Guid.Parse(_id);
             private set => _id = value.ToString();
         }
-        protected int InventorySize { get; private set; }
+
+        [SerializeField] public int InventorySize; 
 
         protected MachineStateDto() { }
         

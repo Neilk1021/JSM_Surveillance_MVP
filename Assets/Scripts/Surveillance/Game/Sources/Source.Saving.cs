@@ -13,11 +13,6 @@ namespace JSM.Surveillance.Game
         public async Task LoadDefault()
         {
             if(defaultLayout == null) return;
-            
-            foreach (var VARIABLE in defaultLayout.SourceDto.Simulation.MachineStates)
-            {
-                Debug.Log(VARIABLE.Id);
-            }
             var sim = defaultLayout.SourceDto.Simulation;
 
             try

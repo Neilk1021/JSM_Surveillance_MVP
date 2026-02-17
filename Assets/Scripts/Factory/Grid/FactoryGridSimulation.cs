@@ -7,6 +7,7 @@ using JSM.Surveillance.Saving;
 using Unity.VisualScripting;
 using UnityEngine;
 using JSM.Surviellance.Saving;
+using Object = System.Object;
 
 namespace JSM.Surveillance
 {
@@ -107,6 +108,7 @@ namespace JSM.Surveillance
         {
             var visited = new HashSet<MachineInstance>();
             FeedAllMachines(_gridInput, visited);
+            
             foreach (var externalInput in _externalInputs)
             {
                 FeedAllMachines(externalInput, visited);
@@ -152,6 +154,7 @@ namespace JSM.Surveillance
                 }
             }
             
+
             if (currentMachine.Output.amount > 0)
             {
                 FeedChildMachines(currentMachine, nextMachines, splitAmnt);
@@ -202,6 +205,7 @@ namespace JSM.Surveillance
         private void FeedOutputResources(MachineInstance previous, OutputMachineInstance outputMachine, int splitAmnt)
         {
             int amnt = previous.RemoveOutput(previous.Output.amount / splitAmnt);
+            
             outputMachine.AddResource(previous.Output.resource, amnt);
         }
 
@@ -287,7 +291,6 @@ namespace JSM.Surveillance
 
                         lookup[start].AddOutputPort(oP);
                         lookup[end].AddInputPort(iP);
-
                     }
                     else
                     {

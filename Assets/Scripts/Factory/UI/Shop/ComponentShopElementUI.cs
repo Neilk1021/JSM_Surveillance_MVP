@@ -32,21 +32,30 @@ namespace JSM.Surveillance.UI
         {
             if(_machineObject == null) return;
 
+            string nameStr = "";
+            string costStr = "";
+            
             switch (_machineObject)
             {
                 case ProcessorObject p0:
-                    nameText.text = $"{p0.Data.ShopInfo.name}";
-                    costText.text = $"Cost: ${p0.Data.UpfrontCost}";
+                    nameStr = $"{p0.Data.ShopInfo.name}";
+                    costStr = $"Cost: ${p0.Data.UpfrontCost}";
                     break;
                 case SplitterObject s0:
-                    nameText.text = $"{s0.Data.ShopInfo.name}";
-                    costText.text = $"Cost: ${s0.Data.UpfrontCost}";
+                    nameStr = $"{s0.Data.ShopInfo.name}";
+                    costStr = $"Cost: ${s0.Data.UpfrontCost}";
                     break;
                 case MergerObject m0:
-                    nameText.text = $"{m0.Data.ShopInfo.name}";
-                    costText.text = $"Cost: ${m0.Data.UpfrontCost}";
+                    nameStr = $"{m0.Data.ShopInfo.name}";
+                    costStr = $"Cost: ${m0.Data.UpfrontCost}";
                     break;
+                default:
+                    return;
             }
+
+            if (nameText != null) nameText.text = nameStr;
+            if (costText != null) costText.text = costStr;
+
         }
 
         public void OnPointerEnter(PointerEventData eventData)

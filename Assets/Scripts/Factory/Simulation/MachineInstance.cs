@@ -83,7 +83,6 @@ namespace JSM.Surveillance
                 OutputResources.resource = resource;
                 OutputResources.amount = 0;
             } 
-            
             OutputResources.amount += amount;
             if (OutputResources.amount > _inventorySize)
             {
