@@ -4,6 +4,7 @@ using JSM.Surveillance.Surveillance;
 using Surveillance.Game;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 namespace JSM.Surveillance.UI
@@ -12,7 +13,7 @@ namespace JSM.Surveillance.UI
     [ExecuteAlways]
     #endif
  
-    public class MapCellRendering : MonoBehaviour
+    public class MapCellRendering : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [HideInInspector] [SerializeField]
         private  MeshRenderer _meshRenderer;
@@ -149,16 +150,18 @@ namespace JSM.Surveillance.UI
 
         private void OnMouseEnter()
         {
+            if (_cell.IsStreet) return;
             if (_renderingMode != MapMode.Normal)
             {
                 return;
             }
             
-            _meshRenderer.material.SetColor(CenterColor,new Color(0.02f,0.12f,0.2f,1));
+            _meshRenderer.material.SetColor(CenterColor,new Color(0.010f,0.1f,0.15f,1));
         }
 
         private void OnMouseExit()
         {
+            if (_cell.IsStreet) return;
             if (_renderingMode != MapMode.Normal)
             {
                 return;
@@ -186,6 +189,16 @@ namespace JSM.Surveillance.UI
         public void SetTextObject(TextMeshPro text)
         {
             _text = text;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            OnMouseEnter();
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            OnMouseExit();
         }
     }
 }

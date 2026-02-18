@@ -11,10 +11,13 @@ namespace JSM.Surveillance
         [Header("References")]
         [SerializeField] private LineRenderer lr;
         [FormerlySerializedAs("connection")] [SerializeField] private ConnectionObject connectionObject;
-
+        
         [Header("Colors")] [SerializeField] private Color normalColor;
         [SerializeField] private Color highlightedColor;
         [SerializeField] private Color selectedColor;
+
+        [Header("Misc")] [SerializeField] private float lineWidth = 0.2f;
+        
         private Vector3[] worldPositions;
         
         private void Awake()
@@ -25,8 +28,8 @@ namespace JSM.Surveillance
 
         public void PlaceConnection()
         {
-            lr.startWidth = 0.175f;
-            lr.endWidth = 0.175f;
+            lr.startWidth = lineWidth;
+            lr.endWidth = lineWidth;
    
             lr.positionCount = connectionObject.Positions.Length + 2;
 

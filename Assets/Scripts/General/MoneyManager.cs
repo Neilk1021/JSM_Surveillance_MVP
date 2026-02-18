@@ -42,5 +42,11 @@ namespace JSM.Surveillance
             MoneyChanged?.Invoke(money);
             return true;
         }
+        
+        
+        private static string ConvertMoneyToYenString(int amount)
+        {
+            return $"¥{amount:N0}";
+        }
     }
 }

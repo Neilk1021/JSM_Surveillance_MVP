@@ -30,7 +30,7 @@ namespace JSM.Surveillance.UI
                 slider.value = (float)current / (float)max;
                 _prevMax = max;
                 _prevCurrent = current;
-                amntText.text = itemName == "" ? $"{current}" : $"{itemName} - {current}";
+                amntText.text = $"{current}";
             }
             
             fillUI.color = starved ? starvedColor : satisfiedColor;

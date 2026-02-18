@@ -14,7 +14,7 @@ namespace JSM.Surveillance.UI
             ItemPreviewer.LoadPreview(newPreview);
             itemName.text = shopInfo.name;
             itemDesc.text = shopInfo.desc;
-            itemCost.text = $"Cost: {upfrontCost}¥";
+            itemCost.text = $"Cost: ¥{upfrontCost:N0}";
         }
     }
 }
