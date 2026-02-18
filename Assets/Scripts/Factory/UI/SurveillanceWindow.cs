@@ -14,7 +14,7 @@ namespace JSM.Surveillance.UI
         private Dictionary<Canvas, int> _canvases;
         private SortingGroup _group;
         private int _startingGroupIndex;
-
+        private const int ReserveSpace = 50;
         public static int GlobalSortOrder => _globalSortOrder;
 
         private void Awake()
@@ -41,7 +41,8 @@ namespace JSM.Surveillance.UI
 
         public void BringToFront()
         {
-            UpdateSortingLayer(++_globalSortOrder);
+            _globalSortOrder += ReserveSpace;
+            UpdateSortingLayer(_globalSortOrder);
         }
 
         public void OnPointerDown(PointerEventData eventData)

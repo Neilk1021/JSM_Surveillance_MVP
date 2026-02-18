@@ -13,7 +13,10 @@ namespace JSM.Surveillance.UI
         [Tooltip("The transform that all the UI prefabs should be spawned under.")]
         [SerializeField] private Transform contentView;
 
+        [SerializeField] private Animator animator; 
+        
         private FactoryGrid _grid;
+        private bool _opened = true;
         
         private void Awake()
         {
@@ -42,6 +45,18 @@ namespace JSM.Surveillance.UI
             _cc?.SetScrollActive(true);
         }
 
+
+        public void SwitchShop()
+        {
+            _opened = !_opened;
+
+            if (_opened) {
+                animator.SetTrigger("OpenShop");
+            }
+            else {
+                animator.SetTrigger("CloseShop");
+            }
+        }
         public void Buy(MachineObject processorPrefab)
         {
             if(!FactoryGrid.Editable) return;

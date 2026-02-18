@@ -21,7 +21,7 @@ namespace JSM.Surveillance
         [SerializeField] private Tilemap tilemap;
         [SerializeField] private Tile defaultTile;
 
-        [Header("Resizing Constraitns")] [SerializeField]
+        [Header("Resizing Constraints")] [SerializeField]
         private BorderRadius borderRadius; 
 
         [Header("Backgrounds")] [SerializeField]
@@ -109,9 +109,9 @@ namespace JSM.Surveillance
             //TODO ACCOUNT FOR pivot position
             ShopUI.anchoredPosition = Vector3.zero;
             
-            HeaderUI.sizeDelta = new Vector2(finalScale.x, headerSize / CanvasScale);
+            HeaderUI.sizeDelta = new Vector2(gridSize.x, headerSize / CanvasScale);
             //TODO ACCOUNT FOR pivot position!
-            HeaderUI.anchoredPosition = Vector3.zero;
+            HeaderUI.anchoredPosition = Vector3.zero - new Vector3(resizedDelta.x / 2, 0, 0);
 
 
         }
