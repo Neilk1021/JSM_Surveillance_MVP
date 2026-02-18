@@ -16,6 +16,7 @@ namespace JSM.Surveillance
         public string desc; 
         public GameObject itemModelPrefab;
         public VideoClip videoClip;
+        public Sprite sprite;
     }
     
     [CreateAssetMenu(fileName = "Generic", menuName = "JSM/Surveillance/Maintainable/Generic")]

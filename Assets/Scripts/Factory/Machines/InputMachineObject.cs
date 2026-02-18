@@ -18,7 +18,8 @@ namespace JSM.Surveillance
         protected override void Start()
         {
             _peopleInRange = _source.GetRawResourceRate();
-            inputText.text = $"{_source.SourceName}\n[{_source.resource.name}]";
+            if(inputText != null)
+                inputText.text = $"{_source.SourceName}\n[{_source.resource.name}]";
             base.Start();
         }
 

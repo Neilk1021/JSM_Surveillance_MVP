@@ -25,8 +25,8 @@ namespace JSM.Surveillance
 
         public void PlaceConnection()
         {
-            lr.startWidth = 0.1f;
-            lr.endWidth = 0.1f;
+            lr.startWidth = 0.175f;
+            lr.endWidth = 0.175f;
    
             lr.positionCount = connectionObject.Positions.Length + 2;
 
@@ -41,7 +41,9 @@ namespace JSM.Surveillance
                 ));
             }
 
-            worldPositions[^1] = transform.InverseTransformPoint(connectionObject.EndPortObject.transform.position);
+            float len = (connectionObject.EndPortObject.Owner.transform.position -  connectionObject.EndPortObject.transform.position).magnitude;
+            worldPositions[^1] = (transform.InverseTransformPoint(connectionObject.EndPortObject.transform.position) - worldPositions[^2]).normalized * len  + worldPositions[^2];
+
             lr.SetPositions(worldPositions);
         }
 

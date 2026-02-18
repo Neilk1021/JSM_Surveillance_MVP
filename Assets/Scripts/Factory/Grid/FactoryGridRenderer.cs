@@ -27,8 +27,6 @@ namespace JSM.Surveillance
         [Header("Backgrounds")] [SerializeField]
         private SpriteRenderer foreground;
         
-        [SerializeField] private SpriteRenderer background;
-
         [Header("Canvas")] [SerializeField]
         [Range(0, 2)] private float headerSize;
 
@@ -64,16 +62,10 @@ namespace JSM.Surveillance
         public void ResizeBackground()
         {
             _grid ??= GetComponent<FactoryGrid>();
-            var bTransform = background.transform;
             var fTransform = foreground.transform;
             var size = new Vector3(_grid.Width, _grid.Height) * _grid.CellSize;
-            bTransform.localScale =
-                size
-                + new Vector3(borderRadius.right + borderRadius.left, borderRadius.up + borderRadius.down);
-
-            fTransform.localScale = size;
             
-            bTransform.localPosition = size / 2 + new Vector3(borderRadius.right - borderRadius.left,borderRadius.up - borderRadius.down,0)/2;
+            foreground.size = size;
             
             fTransform.localPosition = size / 2;
             var bc = GetComponent<BoxCollider>();
@@ -109,7 +101,7 @@ namespace JSM.Surveillance
             //TODO ACCOUNT FOR pivot position
             ShopUI.anchoredPosition = Vector3.zero;
             
-            HeaderUI.sizeDelta = new Vector2(gridSize.x, headerSize / CanvasScale);
+            HeaderUI.sizeDelta = new Vector2(gridSize.x, headerSize / CanvasScale + gridSize.y);
             //TODO ACCOUNT FOR pivot position!
             HeaderUI.anchoredPosition = Vector3.zero - new Vector3(resizedDelta.x / 2, 0, 0);
 

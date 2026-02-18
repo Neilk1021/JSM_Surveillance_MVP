@@ -14,7 +14,7 @@ namespace JSM.Surveillance.UI
         private Dictionary<Canvas, int> _canvases;
         private SortingGroup _group;
         private int _startingGroupIndex;
-        private const int ReserveSpace = 50;
+        public const int ReserveSpace = 20;
         public static int GlobalSortOrder => _globalSortOrder;
 
         private void Awake()
@@ -33,6 +33,10 @@ namespace JSM.Surveillance.UI
             }
             
             foreach (var kvp in _canvases) {
+                if (kvp.Key == null) {
+                    continue;
+                }
+                
                 kvp.Key.sortingOrder = kvp.Value + newLayer;
             }
 
