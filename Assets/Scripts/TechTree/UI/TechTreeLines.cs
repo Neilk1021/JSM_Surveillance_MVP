@@ -37,6 +37,7 @@ namespace Surveillance.TechTree
             if(_linesRoot != null) DestroyImmediate(_linesRoot.gameObject);
             _linesRoot = new GameObject("lines").transform;
             _linesRoot.parent = container;
+            _linesRoot.localScale = Vector3.one;
             _linesRoot.localPosition = Vector3.zero;
         }
 

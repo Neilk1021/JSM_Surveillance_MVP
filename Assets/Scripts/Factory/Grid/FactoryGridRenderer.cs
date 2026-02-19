@@ -15,7 +15,7 @@ namespace JSM.Surveillance
     [RequireComponent(typeof(FactoryGrid))]
     public class FactoryGridRenderer : MonoBehaviour
     {
-        private FactoryGrid _grid;
+        [SerializeField] [HideInInspector] private FactoryGrid _grid;
         
         [Header("Tile Map")]
         [SerializeField] private Tilemap tilemap;
@@ -49,13 +49,24 @@ namespace JSM.Surveillance
             DrawGrid();
         }
 
+        [ContextMenu("Draw Grid")]
         private void DrawGrid()
         {
+            _grid ??= GetComponent<FactoryGrid>();
+            tilemap ??= GetComponent<Tilemap>();
+            
             for (var x = 0; x < _grid.Width; x++) {
                 for (var y = 0; y < _grid.Height; y++) {
                     UpdateCellVisual(x,y);
                 }
             }
+        }
+
+        [ContextMenu("Clear Grid")]
+        public void ClearGrid()
+        {
+            tilemap ??= GetComponent<Tilemap>();
+            tilemap.ClearAllTiles();
         }
 
         [ContextMenu("Regenerate Sizing")]
@@ -110,7 +121,6 @@ namespace JSM.Surveillance
 
         public void UpdateCellVisual(int x, int y)
         {
-            var cellData = _grid.GetCell(x, y);
             tilemap.SetTile(new Vector3Int(x,y,0), defaultTile);
         }
     }
