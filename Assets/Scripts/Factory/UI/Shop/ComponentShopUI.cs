@@ -8,6 +8,10 @@ namespace JSM.Surveillance.UI
 {
     public class ComponentShopUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        private static readonly int OpenShop = Animator.StringToHash("OpenShop");
+        private static readonly int CloseShop = Animator.StringToHash("CloseShop");
+        
+        
         [SerializeField] private ComponentShopElementUI componentUIElementPrefab;
         [SerializeField] private ShopBank bank;
         [Tooltip("The transform that all the UI prefabs should be spawned under.")]
@@ -16,7 +20,7 @@ namespace JSM.Surveillance.UI
         [SerializeField] private Animator animator; 
         
         private FactoryGrid _grid;
-        private bool _opened = true;
+        private bool _opened = false;
         
         private void Awake()
         {
@@ -51,10 +55,10 @@ namespace JSM.Surveillance.UI
             _opened = !_opened;
 
             if (_opened) {
-                animator.SetTrigger("OpenShop");
+                animator.SetTrigger(OpenShop);
             }
             else {
-                animator.SetTrigger("CloseShop");
+                animator.SetTrigger(CloseShop);
             }
         }
         public void Buy(MachineObject processorPrefab)

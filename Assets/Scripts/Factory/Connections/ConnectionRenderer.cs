@@ -40,7 +40,7 @@ namespace JSM.Surveillance
             {
                 worldPositions[i + 1] = transform.InverseTransformPoint((
                     connectionObject.Grid.GetWorldPosition(connectionObject.Positions[i]) + 
-                    new Vector3(connectionObject.Grid.CellSize / 2, connectionObject.Grid.CellSize / 2, 0)
+                    new Vector3(connectionObject.Grid.CellSize.x / 2, connectionObject.Grid.CellSize.y / 2, 0)
                 ));
             }
 

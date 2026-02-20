@@ -118,7 +118,7 @@ namespace JSM.Surveillance
         {
             var worldPos = connectionPositions.Select(x => 
                 grid.GetWorldPosition(x) + 
-                new Vector3(grid.CellSize / 2, grid.CellSize / 2, 0)
+                new Vector3(grid.CellSize.x / 2, grid.CellSize.y / 2, 0)
             ).ToList();
                     
             var endPort = grid.GetPortsAtCell(newPos)?.FirstOrDefault(x => x.Type != startPortObject.Type);

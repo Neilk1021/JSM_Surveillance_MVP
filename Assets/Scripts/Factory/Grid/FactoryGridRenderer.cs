@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JSM.Surveillance.UI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -37,11 +38,18 @@ namespace JSM.Surveillance
         [SerializeField] private RectTransform HeaderUI;
         
         private const float CanvasScale = 0.01f;
-        
+
+        [SerializeField] private FactoryGridBackgroundFader backgroundFader;
         
         public void Awake() {
             _grid = GetComponent<FactoryGrid>();
             tilemap ??= GetComponent<Tilemap>();
+
+
+            var fader = Instantiate(backgroundFader, transform.parent);
+            _grid.OnGridClose.AddListener(fader.Close);
+            _grid.OnMouseEnter.AddListener(fader.ShowFade);
+            _grid.OnMouseExit.AddListener(fader.HideFade);
         }
 
         private void Start()
@@ -81,8 +89,8 @@ namespace JSM.Surveillance
             fTransform.localPosition = size / 2;
             var bc = GetComponent<BoxCollider>();
             
-            bc.size = size +new Vector3(borderRadius.right + borderRadius.left, borderRadius.up + borderRadius.down);
-            bc.center = size/2 + new Vector3(borderRadius.right - borderRadius.left,borderRadius.up - borderRadius.down,0)/2;
+            bc.size = (Vector3)size + new Vector3(borderRadius.right + borderRadius.left, borderRadius.up + borderRadius.down);
+            bc.center = (Vector3)size/2 + new Vector3(borderRadius.right - borderRadius.left,borderRadius.up - borderRadius.down,0)/2;
 
             ResizeCanvas(size);
 

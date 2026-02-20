@@ -106,8 +106,8 @@ namespace JSM.Surveillance
                         Vector2Int rotatedSize = Rotation % 180 == 0 ? Size : new Vector2Int(Size.y, Size.x);
                         
                         Vector3 offset = new Vector2(
-                            rotatedSize.x  % 2 == 0 ? 0 : Grid.CellSize / 2.0f,
-                            rotatedSize.y % 2 == 0 ? 0 : Grid.CellSize / 2.0f
+                            rotatedSize.x  % 2 == 0 ? 0 : Grid.CellSize.x / 2.0f,
+                            rotatedSize.y % 2 == 0 ? 0 : Grid.CellSize.y / 2.0f
                             );
 
                         transform.position = Grid.GetWorldPosition(gridPos) + offset;

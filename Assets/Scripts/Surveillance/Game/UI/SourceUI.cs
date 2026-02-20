@@ -90,5 +90,10 @@ namespace JSM.Surveillance.UI
             _source.CloseUI();
             _source.Destroy();
         }
+
+        public void CloseUI()
+        {
+            Destroy(gameObject);
+        }
     }
 }
