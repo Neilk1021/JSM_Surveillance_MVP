@@ -23,9 +23,9 @@ namespace JSM.Surveillance
             base.Start();
         }
 
+        
         protected override void OnMouseDown()
         {
-            
             if (Placed) {
                 Grid.UIManager.SwitchUI(this);
             }

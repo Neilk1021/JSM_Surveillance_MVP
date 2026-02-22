@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.Video;
 
@@ -179,6 +180,22 @@ namespace JSM.Surveillance
         public virtual string GetMachineDesc()
         {
             return "";
+        }
+
+        private void OnMouseEnter()
+        {
+            if(spriteRenderer != null)
+                spriteRenderer.color = defaultColor * new Color(0.8f, 0.8f, 0.8f, 1);
+            else if(spriteImage != null)
+                spriteImage.color = defaultColor * new Color(0.8f,0.8f, 0.8f, 1);
+        }
+
+        private void OnMouseExit()
+        {
+            if(spriteRenderer != null)
+                spriteRenderer.color = defaultColor;
+            else if (spriteImage != null )
+                spriteImage.color = defaultColor;
         }
 
         public void OnBeforeSerialize()

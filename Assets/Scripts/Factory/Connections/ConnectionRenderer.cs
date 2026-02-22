@@ -44,8 +44,9 @@ namespace JSM.Surveillance
                 ));
             }
 
-            float len = (connectionObject.EndPortObject.Owner.transform.position -  connectionObject.EndPortObject.transform.position).magnitude;
-            worldPositions[^1] = (transform.InverseTransformPoint(connectionObject.EndPortObject.transform.position) - worldPositions[^2]).normalized * len  + worldPositions[^2];
+            float len = (connectionObject.EndPortObject.Owner.transform.position -
+                         connectionObject.EndPortObject.transform.position).magnitude;
+            worldPositions[^1] = (transform.InverseTransformPoint(connectionObject.EndPortObject.transform.position) - worldPositions[^2]).normalized * (len * 1.5f) + worldPositions[^2];
 
             lr.SetPositions(worldPositions);
         }

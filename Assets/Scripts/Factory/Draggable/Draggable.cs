@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using JSM.Surveillance.UI;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 namespace JSM.Surveillance
 {
@@ -13,7 +14,10 @@ namespace JSM.Surveillance
         [SerializeField] private int width, height;
         [Header("Preview Visuals")]
         [SerializeField] protected SpriteRenderer spriteRenderer;
-        [SerializeField] protected Color validColor, invalidColor;
+
+        [SerializeField] protected Image spriteImage;
+        
+        [SerializeField] protected Color  validColor, invalidColor, defaultColor;
         
         public override Vector2Int Size => new Vector2Int(width, height);
 
@@ -23,6 +27,11 @@ namespace JSM.Surveillance
 
         protected virtual void Awake()
         {
+            if(spriteRenderer != null)
+                defaultColor = spriteRenderer.color;
+            else if (spriteImage != null)
+                defaultColor = spriteImage.color;
+            
             SortingGroup = GetComponent<SortingGroup>();
         }
 
@@ -44,23 +53,13 @@ namespace JSM.Surveillance
             transform.eulerAngles += new Vector3(0, 0, 90);
         }
  
-        // private void Update()
-        // {
-        //     if (!_isDragging || Placed) return;
-        //
-        //     Vector2 mousePos = _camera.ScreenToWorldPoint(End.mousePosition);
-        //     transform.position = mousePos;
-        // }
 
-        //TODO implement (this is you haiyi.)
         public override void Entered()
         {
-           // haiyi this is functionally the same as OnMouseEntered, but its based on the cell in the grid.
         }
 
         public override void Exited()
         {
-            // functionally the same as OnMouseExited, but its based on the cell in the grid. 
         }
 
         
