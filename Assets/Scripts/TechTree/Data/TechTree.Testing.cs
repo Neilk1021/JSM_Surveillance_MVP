@@ -9,48 +9,48 @@ namespace Surveillance.TechTree
                 // ===== Layer 0 =====
                 new Node
                 {
-                    ID = 0,
-                    Name = "Animals",
+                    id = 0,
+                    name = "Animals",
                 },
 
                 // ===== Layer 1 =====
                 new Node
                 {
-                    ID = 1,
-                    Name = "Flying",
-                    ParentIDs = new[] { 0 }
+                    id = 1,
+                    name = "Flying",
+                    parentIDs = new[] { 0 }
                 },
                 new Node
                 {
-                    ID = 2,
-                    Name = "Walking",
-                    ParentIDs = new[] { 0 }
+                    id = 2,
+                    name = "Walking",
+                    parentIDs = new[] { 0 }
                 },
 
                 // ===== Layer 2 =====
                 new Node
                 {
-                    ID = 3,
-                    Name = "Duck",
-                    ParentIDs = new[] { 1, 2 }
+                    id = 3,
+                    name = "Duck",
+                    parentIDs = new[] { 1, 2 }
                 },
                 new Node
                 {
-                    ID = 4,
-                    Name = "Eagle",
-                    ParentIDs = new[] { 1 }
+                    id = 4,
+                    name = "Eagle",
+                    parentIDs = new[] { 1 }
                 },
                 new Node
                 {
-                    ID = 5,
-                    Name = "Dog",
-                    ParentIDs = new[] { 2 }
+                    id = 5,
+                    name = "Dog",
+                    parentIDs = new[] { 2 }
                 },
                 new Node
                 {
-                    ID = 6,
-                    Name = "Cat",
-                    ParentIDs = new[] { 2 }
+                    id = 6,
+                    name = "Cat",
+                    parentIDs = new[] { 2 }
                 },
             };
 
@@ -64,54 +64,54 @@ namespace Surveillance.TechTree
                 // ===== Layer 0 =====
                 new Node
                 {
-                    ID = 0,
-                    Name = "Animals",
+                    id = 0,
+                    name = "Animals",
                 },
 
                 // ===== Layer 1 =====
                 new Node
                 {
-                    ID = 1,
-                    Name = "Flying",
-                    ParentIDs = new[] { 0 }
+                    id = 1,
+                    name = "Flying",
+                    parentIDs = new[] { 0 }
                 },
                 new Node
                 {
-                    ID = 2,
-                    Name = "Walking",
-                    ParentIDs = new[] { 0 }
+                    id = 2,
+                    name = "Walking",
+                    parentIDs = new[] { 0 }
                 },
                 new Node
                 {
-                    ID = 3,
-                    Name = "Swimming",
-                    ParentIDs = new[] { 0 }
+                    id = 3,
+                    name = "Swimming",
+                    parentIDs = new[] { 0 }
                 },
 
                 // ===== Layer 2 =====
                 new Node
                 {
-                    ID = 4,
-                    Name = "Ducks",
-                    ParentIDs = new[] { 1, 2, 3 }
+                    id = 4,
+                    name = "Ducks",
+                    parentIDs = new[] { 1, 2, 3 }
                 },
                 new Node
                 {
-                    ID = 5,
-                    Name = "Dogs",
-                    ParentIDs = new[] { 2 }
+                    id = 5,
+                    name = "Dogs",
+                    parentIDs = new[] { 2 }
                 },
                 new Node
                 {
-                    ID = 6,
-                    Name = "Fish",
-                    ParentIDs = new[] { 3 }
+                    id = 6,
+                    name = "Fish",
+                    parentIDs = new[] { 3 }
                 },
                 new Node
                 {
-                    ID = 7,
-                    Name = "Platypus",
-                    ParentIDs = new[] { 2, 3}
+                    id = 7,
+                    name = "Platypus",
+                    parentIDs = new[] { 2, 3}
                 },
             };
 

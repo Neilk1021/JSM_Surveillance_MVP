@@ -15,21 +15,12 @@ namespace Surveillance.TechTree
         {
             Data = node;
             Tree = tree;
-            nameText.text = node.Name;
+            nameText.text = node.name;
         }
 
         public void Unlock()
         {
-            foreach (var parentID in Data.ParentIDs)
-            {
-                if (!Tree.NodeByID[parentID].IsUnlocked)
-                {
-                    Debug.LogError($"Cannot unlock {Data.Name} because parent {Tree.NodeByID[parentID].Name} is locked");
-                    return;
-                }
-            }
-            Data.IsUnlocked = true;
-            Debug.Log($"Unlocked {Data.Name}.");
+            if(!Tree.UnlockNode(Data)) return;
             unlockText.text = "Unlocked!";
         }
     }

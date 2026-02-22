@@ -35,7 +35,7 @@ namespace Surveillance.TechTree
                 var ui = Instantiate(nodePrefab, container);
                 ui.Initialize(node, techTree);
 
-                spawnedNodes[node.ID] = ui;
+                spawnedNodes[node.id] = ui;
             }
 
             LayoutNodes();

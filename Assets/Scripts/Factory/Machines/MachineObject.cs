@@ -15,8 +15,7 @@ namespace JSM.Surveillance
         [SerializeField] protected int inventorySize = 20;
         private readonly List<ProcessorPortObject> _iPorts = new();
         private readonly List<ProcessorPortObject> _oPorts = new();
-
-
+        
         public int InventorySize => inventorySize;
         public IReadOnlyList<ProcessorPortObject> InputPorts => _iPorts;
         public IReadOnlyList<ProcessorPortObject> OutputPorts => _oPorts;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Surveillance.TechTree;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -21,6 +22,8 @@ namespace JSM.Surveillance.UI
         
         private FactoryGrid _grid;
         private bool _opened = false;
+
+        private List<Transform> _shopElements = new List<Transform>();
         
         private void Awake()
         {
@@ -28,12 +31,33 @@ namespace JSM.Surveillance.UI
             _grid = GetComponentInParent<FactoryGrid>();
         }
 
-        private void Start()
+        private void OnEnable(){
+            UnlockedManager.OnItemsUnlocked += ReloadShopItems;
+            ReloadShopItems();
+        }
+
+        private void OnDisable() {
+            UnlockedManager.OnItemsUnlocked -= ReloadShopItems;
+        }
+
+        private void ClearShopItems()
         {
-            foreach (var processor in bank.BuyableProcessors)
+            for (int i = _shopElements.Count - 1; i >= 0; i--)
+            {
+                Destroy(_shopElements[i].gameObject);
+                _shopElements.RemoveAt(i);
+            }
+        }
+        
+        private void ReloadShopItems()
+        {
+            ClearShopItems();
+            var filtered = UnlockedManager.FilterUnlockedMachines(bank.BuyableProcessors);
+            foreach (var processor in filtered) 
             {
                 var element = Instantiate(componentUIElementPrefab, contentView);
                 element.Load(processor, this);
+                _shopElements.Add(element.transform);
             }
         }
 

@@ -19,9 +19,9 @@ namespace Surveillance.TechTree
                 var node = kvp.Value;
                 var data = node.Data;
 
-                if (data.ParentIDs == null) continue;
+                if (data.parentIDs == null) continue;
 
-                foreach (var parentID in data.ParentIDs)
+                foreach (var parentID in data.parentIDs)
                 {
                     var parent = nodes[parentID];
                     CreateLine(parent.transform as RectTransform,
