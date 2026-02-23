@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JSM.Surveillance.Audio;
 using UnityEngine;
 
 namespace JSM.Surveillance
@@ -80,8 +81,11 @@ namespace JSM.Surveillance
 
         public override void Entered()
         {
-            if(_status != CellOccupierStatus.Selected)
+            if (_status != CellOccupierStatus.Selected)
+            {
+                SoundManager.PlaySound("hover");
                 _status = CellOccupierStatus.Hovering;
+            }
         }
 
         public override void Exited()

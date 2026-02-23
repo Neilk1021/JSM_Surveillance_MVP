@@ -42,5 +42,10 @@ namespace JSM.Surveillance
         {
             return new InputMachineInstance(_source, inventorySize, GetRootPosition());
         }
+
+        public override Resource GetResource()
+        {
+            return _source == null ? null : _source.resource;
+        }
     }
 }

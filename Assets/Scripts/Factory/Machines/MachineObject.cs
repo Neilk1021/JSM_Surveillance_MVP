@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 namespace JSM.Surveillance
@@ -14,6 +15,7 @@ namespace JSM.Surveillance
         [FormerlySerializedAs("_guid")] [SerializeField] private string guid;
         [Header("InventorySize")]
         [SerializeField] protected int inventorySize = 20;
+
         private readonly List<ProcessorPortObject> _iPorts = new();
         private readonly List<ProcessorPortObject> _oPorts = new();
         
@@ -23,13 +25,16 @@ namespace JSM.Surveillance
 
         public string Guid => guid;
 
+        public event Action OnModify; 
+        
         public override void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)
         {
             base.Place(newPositions, worldPos, grid);
             
             Vector2Int root = GetRootPosition();
 
-            
+
+            grid.OnModify.AddListener(OnModifyFunc);
             _iPorts.Clear();
             _oPorts.Clear();
             foreach (var port in GetComponentsInChildren<ProcessorPortObject>())
@@ -45,6 +50,11 @@ namespace JSM.Surveillance
             }
         }
 
+        private void OnModifyFunc()
+        {
+            OnModify?.Invoke();
+        }
+
         private void OnEnable()
         {
             if (Grid == null) {
@@ -58,7 +68,7 @@ namespace JSM.Surveillance
             if (Grid == null) {
                 return;
             }
-            
+            _grid.OnModify.RemoveListener(OnModifyFunc);
         }
 
         public virtual void Sell()
@@ -212,6 +222,10 @@ namespace JSM.Surveillance
 
         public virtual VideoClip GetVideoClip()
         {
+            return null;
+        }
+
+        public virtual Resource GetResource() {
             return null;
         }
     }

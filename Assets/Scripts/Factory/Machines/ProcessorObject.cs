@@ -57,5 +57,11 @@ namespace JSM.Surveillance
         {
             selectedRecipe = availableRecipes.GetRecipeById(machineRecipeId);
         }
+
+        public override Resource GetResource()
+        {
+            if (Recipe == null) return null;
+            return Recipe.OutputVolume.resource;
+        }
     }
 }

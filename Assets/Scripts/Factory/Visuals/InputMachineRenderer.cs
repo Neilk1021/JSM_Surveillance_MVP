@@ -14,8 +14,6 @@ namespace JSM.Surveillance.Visuals
         private InputMachineObject _machineObject;
         private FactoryGrid _grid;
         
-        
-
         private void Awake() {
             _machineObject = GetComponent<InputMachineObject>();
         }

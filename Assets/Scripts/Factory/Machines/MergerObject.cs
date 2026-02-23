@@ -18,7 +18,6 @@ namespace JSM.Surveillance
             base.OnMouseDown();
         }
 
-        
         public override void Sell()
         {
             SurveillanceGameManager.instance.MoneyManager.ChangeMoneyBy(data.UpfrontCost);
@@ -30,12 +29,10 @@ namespace JSM.Surveillance
             return new MergerInstance(inventorySize, data,GetRootPosition());
         }
 
-
         public override string GetMachineName()
         {
             return data.ShopInfo.name;
         }
-        
         
         public override int GetMachineCost()
         {
@@ -49,6 +46,20 @@ namespace JSM.Surveillance
         public override VideoClip GetVideoClip()
         {
             return data.ShopInfo.videoClip;
+        }
+
+        public override Resource GetResource()
+        {
+            foreach (var iport in InputPorts)
+            {
+                if (iport.ConnectionObject == null) {
+                    continue;
+                }
+
+                return iport.ConnectionObject.StartPortObject.Owner.GetResource();
+            }
+
+            return null;
         }
     }
 }

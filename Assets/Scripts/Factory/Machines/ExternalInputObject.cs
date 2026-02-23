@@ -54,6 +54,14 @@ namespace JSM.Surveillance
         {
             return new ExternalInputInstance(_parentSource, _incomingSourceIndex, inventorySize, GetRootPosition());
         }
+        public override Resource GetResource()
+        {
+            var incoming = _parentSource.IncomingSourceLinks[_incomingSourceIndex];
+            if (incoming == null) {
+                return null;
+            }
 
+            return incoming.resource;
+        }
     }
 }
