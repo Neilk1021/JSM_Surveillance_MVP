@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace JSM.Surveillance.UI
 {
@@ -11,6 +12,7 @@ namespace JSM.Surveillance.UI
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI costText;
         [SerializeField] private ComponentShopPreviewUI previewUIPrefab;
+        [SerializeField] private Image previewImage;
         
         private MachineObject _machineObject;
         private ComponentShopPreviewUI _previewInstance;
@@ -30,6 +32,10 @@ namespace JSM.Surveillance.UI
             _machineObject = processorObject;
             RefreshUI();
         }
+        private static string ConvertMoneyToYenString(int amount)
+        {
+            return $"¥{amount:N0}";
+        }
 
         private void RefreshUI()
         {
@@ -37,20 +43,24 @@ namespace JSM.Surveillance.UI
 
             string nameStr = "";
             string costStr = "";
+            Sprite previewSprite = null;
             
             switch (_machineObject)
             {
                 case ProcessorObject p0:
                     nameStr = $"{p0.Data.ShopInfo.name}";
-                    costStr = $"Cost: ${p0.Data.UpfrontCost}";
+                    costStr = ConvertMoneyToYenString(p0.Data.UpfrontCost);
+                    previewSprite = p0.Data.ShopInfo.sprite;
                     break;
                 case SplitterObject s0:
                     nameStr = $"{s0.Data.ShopInfo.name}";
-                    costStr = $"Cost: ${s0.Data.UpfrontCost}";
+                    costStr = ConvertMoneyToYenString(s0.Data.UpfrontCost); 
+                    previewSprite = s0.Data.ShopInfo.sprite;
                     break;
                 case MergerObject m0:
                     nameStr = $"{m0.Data.ShopInfo.name}";
-                    costStr = $"Cost: ${m0.Data.UpfrontCost}";
+                    costStr = ConvertMoneyToYenString(m0.Data.UpfrontCost); 
+                    previewSprite = m0.Data.ShopInfo.sprite;
                     break;
                 default:
                     return;
@@ -58,6 +68,7 @@ namespace JSM.Surveillance.UI
 
             if (nameText != null) nameText.text = nameStr;
             if (costText != null) costText.text = costStr;
+            if (previewImage != null) previewImage.sprite = previewSprite;
 
         }
 

@@ -50,6 +50,7 @@ namespace JSM.Surveillance.UI
         {
             _currentData = value;
             _currentUI = Instantiate(ui, value.transform.position + Vector3.right * 3, Quaternion.identity);
+            _currentUI.transform.parent = transform;
             _currentUI.Initialize(_currentData, this);   
         }
         

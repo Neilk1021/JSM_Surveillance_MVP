@@ -49,5 +49,19 @@ namespace JSM.Surveillance
         {
             return data.ShopInfo.videoClip;
         }
+        
+        public override Resource GetResource()
+        {
+            foreach (var iport in InputPorts)
+            {
+                if (iport.ConnectionObject == null) {
+                    continue;
+                }
+
+                return iport.ConnectionObject.StartPortObject.Owner.GetResource();
+            }
+
+            return null;
+        }
     }
 }

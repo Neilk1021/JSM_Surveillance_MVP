@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Surveillance.TechTree;
 using UnityEngine;
 using UnityEngine.Video;
 #if UNITY_EDITOR
@@ -16,11 +17,12 @@ namespace JSM.Surveillance
         public string desc; 
         public GameObject itemModelPrefab;
         public VideoClip videoClip;
+        public Sprite sprite;
     }
     
     [CreateAssetMenu(fileName = "Generic", menuName = "JSM/Surveillance/Maintainable/Generic")]
 
-    public class Maintainable : ScriptableObject, ISerializationCallbackReceiver
+    public class Maintainable : Unlockable
     {
         public string AssetGuid { get; private set; }
         [SerializeField] protected int upfrontCost;
@@ -29,20 +31,17 @@ namespace JSM.Surveillance
         public int DailyCost => dailyCost;
         public int UpfrontCost => upfrontCost;
         
-        
         [SerializeField] private ShopInfo shopInfo;
 
         public ShopInfo ShopInfo => shopInfo;
-        public void OnBeforeSerialize()
+        public override void OnBeforeSerialize()
         {
+            base.OnBeforeSerialize();
+            
             #if UNITY_EDITOR
                 string path = AssetDatabase.GetAssetPath(this);
                 AssetGuid = AssetDatabase.AssetPathToGUID(path);
             #endif
-
-        }
-        public void OnAfterDeserialize()
-        {
         }
     }
 }

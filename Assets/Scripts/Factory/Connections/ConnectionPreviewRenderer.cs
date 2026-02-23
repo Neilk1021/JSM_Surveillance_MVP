@@ -43,7 +43,16 @@ namespace JSM.Surveillance
                 worldPositions[i + 1] = transform.InverseTransformPoint(worldPositionsList[i]);
             }
 
-            worldPositions[^1] = end == null ? worldPositions[^2] : transform.InverseTransformPoint(end.transform.position);
+            if (end != null)
+            {
+                float len = (end.transform.position - end.Owner.transform.position).magnitude;
+                worldPositions[^1] =  (transform.InverseTransformPoint(end.transform.position) - worldPositions[^2]).normalized * (len *1.5f) + worldPositions[^2];
+            }
+            else
+            {
+                worldPositions[^1] = worldPositions[^2];
+            }
+            
             if(start.Type == NodeType.End) worldPositions = worldPositions.Reverse().ToArray();
             lr.SetPositions(worldPositions);
         }

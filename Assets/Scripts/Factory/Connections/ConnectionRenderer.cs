@@ -11,10 +11,13 @@ namespace JSM.Surveillance
         [Header("References")]
         [SerializeField] private LineRenderer lr;
         [FormerlySerializedAs("connection")] [SerializeField] private ConnectionObject connectionObject;
-
+        
         [Header("Colors")] [SerializeField] private Color normalColor;
         [SerializeField] private Color highlightedColor;
         [SerializeField] private Color selectedColor;
+
+        [Header("Misc")] [SerializeField] private float lineWidth = 0.2f;
+        
         private Vector3[] worldPositions;
         
         private void Awake()
@@ -25,8 +28,8 @@ namespace JSM.Surveillance
 
         public void PlaceConnection()
         {
-            lr.startWidth = 0.1f;
-            lr.endWidth = 0.1f;
+            lr.startWidth = lineWidth;
+            lr.endWidth = lineWidth;
    
             lr.positionCount = connectionObject.Positions.Length + 2;
 
@@ -37,11 +40,14 @@ namespace JSM.Surveillance
             {
                 worldPositions[i + 1] = transform.InverseTransformPoint((
                     connectionObject.Grid.GetWorldPosition(connectionObject.Positions[i]) + 
-                    new Vector3(connectionObject.Grid.CellSize / 2, connectionObject.Grid.CellSize / 2, 0)
+                    new Vector3(connectionObject.Grid.CellSize.x / 2, connectionObject.Grid.CellSize.y / 2, 0)
                 ));
             }
 
-            worldPositions[^1] = transform.InverseTransformPoint(connectionObject.EndPortObject.transform.position);
+            float len = (connectionObject.EndPortObject.Owner.transform.position -
+                         connectionObject.EndPortObject.transform.position).magnitude;
+            worldPositions[^1] = (transform.InverseTransformPoint(connectionObject.EndPortObject.transform.position) - worldPositions[^2]).normalized * (len * 1.5f) + worldPositions[^2];
+
             lr.SetPositions(worldPositions);
         }
 

@@ -17,6 +17,7 @@ namespace JSM.Surveillance
         [SerializeField] private NodeType type;
         [SerializeField] private int nodeIndex;
 
+        
         [Header("Position within machine's grid.")]
         [Tooltip("0 indexed position for the machine's subgrid. For example if a machine is 2x2, then 0 would be the left most cell.")]
         [HideInInspector][SerializeField] private int posX;

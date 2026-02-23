@@ -9,18 +9,18 @@ namespace JSM.Surveillance.Visuals
     [RequireComponent(typeof(InputMachineObject))]
     public class InputMachineRenderer : MonoBehaviour
     {
+        [SerializeField] private Image imageIcon; 
         [SerializeField] private ItemFillAmntUI itemFillUI;
         private InputMachineObject _machineObject;
         private FactoryGrid _grid;
         
-        
-
         private void Awake() {
             _machineObject = GetComponent<InputMachineObject>();
         }
 
         private void Start() {
             _grid = _machineObject.Grid;
+            imageIcon.sprite = _machineObject.Source.resource.Sprite;
             itemFillUI.UpdateSlider(0, _machineObject.InventorySize);
         }
 

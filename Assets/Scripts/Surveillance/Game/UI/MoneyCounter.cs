@@ -21,7 +21,7 @@ namespace JSM.Surveillance.UI
         
         private void UpdateMoneyText(int newMoneyVal)
         {
-            moneyText.text = $"Moneyz: {newMoneyVal}¥";
+            moneyText.text = $"{newMoneyVal:N0}";
         }
     }
 }

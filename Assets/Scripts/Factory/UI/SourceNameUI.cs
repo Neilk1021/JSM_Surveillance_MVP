@@ -21,7 +21,9 @@ namespace JSM.Surveillance.UI
         {
             _source = GetComponentInParent<FactoryGrid>().Source;
             UpdateActiveObjects();
-            inputField.onSubmit.AddListener(x=>SwitchMode());
+            
+            if(inputField != null)
+                inputField.onSubmit.AddListener(x=>SwitchMode());
             sourceName.text = _source.SourceName;
         }
 
@@ -50,6 +52,8 @@ namespace JSM.Surveillance.UI
         {
             if (Camera.main != null) Camera.main.GetComponent<CameraController>().enabled = !_changingName;
 
+            if(inputField == null) return;
+            
             inputField.GetComponent<CanvasGroup>().alpha = _changingName ? 1 : 0;
             inputField.GetComponent<CanvasGroup>().interactable = _changingName;
             inputField.GetComponent<CanvasGroup>().blocksRaycasts = _changingName;

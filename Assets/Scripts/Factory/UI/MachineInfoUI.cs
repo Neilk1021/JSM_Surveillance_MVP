@@ -78,7 +78,7 @@ namespace JSM.Surveillance.UI
 
         public override void Initialize(CellOccupier occupier, UIManager manager)
         {
-            canvas.sortingOrder += SurveillanceWindow.GlobalSortOrder+1;
+            canvas.sortingOrder += SurveillanceWindow.GlobalSortOrder+SurveillanceWindow.ReserveSpace;
             if (occupier is MachineObject machineObject) {
                 _machineObj = machineObject;
                 machineNameText.text = $"{machineObject.GetMachineName()}";

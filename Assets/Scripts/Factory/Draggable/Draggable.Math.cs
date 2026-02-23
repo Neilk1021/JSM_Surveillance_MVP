@@ -39,10 +39,11 @@ namespace JSM.Surveillance
         /// <returns>World Coordinates of where the cell is.</returns>
         public Vector2 GetBorderPosition(int cellX, int cellY)
         {
-            float objWidth = transform.lossyScale.x;
-            float objHeight = transform.lossyScale.y;
-            float cellWidth = objWidth / width;
-            float cellHeight = objHeight / height;
+            var sp = transform.GetComponent<BoxCollider2D>();
+            float objWidth = sp.size.x;
+            float objHeight = sp.size.y;
+            float cellWidth = 0.5f; 
+            float cellHeight = 0.5f;
 
             float offsetX = 0;
             if (!InMachineRange(cellX, 0)) {

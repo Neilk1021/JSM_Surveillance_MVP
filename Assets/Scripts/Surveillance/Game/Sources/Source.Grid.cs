@@ -26,6 +26,9 @@ namespace JSM.Surveillance.Game
         private FactorySimulationRunner _factorySimulationRunner;
         private FactoryBlueprint _lastLayout;
 
+        private int _moneyCache = 0;
+        private const int MoneyRequirement = 1000; 
+        
         private ResourceVolume _storedResourceVolume;
 
         public event Action<int> OnMoneyEarned;
@@ -70,7 +73,7 @@ namespace JSM.Surveillance.Game
             {
                 _grid = Instantiate(gridPrefab, GameObject.FindGameObjectWithTag("FactoryCam").transform);
                 _grid.SetSource(this);
-                _grid.transform.localPosition = new Vector3(0, -5.25f, 1.25f);
+                _grid.transform.localPosition = new Vector3(-1.625f, -2.75f, 1.25f);
                 _grid.Initialize(_lastLayout, _simulation);
                 _grid.OnModify.AddListener(Modified);
             }
@@ -86,9 +89,16 @@ namespace JSM.Surveillance.Game
             if(_storedResourceVolume.resource == null) return;
 
             var vol = TakeResources();
-            OnMoneyEarned?.Invoke(vol.amount * vol.resource.Value);
+
+            _moneyCache += vol.amount * vol.resource.Value;
+
+            if (_moneyCache <= MoneyRequirement) return;
+            
+            
+            OnMoneyEarned?.Invoke(_moneyCache);
             SurveillanceGameManager.instance.
-                MoneyManager.ChangeMoneyBy(vol.amount * vol.resource.Value);
+                MoneyManager.ChangeMoneyBy(_moneyCache);
+            _moneyCache = 0;
         }
 
         public ResourceVolume TakeResources()
@@ -122,6 +132,13 @@ namespace JSM.Surveillance.Game
             if(_storedResourceVolume.amount == 0) return;
             
             OnResourceMade?.Invoke(_storedResourceVolume.resource);
+            if (_storedResourceVolume.resource.IsScience)
+            {
+                var vol = TakeResources();
+                ResourceManager.AddResource(vol.resource, vol.amount);
+                return;
+            }
+            
             if (_nextSource == null) {
                 SellOutput();
             }

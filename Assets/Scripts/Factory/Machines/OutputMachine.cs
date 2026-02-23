@@ -9,7 +9,19 @@ namespace JSM.Surveillance
         {
             return new OutputMachineInstance(inventorySize, GetRootPosition());
         }
-        
 
+        public override Resource GetResource()
+        {
+            foreach (var iport in InputPorts)
+            {
+                if (iport.ConnectionObject == null) {
+                    continue;
+                }
+
+                return iport.ConnectionObject.StartPortObject.Owner.GetResource();
+            }
+
+            return null;
+        }
     }
 }

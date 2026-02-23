@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace JSM.Surveillance.Visuals
 {
-    [RequireComponent(typeof(ProcessorObject))]
     public class ProcessorRenderer : MonoBehaviour
     {
         [SerializeField] private ItemFillAmntUI [] itemFillUI;

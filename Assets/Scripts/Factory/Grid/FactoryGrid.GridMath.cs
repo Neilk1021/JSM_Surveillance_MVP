@@ -13,7 +13,7 @@ namespace JSM.Surveillance
         [SerializeField] private float gridLineThickness = 0.02f; 
         
 
-        public float CellSize => cellSize;
+        public Vector2 CellSize => new Vector2(cellSize * transform.localScale.x, cellSize * transform.localScale.y) ;
         public int Width => gridWidth; 
         public int Height => gridHeight;
 
@@ -22,8 +22,8 @@ namespace JSM.Surveillance
         {
             // grid start at (0,0)
             return transform.rotation * new Vector3(
-                gridPosition.x * cellSize,
-                gridPosition.y * cellSize,
+                gridPosition.x * cellSize * transform.localScale.x,
+                gridPosition.y * cellSize * transform.localScale.y,
                 0
             ) + transform.position;
             
@@ -45,8 +45,8 @@ namespace JSM.Surveillance
             var localizedPosition = transform.InverseTransformPoint(worldPosition);
             
             return new Vector2Int(
-                Mathf.FloorToInt((localizedPosition.x ) / cellSize),
-                Mathf.FloorToInt((localizedPosition.y ) / cellSize)
+                Mathf.FloorToInt((localizedPosition.x ) / (cellSize*transform.localScale.x)),
+                Mathf.FloorToInt((localizedPosition.y ) / (cellSize * transform.localScale.y))
             );
         }
         
@@ -86,8 +86,8 @@ namespace JSM.Surveillance
                 for (int j = 0; j <  height; j++)
                 {
                     Vector2 newPos = new Vector2(
-                        occupier.transform.position.x + (cellSize * (Mathf.FloorToInt(-width / 2) + i)),
-                        occupier.transform.position.y + (cellSize * (Mathf.FloorToInt(-height / 2) + j))
+                        occupier.transform.position.x + ((transform.localScale.x * cellSize) * (Mathf.FloorToInt(-width / 2) + i)),
+                        occupier.transform.position.y + ((transform.localScale.x * cellSize) * (Mathf.FloorToInt(-height / 2) + j))
                     );
                     
                     positions.Add(newPos);

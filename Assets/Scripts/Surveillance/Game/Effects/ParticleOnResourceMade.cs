@@ -32,6 +32,8 @@ namespace JSM.Surveillance.Game.Effects
 
         public void SpawnInParticle(Resource resource)
         {
+            if(!resource.IsScience) return;
+            
             var particle = Instantiate(iconParticlePrefab, transform);
             particle.Init(resource.Sprite, time, speed*dir.normalized);
         }

@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 namespace JSM.Surveillance
@@ -13,23 +15,26 @@ namespace JSM.Surveillance
         [FormerlySerializedAs("_guid")] [SerializeField] private string guid;
         [Header("InventorySize")]
         [SerializeField] protected int inventorySize = 20;
+
         private readonly List<ProcessorPortObject> _iPorts = new();
         private readonly List<ProcessorPortObject> _oPorts = new();
-
-
+        
         public int InventorySize => inventorySize;
         public IReadOnlyList<ProcessorPortObject> InputPorts => _iPorts;
         public IReadOnlyList<ProcessorPortObject> OutputPorts => _oPorts;
 
         public string Guid => guid;
 
+        public event Action OnModify; 
+        
         public override void Place(List<Vector2Int> newPositions, Vector3 worldPos, FactoryGrid grid)
         {
             base.Place(newPositions, worldPos, grid);
             
             Vector2Int root = GetRootPosition();
 
-            
+
+            grid.OnModify.AddListener(OnModifyFunc);
             _iPorts.Clear();
             _oPorts.Clear();
             foreach (var port in GetComponentsInChildren<ProcessorPortObject>())
@@ -45,6 +50,11 @@ namespace JSM.Surveillance
             }
         }
 
+        private void OnModifyFunc()
+        {
+            OnModify?.Invoke();
+        }
+
         private void OnEnable()
         {
             if (Grid == null) {
@@ -58,7 +68,7 @@ namespace JSM.Surveillance
             if (Grid == null) {
                 return;
             }
-            
+            _grid.OnModify.RemoveListener(OnModifyFunc);
         }
 
         public virtual void Sell()
@@ -106,8 +116,8 @@ namespace JSM.Surveillance
                         Vector2Int rotatedSize = Rotation % 180 == 0 ? Size : new Vector2Int(Size.y, Size.x);
                         
                         Vector3 offset = new Vector2(
-                            rotatedSize.x  % 2 == 0 ? 0 : Grid.CellSize / 2.0f,
-                            rotatedSize.y % 2 == 0 ? 0 : Grid.CellSize / 2.0f
+                            rotatedSize.x  % 2 == 0 ? 0 : Grid.CellSize.x / 2.0f,
+                            rotatedSize.y % 2 == 0 ? 0 : Grid.CellSize.y / 2.0f
                             );
 
                         transform.position = Grid.GetWorldPosition(gridPos) + offset;
@@ -182,6 +192,22 @@ namespace JSM.Surveillance
             return "";
         }
 
+        private void OnMouseEnter()
+        {
+            if(spriteRenderer != null)
+                spriteRenderer.color = defaultColor * new Color(0.8f, 0.8f, 0.8f, 1);
+            else if(spriteImage != null)
+                spriteImage.color = defaultColor * new Color(0.8f,0.8f, 0.8f, 1);
+        }
+
+        private void OnMouseExit()
+        {
+            if(spriteRenderer != null)
+                spriteRenderer.color = defaultColor;
+            else if (spriteImage != null )
+                spriteImage.color = defaultColor;
+        }
+
         public void OnBeforeSerialize()
         {
             if (string.IsNullOrEmpty(guid))
@@ -196,6 +222,10 @@ namespace JSM.Surveillance
 
         public virtual VideoClip GetVideoClip()
         {
+            return null;
+        }
+
+        public virtual Resource GetResource() {
             return null;
         }
     }

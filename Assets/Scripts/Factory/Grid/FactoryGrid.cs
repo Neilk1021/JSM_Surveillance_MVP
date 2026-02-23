@@ -7,6 +7,7 @@ using JSM.Surveillance.Saving;
 using JSM.Surveillance.UI;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 namespace JSM.Surveillance
@@ -18,7 +19,7 @@ namespace JSM.Surveillance
         public Vector2Int machinePosition;
     }
     
-    public partial class FactoryGrid : MonoBehaviour
+    public partial class FactoryGrid : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [Header("Grid End")]
         [SerializeField] private InputMachineObject gridInputPrefab;
@@ -54,7 +55,12 @@ namespace JSM.Surveillance
         
         public ConnectionManager ConnectionManager => _connectionManager;
         public readonly UnityEvent OnModify = new();
-
+        public readonly UnityEvent OnMouseEnter = new();
+        public readonly UnityEvent OnMouseExit = new ();
+        
+        
+        
+        public UnityEvent OnGridClose = new UnityEvent();
         public FactoryGridSimulation FactoryGridSimulation { get; private set; } = null;
 
         private void Awake()
@@ -203,8 +209,8 @@ namespace JSM.Surveillance
                 return false;
             }
             Vector3 worldPos = new Vector3(
-                gridPositions.Average(x => GetWorldPosition(x).x) + cellSize / 2,
-                gridPositions.Average(x => GetWorldPosition(x).y) + cellSize / 2,
+                gridPositions.Average(x => GetWorldPosition(x).x) + (cellSize * transform.localScale.x) / 2,
+                gridPositions.Average(x => GetWorldPosition(x).y) + (cellSize * transform.localScale.y) / 2,
                 transform.position.z
             ); 
             
@@ -269,6 +275,7 @@ namespace JSM.Surveillance
             if(FactoryGrid.Editable)
                 SaveGridToSource();
             
+            OnGridClose?.Invoke();
             Destroy(gameObject);
         }
 
@@ -354,8 +361,17 @@ namespace JSM.Surveillance
         {
             yield return new WaitForEndOfFrame();
             OnModify?.Invoke();
-        } 
-        
-        
+        }
+
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            OnMouseEnter?.Invoke();
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            OnMouseExit?.Invoke();
+        }
     }
 }

@@ -9,7 +9,7 @@ using UnityEditor;
 namespace JSM.Surveillance
 {
     [CreateAssetMenu(fileName = "NewProcessor", menuName = "JSM/Surveillance/Maintainable/Processor")]
-    public class ProcessorData : Maintainable, ISerializationCallbackReceiver
+    public class ProcessorData : MachineSObj, ISerializationCallbackReceiver
     {
 
         [SerializeField] private RecipeBank recipeBank;

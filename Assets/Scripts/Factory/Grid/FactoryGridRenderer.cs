@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JSM.Surveillance.UI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -15,7 +16,7 @@ namespace JSM.Surveillance
     [RequireComponent(typeof(FactoryGrid))]
     public class FactoryGridRenderer : MonoBehaviour
     {
-        private FactoryGrid _grid;
+        [SerializeField] [HideInInspector] private FactoryGrid _grid;
         
         [Header("Tile Map")]
         [SerializeField] private Tilemap tilemap;
@@ -27,8 +28,6 @@ namespace JSM.Surveillance
         [Header("Backgrounds")] [SerializeField]
         private SpriteRenderer foreground;
         
-        [SerializeField] private SpriteRenderer background;
-
         [Header("Canvas")] [SerializeField]
         [Range(0, 2)] private float headerSize;
 
@@ -39,11 +38,18 @@ namespace JSM.Surveillance
         [SerializeField] private RectTransform HeaderUI;
         
         private const float CanvasScale = 0.01f;
-        
+
+        [SerializeField] private FactoryGridBackgroundFader backgroundFader;
         
         public void Awake() {
             _grid = GetComponent<FactoryGrid>();
             tilemap ??= GetComponent<Tilemap>();
+
+
+            var fader = Instantiate(backgroundFader, transform.parent);
+            _grid.OnGridClose.AddListener(fader.Close);
+            _grid.OnMouseEnter.AddListener(fader.ShowFade);
+            _grid.OnMouseExit.AddListener(fader.HideFade);
         }
 
         private void Start()
@@ -51,8 +57,12 @@ namespace JSM.Surveillance
             DrawGrid();
         }
 
+        [ContextMenu("Draw Grid")]
         private void DrawGrid()
         {
+            _grid ??= GetComponent<FactoryGrid>();
+            tilemap ??= GetComponent<Tilemap>();
+            
             for (var x = 0; x < _grid.Width; x++) {
                 for (var y = 0; y < _grid.Height; y++) {
                     UpdateCellVisual(x,y);
@@ -60,26 +70,27 @@ namespace JSM.Surveillance
             }
         }
 
+        [ContextMenu("Clear Grid")]
+        public void ClearGrid()
+        {
+            tilemap ??= GetComponent<Tilemap>();
+            tilemap.ClearAllTiles();
+        }
+
         [ContextMenu("Regenerate Sizing")]
         public void ResizeBackground()
         {
             _grid ??= GetComponent<FactoryGrid>();
-            var bTransform = background.transform;
             var fTransform = foreground.transform;
             var size = new Vector3(_grid.Width, _grid.Height) * _grid.CellSize;
-            bTransform.localScale =
-                size
-                + new Vector3(borderRadius.right + borderRadius.left, borderRadius.up + borderRadius.down);
-
-            fTransform.localScale = size;
             
-            bTransform.localPosition = size / 2 + new Vector3(borderRadius.right - borderRadius.left,borderRadius.up - borderRadius.down,0)/2;
+            foreground.size = size;
             
             fTransform.localPosition = size / 2;
             var bc = GetComponent<BoxCollider>();
             
-            bc.size = size +new Vector3(borderRadius.right + borderRadius.left, borderRadius.up + borderRadius.down);
-            bc.center = size/2 + new Vector3(borderRadius.right - borderRadius.left,borderRadius.up - borderRadius.down,0)/2;
+            bc.size = (Vector3)size + new Vector3(borderRadius.right + borderRadius.left, borderRadius.up + borderRadius.down);
+            bc.center = (Vector3)size/2 + new Vector3(borderRadius.right - borderRadius.left,borderRadius.up - borderRadius.down,0)/2;
 
             ResizeCanvas(size);
 
@@ -109,7 +120,7 @@ namespace JSM.Surveillance
             //TODO ACCOUNT FOR pivot position
             ShopUI.anchoredPosition = Vector3.zero;
             
-            HeaderUI.sizeDelta = new Vector2(gridSize.x, headerSize / CanvasScale);
+            HeaderUI.sizeDelta = new Vector2(gridSize.x, headerSize / CanvasScale + gridSize.y);
             //TODO ACCOUNT FOR pivot position!
             HeaderUI.anchoredPosition = Vector3.zero - new Vector3(resizedDelta.x / 2, 0, 0);
 
@@ -118,7 +129,6 @@ namespace JSM.Surveillance
 
         public void UpdateCellVisual(int x, int y)
         {
-            var cellData = _grid.GetCell(x, y);
             tilemap.SetTile(new Vector3Int(x,y,0), defaultTile);
         }
     }
